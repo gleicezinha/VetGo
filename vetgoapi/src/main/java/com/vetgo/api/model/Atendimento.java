@@ -38,6 +38,9 @@ public class Atendimento implements Serializable {
     @ManyToOne
     private Paciente paciente;
 
+    @Column(nullable = false, unique = true)
+    private String cpf;
+
     @Enumerated(EnumType.STRING)
     private EStatus status = EStatus.AGENDADO;
 
@@ -71,7 +74,7 @@ public class Atendimento implements Serializable {
         this.horarioDeAtendimento = horarioDeAtendimento;
     }
 
-    public Medico getProfissional() {
+    public Profissional getProfissional() {
         return profissional;
     }
 
@@ -85,6 +88,14 @@ public class Atendimento implements Serializable {
 
     public void setPaciente(Paciente paciente) {
         this.paciente = paciente;
+    }
+
+    public String getCpf() {
+        return cpf;
+    }
+
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
     }
 
     public EStatus getStatus() {

@@ -24,7 +24,12 @@ public class Paciente implements Serializable{
     @Column(nullable = false, unique = true)
     private String cpf;
 
-    private String responsavel;
+    @Column(nullable = false)
+    private String nomeResponsavel;
+
+    private String peso;
+
+    private String animal;
     
     private String estado;
 
@@ -67,12 +72,30 @@ public class Paciente implements Serializable{
     public void setCpf(String cpf) {
         this.cpf = cpf;
     }
-    public String getResponsavel() {
-        return responsavel;
+    
+    public String getNomeResponsavel() {
+        return nomeResponsavel;
     }
-    public void setResponsavel(String responsavel) {
-        this.responsavel = responsavel;
+    public void setNomeResponsavel(String nomeResponsavel) {
+        this.nomeResponsavel = nomeResponsavel;
     }
+
+    public String getPeso(){
+        return peso;
+    }
+    
+    public void setPeso(String peso) {
+        this.peso = peso;
+    }
+
+    public String getAnimal() {
+        return animal;
+    }
+
+    public void setAnimal(String animal) {
+        this.animal = animal;
+    }
+
     public String getEstado() {
         return estado;
     }
@@ -120,11 +143,6 @@ public class Paciente implements Serializable{
 
     public void setDataNascimento(LocalDate dataNascimento) {
         this.dataNascimento = dataNascimento;
-    }
-
-
-    public void setGrupoSanguineo(EGrupoSanguineo grupoSanguineo) {
-        this.grupoSanguineo = grupoSanguineo;
     }
 
     public ESexo getSexo() {

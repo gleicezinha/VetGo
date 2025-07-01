@@ -6,5 +6,6 @@ public enum EAtendimento {
     EXAME,
     CIRURGIA,
     ATESTADO,
+    EUTANASIA,
     RETORNO;    
 }
