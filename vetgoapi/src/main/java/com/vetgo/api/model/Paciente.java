@@ -27,10 +27,12 @@ public class Paciente implements Serializable{
     @Column(nullable = false)
     private String nomeResponsavel;
 
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private EEspecie especie;
+    
     private String peso;
 
-    private String animal;
-    
     private String estado;
 
     private String endereco;
@@ -88,12 +90,12 @@ public class Paciente implements Serializable{
         this.peso = peso;
     }
 
-    public String getAnimal() {
+    public String getEspecie() {
         return animal;
     }
 
-    public void setAnimal(String animal) {
-        this.animal = animal;
+    public void setEspecie(String especie) {
+        this.especie = especie;
     }
 
     public String getEstado() {

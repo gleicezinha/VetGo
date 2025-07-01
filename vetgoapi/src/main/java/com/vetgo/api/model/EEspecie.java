@@ -1,6 +1,6 @@
 package main.java.com.vetgo.api.model;
 
-public enum EAnimal {
+public enum EEspecie {
     GATO,
     CACHORRO
 }
