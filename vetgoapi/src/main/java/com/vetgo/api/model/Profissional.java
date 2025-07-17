@@ -1,5 +1,8 @@
 package main.java.com.vetgo.api.model;
-public class Profissional {
+
+import java.io.Serializable;
+
+public class Profissional implements Serializable{
     private Long id;
     private String nome;
     private String registro;
