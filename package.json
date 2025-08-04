@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@fullcalendar/angular": "^6.1.18",
+    "@fullcalendar/core": "^6.1.18"
+  }
+}
