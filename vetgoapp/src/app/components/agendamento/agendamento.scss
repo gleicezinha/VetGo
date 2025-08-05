@@ -1,0 +1,49 @@
+.container-principal {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+}
+
+.imagem-container {
+  width: 40%;
+  text-align: center;
+
+  img {
+    max-width: 100%;
+    border-radius: 10px;
+  }
+
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+}
+
+.calendario-container {
+  width: 55%;
+  text-align: center;
+  border-left: 2px solid #ccc;
+  padding-left: 20px;
+
+  .horarios-container {
+    margin-top: 20px;
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+
+      li {
+        background-color: #1E3A8A; // azul
+        color: white;
+        margin: 5px 0;
+        padding: 10px;
+        cursor: pointer;
+        border-radius: 5px;
+
+        &:hover {
+          background-color: #2563EB;
+        }
+      }
+    }
+  }
+}

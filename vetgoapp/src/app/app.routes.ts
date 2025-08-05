@@ -1,6 +1,8 @@
 import { Routes } from '@angular/router';
+import { AgendamentoComponent } from './components/agendamento/agendamento';
 
 
 export const routes: Routes = [
-    // { path: 'agendamento', component: AgendamentoComponent },
+    { path: '', redirectTo: 'agendamento', pathMatch: 'full' },
+    { path: 'agendamento', component: AgendamentoComponent },
 ];

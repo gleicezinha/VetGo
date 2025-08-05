@@ -1,1 +1,29 @@
-<p>agendamento works!</p>
+<div class="container-principal">
+  <!-- Container da imagem -->
+  <div class="imagem-container">
+    <img src="assets/imagens/rayssa.jpg"/>
+    <h3>Atendimento Veterinário em Domicílio Rayssa Gabriela</h3>
+    <ul>
+      <li>Consultas no conforto do lar</li>
+      <li>Vacinação cães e gatos</li>
+      <li>Coleta de exames</li>
+      <li>Atestado para viagem</li>
+    </ul>
+  </div>
+
+  <!-- Container do calendário -->
+  <div class="calendario-container">
+    <h2>Escolha uma Data</h2>
+    <!-- Pode ser um datepicker ou um calendário customizado -->
+    <input type="date" (change)="selecionarData($event)">
+
+    <div *ngIf="dataSelecionada" class="horarios-container">
+      <h3>Horários disponíveis</h3>
+      <ul>
+        <li *ngFor="let hora of horarios" (click)="selecionarHorario(hora)">
+          {{ hora }}
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
