@@ -63,7 +63,7 @@ ngOnInit(): void {
    save(): void {
     this.servico.save(this.registro).subscribe({
       complete: () => {
-        alert('Usuario cadastrado com sucesso!');
+        alert('Responsável cadastrado com sucesso!');
         
       }
     });
