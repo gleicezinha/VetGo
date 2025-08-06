@@ -15,6 +15,16 @@
             "projectName": "demo",
             "args": "",
             "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-VetgoapiApplication<vetgoapi>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.vetgo.vetgoapi.VetgoapiApplication",
+            "projectName": "vetgoapi",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
         }
     ]
 }

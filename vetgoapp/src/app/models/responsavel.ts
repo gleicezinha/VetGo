@@ -9,6 +9,8 @@ export type Responsavel = {
     telefone: string;
     endereco: string;
     numero: string;
+    uf: string;
+    complemento: string;
     bairro: string;
     cidade: string;
     estado: string;

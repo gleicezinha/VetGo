@@ -19,6 +19,8 @@ public class Profissional implements Serializable{
     @Column(nullable = false, unique = true)
     private String registro;
     private String telefone;
+
+    @Column(nullable = false, unique = true)
     private String cpf;
 
 
