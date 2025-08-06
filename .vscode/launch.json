@@ -2,6 +2,12 @@
     "configurations": [
         {
             "type": "java",
+            "name": "VetgoapiApplication",
+            "request": "launch",
+            "mainClass": "com.vetgo.vetgoapi.VetgoapiApplication"
+        },
+        {
+            "type": "java",
             "name": "Spring Boot-Main<demo>",
             "request": "launch",
             "cwd": "${workspaceFolder}",
