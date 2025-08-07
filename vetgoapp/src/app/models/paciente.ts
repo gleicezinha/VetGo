@@ -1,7 +1,9 @@
+import { Responsavel } from "./responsavel";
+
 export type Paciente = {
     id: number;
     nome: string;
-    nomeresposavel: string;
+    responsavel: Responsavel;
     telefone: string;
     dataNascimento: Date;
     especie: string;

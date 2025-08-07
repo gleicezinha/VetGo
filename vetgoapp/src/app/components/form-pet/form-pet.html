@@ -1,1 +1,56 @@
-<p>form-pet works!</p>
+<form #formPet="ngForm" class="form-container">
+  <h2>Formulário de Pet</h2>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label for="nome">Nome:</label>
+      <input id="nome" name="nome" type="text" [(ngModel)]="registro.nome" required />
+    </div>
+
+    <div class="form-group">
+      <label for="tipo">Tipo de animal:</label>
+      <select id="tipo" name="tipo" [(ngModel)]="registro.especie" required>
+        <option value="Cachorro">Cachorro</option>
+        <option value="Gato">Gato</option>
+
+      </select>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group small">
+      <label for="idade">Idade aproximada:</label>
+      <input id="idade" name="idade" type="number" [(ngModel)]="registro.dataNascimento" required />
+    </div>
+
+    <div class="form-group small">
+      <label for="peso">Peso:</label>
+      <input id="peso" name="peso" type="number" [(ngModel)]="registro.peso" required />
+    </div>
+
+    <div class="form-group small">
+      <label for="genero">Gênero:</label>
+      <select id="genero" name="genero" [(ngModel)]="registro.sexo" required>
+        <option value="M">M</option>
+        <option value="F">F</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label for="responsavel">Responsável:</label>
+      <input id="responsavel" name="responsavel" type="text" [(ngModel)]="responsavel.nome" required />
+    </div>
+
+    <div class="form-group">
+      <label for="cpf">CPF:</label>
+      <input id="cpf" name="cpf" type="text" [(ngModel)]="responsavel.cpf" required />
+    </div>
+  </div>
+
+  <div class="form-buttons">
+    <button type="submit" [disabled]="formPet.invalid" class="btn-salvar" (click)="save()">Salvar</button>
+    <button type="button" class="btn-atendimento" (click)="cadastrarAtendimento()">Cadastrar Atendimento</button>
+  </div>
+</form>
