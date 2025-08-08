@@ -25,5 +25,11 @@
         </li>
       </ul>
     </div>
+    
+    <button *ngIf="dataSelecionada" 
+        [disabled]="!horarioSelecionado" 
+        (click)="confirmarAgendamento()">
+  Confirmar Agendamento
+</button>
   </div>
 </div>

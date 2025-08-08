@@ -1,0 +1,80 @@
+$green: #4CAF50;
+$red: #F44336;
+$gray-light: #f4f4f4;
+$border-color: #ccc;
+
+.atendimento-form {
+  background: white;
+  padding: 20px;
+  max-width: 500px;
+  margin: 0 auto;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+
+  h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+
+    label {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    input, textarea {
+      padding: 8px;
+      border: 1px solid $border-color;
+      border-radius: 4px;
+      background: $gray-light;
+      font-size: 14px;
+
+      &:focus {
+        outline: none;
+        border-color: $green;
+        background: white;
+      }
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+  }
+
+  .form-actions {
+    display: flex;
+    justify-content: space-between;
+
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      color: white;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+
+      &.btn-green {
+        background: $green;
+
+        &:hover {
+          background: darken($green, 10%);
+        }
+      }
+
+      &.btn-red {
+        background: $red;
+
+        &:hover {
+          background: darken($red, 10%);
+        }
+      }
+    }
+  }
+}
