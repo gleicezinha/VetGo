@@ -18,7 +18,7 @@ Um aplicativo back-end pode ser iniciado pelo Spring Boot Dashboard ou com o Mav
 
 No Spring Boot Dashboard, clique em “Run” na aplicação “sgcmapi”.
 
-Se optar pelo Maven, sem prompt de comandos, a partir do diretório ./sgcmapi:
+Se optar pelo Maven, sem prompt de comandos, a partir do diretório ./vetgoapi:
 
 um. Para iniciar a aplicação com o Maven:
 
@@ -32,7 +32,7 @@ java -jar target\sgcmapi.jar
 A aplicação vai iniciar no endereço https://localhost:9000/ , com acesso local à base de dados MySQL, por meio da porta padrão 3306, além de usuário e senha "root".
 
 # Front-end
-As dependências do projeto não são compartilhadas no repositório. Para instalar as dependências, a partir do diretório ./sgcmapp, sem prompt de comandos, digite:
+As dependências do projeto não são compartilhadas no repositório. Para instalar as dependências, a partir do diretório ./vetgoapp, sem prompt de comandos, digite:
 
 npm install
 
