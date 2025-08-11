@@ -4,10 +4,12 @@ Estagio Supervisionado
 O código produzido em sala de aula, e compartilhado neste repositório, pode ser atualizado em seu repositório local com o comando:
 
 git pull
+
 No entanto, se você fez alterações no seu repositório local, o comando acima pode gerar conflitos. Para evitar lidar com isso, você pode forçar uma atualização com o repositório remoto por meio dos comandos:
 
 git fetch origin
 git reset --hard origin/main
+
 O primeiro comando recebe as atualizações mais recentes do repositório remoto, e o segundo descarta todas as alterações locais e atualizações com o histórico mais recente do repositório remoto (branch main).
 
 # Como iniciar a aplicação
@@ -33,8 +35,10 @@ A aplicação vai iniciar no endereço https://localhost:9000/ , com acesso loca
 As dependências do projeto não são compartilhadas no repositório. Para instalar as dependências, a partir do diretório ./sgcmapp, sem prompt de comandos, digite:
 
 npm install
+
 Para iniciar o aplicativo, a partir do diretório ./sgcmapp, execute o comando:
 
 ng serve
+
 A aplicação vai iniciar no endereço http://localhost:4200 .
 
