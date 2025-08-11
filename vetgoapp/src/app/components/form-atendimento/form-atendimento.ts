@@ -14,15 +14,13 @@ import { Profissional } from '../../models/profissional';
 
 @Component({
   selector: 'app-form-atendimento',
-  imports: [FormsModule, CommonModule, RouterLink, ReactiveFormsModule],
+  imports: [FormsModule, CommonModule,  ReactiveFormsModule],
   templateUrl: './form-atendimento.html',
   styleUrl: './form-atendimento.scss'
 })
-export class FormAtendimentoComponent implements ICrudForm<Atendimento> {
+export class FormAtendimentoComponent  {
 
-  save(): void {
-    throw new Error('Method not implemented.');
-  }
+
   constructor(
     private servico: AtendimentoService,
     private servicoPaciente: PacienteService,
@@ -32,20 +30,42 @@ export class FormAtendimentoComponent implements ICrudForm<Atendimento> {
     private rota: ActivatedRoute
   ) {}
   ngOnInit(): void {
-    this.rota.params.subscribe(params => {
-      const id = params['id'];
-      if (id) {
-        this.servico.getById(id).subscribe(registro => {
-          this.registro = registro;
-        });
-      }
-    });
+    const id = this.rota.snapshot.queryParamMap.get('id');
+    if (id) {
+      this.servico.getById(+id).subscribe({
+        next: (resposta: Atendimento) => {
+          this.registro = resposta;
+        },
+        error: (erro: any) => {
+          console.error('Erro ao carregar atendimento:', erro);
+        }
+    
+      })
+   
+    }
   }
-    registro: Atendimento = <Atendimento>{};
-  pacientes: Paciente[] = [];
+  registro: Atendimento = <Atendimento>{};
+  pacientes: Paciente[] = []; 
   responsaveis: Responsavel[] = [];
   profissionais: Profissional[] = [];
-  hoje: string = (new Date()).toISOString().split('T')[0];
-
-
+  compareById = (a: any, b: any) => {
+    return a && b && a.id == b.id;
+  }
+  save(): void {
+    if (this.registro.id) {
+      this.servico.save(this.registro).subscribe({
+        complete: () => {
+          alert('Prontuário salvo com sucesso!');
+          //console.log(this.atendimento.paciente.id)
+          //const idPaciente = this.atendimento.paciente.id
+          this.router.navigate(['/atendimento'])
+        },
+      error(err) {
+        alert('Erro ao salvar prontuário');
+      },
+    });
+    }
+  }
 }
+
+

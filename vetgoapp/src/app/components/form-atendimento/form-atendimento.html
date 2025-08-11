@@ -4,31 +4,31 @@
   <form id="formAtendimento">
     <div class="form-group">
       <label for="data">Data</label>
-      <input type="date" id="data" name="data" required>
+      <input type="date" [(ngModel)]="registro.dataDeAtendimento" name="dataDeAtendimento" required>
     </div>
 
     <div class="form-group">
       <label for="hora">Hora</label>
-      <input type="time" id="hora" name="hora" required>
+      <input type="time" [(ngModel)]="registro.horarioDeAtendimento" name="horarioDeAtendimento" required>
     </div>
 
     <div class="form-group">
       <label for="paciente">Paciente</label>
-      <input type="text" id="paciente" name="paciente" placeholder="Digite o nome do paciente" required>
+      <input type="text" id="paciente" [(ngModel)]="registro.paciente.nome" name="paciente" placeholder="Digite o nome do paciente" required>
     </div>
 
     <div class="form-group">
       <label for="responsavel">Responsável</label>
-      <input type="text" id="responsavel" name="responsavel" placeholder="Digite o nome do responsável" required>
+      <input type="text" id="responsavel" [(ngModel)]="registro.responsavel.nome" name="responsavel" placeholder="Digite o nome do responsável" required>
     </div>
 
     <div class="form-group">
-      <label for="descricao">Descrição</label>
-      <textarea id="descricao" name="descricao" placeholder="Digite a descrição do atendimento"></textarea>
+      <label for="observacao">Motivo</label>
+      <textarea id="observacao" [(ngModel)]="registro.observacao" name="observacao" placeholder="Digite a descrição do atendimento"></textarea>
     </div>
 
     <div class="form-actions">
-      <button type="submit" class="btn btn-green">Salvar</button>
+      <button type="submit" class="btn btn-green" (click)="save()">Salvar</button>
       <button type="button" id="cancelarBtn" class="btn btn-red">Cancelar</button>
     </div>
   </form>
