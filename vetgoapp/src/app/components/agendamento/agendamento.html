@@ -28,7 +28,7 @@
     
     <button *ngIf="dataSelecionada" 
         [disabled]="!horarioSelecionado" 
-        (click)="confirmarAgendamento()">
+        (click)="confirmarAgendamento()" routerLink="/form-atendimento" class="btn-confirmar">
   Confirmar Agendamento
 </button>
   </div>
