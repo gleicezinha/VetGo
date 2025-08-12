@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ICrudForm } from '../i-crud-form';
@@ -11,6 +11,7 @@ import { ResponsavelService } from '../../services/responsavel';
 import { Paciente } from '../../models/paciente';
 import { Responsavel } from '../../models/responsavel';
 import { Profissional } from '../../models/profissional';
+import { EAtendimento } from '../../models/eatendimento.model';
 
 @Component({
   selector: 'app-form-atendimento',
@@ -18,7 +19,7 @@ import { Profissional } from '../../models/profissional';
   templateUrl: './form-atendimento.html',
   styleUrl: './form-atendimento.scss'
 })
-export class FormAtendimentoComponent  {
+export class FormAtendimentoComponent implements OnInit {
 
 
   constructor(
@@ -43,13 +44,43 @@ export class FormAtendimentoComponent  {
       })
    
     }
+    else{
+      this.carregarPacientes();
+      this.carregarResponsaveis();
+    }
+
+    
   }
   registro: Atendimento = <Atendimento>{};
+  tiposDeAtendimento = Object.values(EAtendimento);
   pacientes: Paciente[] = []; 
   responsaveis: Responsavel[] = [];
   profissionais: Profissional[] = [];
-  compareById = (a: any, b: any) => {
-    return a && b && a.id == b.id;
+
+  compararTipos(tipo1: any, tipo2: any): boolean {
+    return tipo1 && tipo2 ? tipo1 === tipo2 : tipo1 === tipo2;
+  }
+  
+  compararPacientes(p1: Paciente, p2: Paciente): boolean {
+    return p1 && p2 ? p1.id === p2.id : p1 === p2;
+  }
+  compararResponsaveis(r1: Responsavel, r2: Responsavel): boolean {
+    return r1 && r2 ? r1.id === r2.id : r1 === r2;
+  }
+
+  carregarPacientes(): void {
+    this.servicoPaciente.get().subscribe({
+      next: (res: Paciente[]) => {
+        this.pacientes = res;
+      }
+    });
+  }
+  carregarResponsaveis(): void {
+    this.servicoResponsavel.get().subscribe({
+      next: (res: Responsavel[]) => {
+        this.responsaveis = res;
+      }
+    });
   }
   save(): void {
     if (this.registro.id) {

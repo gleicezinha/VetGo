@@ -92,4 +92,12 @@ body {
     background-color: orange;
     color: white;
   }
+  .btn-cancelar {
+    background-color: #dc3545;
+    color: white;
+
+    &:hover {
+      background-color: #c82333;
+    }
+  }
 }

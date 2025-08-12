@@ -1,0 +1,9 @@
+export enum EAtendimento {
+    CONSULTA = 'CONSULTA',
+    RETORNO = 'RETORNO',
+    EXAME = 'EXAME',
+    EUTANASIA = 'EUTANASIA',
+    VACINACAO = 'VACINACAO',
+    CIRURGIA = 'CIRURGIA',
+    ATESTADO = 'ATESTADO',
+}

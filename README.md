@@ -43,3 +43,68 @@ Para iniciar o aplicativo, a partir do diretório ./vetgoapp, execute o comando:
 
 A aplicação vai iniciar no endereço http://localhost:4200 .
 
+# ferramentas
+Código do Visual Studio
+
+https://code.visualstudio.com/Download
+
+Pacote de Extensão para Java (Extensão do VS Code)
+
+https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-pack
+
+Spring Boot Extension Pack (Extensão do VS Code)
+
+https://marketplace.visualstudio.com/items?itemName=pivotal.vscode-boot-dev-pack
+
+XML (Extensão do VS Code)
+
+https://marketplace.visualstudio.com/items?itemName=redhat.vscode-xml
+
+# Git
+
+https://git-scm.com/downloads
+
+JDK 17
+
+Para verificar se o JDK está instalado e configurado corretamente, digite no prompt de comando:
+
+javac -version
+
+Se necessário, realize a instalação e configuração:
+
+Link para download: https://download.oracle.com/java/17/archive/jdk-17.0.10_windows-x64_bin.msi
+
+Crie uma variável de ambiente JAVA_HOME definida para o diretório de instalação do JDK. Exemplo: “C:\Arquivos de Programas\Java\jdk-17”.
+Adicione “%JAVA_HOME%\bin” na variável de ambiente PATH.
+
+Tutorial de configuração: https://mkyong.com/java/how-to-set-java_home-on-windows-10/
+
+# Especialista
+
+Para verificar se o Maven está instalado e configurado corretamente, digite no prompt de comando:
+
+mvn -version
+Se necessário, realize a instalação e configuração:
+
+Link para download: https://dlcdn.apache.org/maven/maven-3/3.8.8/binaries/apache-maven-3.8.8-bin.zip
+Adicione o diretório de instalação do Maven na variável de ambiente PATH. Exemplo: “C:\apache-maven\bin”.
+Tutorial de instalação: https://mkyong.com/maven/how-to-install-maven-in-windows/
+Node.js (e npm)
+Versão 20 (LTS).
+
+Para verificar a versão do Node.js, no prompt de comandos digite:
+
+node --version
+Link para download: https://nodejs.org/dist/v20.14.0/node-v20.14.0-x64.msi
+
+## CLI Angular
+Versão 17.
+
+Para verificar a versão do Angular CLI, no prompt de comandos digite:
+
+ng version
+Tutorial de instalação: https://v17.angular.io/guide/setup-local
+
+Para instalar o Angular CLI, no prompt de comandos digite:
+
+npm i -g @angular/cli@17.3.8
