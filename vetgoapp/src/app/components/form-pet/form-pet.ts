@@ -11,7 +11,7 @@ import { ResponsavelService } from '../../services/responsavel';
   selector: 'app-form-pet',
   imports: [FormsModule, CommonModule],
   templateUrl: './form-pet.html',
-  styleUrl: './form-pet.scss'
+  styleUrls: ['./form-pet.scss']
 })
 export class FormPetComponent implements OnInit {
   ngOnInit(): void {

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ICrudList } from '../i-crud-list';
 import { Responsavel } from '../../models/responsavel';
 import { ResponsavelService } from '../../services/responsavel';
@@ -14,10 +14,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
   imports: [RouterLink,  MatFormFieldModule,
     MatInputModule, MatMenuModule, CommonModule, FormsModule],
   templateUrl: './list-cliente.html',
-  styleUrl: './list-cliente.scss'
+  styleUrls: ['./list-cliente.scss']
 })
-export class ListClienteComponent implements ICrudList<Responsavel>{
-termoBusca: string = '';
+export class ListClienteComponent implements ICrudList<Responsavel>, OnInit {
+  termoBusca: string = '';
   constructor(
     private servico: ResponsavelService,
     private router: Router
