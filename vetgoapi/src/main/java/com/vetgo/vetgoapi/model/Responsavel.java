@@ -2,34 +2,31 @@ package com.vetgo.vetgoapi.model;
 
 import java.io.Serializable;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 
-public class Responsavel implements Serializable{
+@Entity
+@Table(name = "tutor") // O nome da tabela no banco é "tutor"
+public class Responsavel implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false, updatable = false)
+    @Column(name = "id_tutor") // Nome da coluna da chave primária
     private Long id;
 
-    @Column(nullable = false)
-    private String nomeCompleto;
+    // Relação Um-para-Um: Um Responsavel está ligado a um único Usuario
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_usuario", referencedColumnName = "id", unique = true) // Define a FK para a tabela 'usuario'
+    private Usuario usuario;
 
-    @Column(nullable = false, unique = true)
-    private String cpf;
-
-    
-    private String estado;
-
-    private String endereco;
-
-    private String bairro;
-
-    private String cep;
-    
-    @Column(nullable = false)
-    private String telefone;
+    // Getters e Setters
 
     public Long getId() {
         return id;
@@ -39,58 +36,11 @@ public class Responsavel implements Serializable{
         this.id = id;
     }
 
-    public String getNomeCompleto() {
-        return nomeCompleto;
+    public Usuario getUsuario() {
+        return usuario;
     }
 
-    public void setNomeCompleto(String nomeCompleto) {
-        this.nomeCompleto = nomeCompleto;
-    }
-
-    public String getCpf() {
-        return cpf;
-    }
-
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
-    }
-
-    public String getEstado() {
-        return estado;
-    }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
-
-    public String getEndereco() {
-        return endereco;
-    }
-
-    public void setEndereco(String endereco) {
-        this.endereco = endereco;
-    }
-
-    public String getBairro() {
-        return bairro;
-    }
-
-    public void setBairro(String bairro) {
-        this.bairro = bairro;
-    }
-
-    public String getCep() {
-        return cep;
-    }
-
-    public void setCep(String cep) {
-        this.cep = cep;
-    }    
-    public String getTelefone() {
-        return telefone;
-    }
-
-    public void setTelefone(String telefone) {
-        this.telefone = telefone;
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 }

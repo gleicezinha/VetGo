@@ -1,28 +1,37 @@
+// src/main/java/com/vetgo/vetgoapi/model/Profissional.java
+
 package com.vetgo.vetgoapi.model;
 
 import java.io.Serializable;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn; 
+import jakarta.persistence.OneToOne;  
 
 @Entity
-public class Profissional implements Serializable{
+public class Profissional implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false, updatable   = false)
+    @Column(nullable = false, updatable = false)
     private Long id;
-    private String nome;
 
+
+    
     @Column(nullable = false, unique = true)
-    private String registro;
-    private String telefone;
+    private String registro; 
 
-    @Column(nullable = false, unique = true)
-    private String cpf;
+   
+    @OneToOne(cascade = CascadeType.ALL) 
+    @JoinColumn(name = "usuario_id_fk", referencedColumnName = "id") 
+    private Usuario usuario; 
 
+  
 
     public Long getId() {
         return id;
@@ -32,19 +41,6 @@ public class Profissional implements Serializable{
         this.id = id;
     }
 
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-    public String getCpf() {
-        return cpf;
-    }
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
-    }
     public String getRegistro() {
         return registro;
     }
@@ -52,16 +48,21 @@ public class Profissional implements Serializable{
     public void setRegistro(String registro) {
         this.registro = registro;
     }
-
-    public String getTelefone() {
-        return telefone;
+    
+    public Usuario getUsuario() {
+        return usuario;
     }
 
-    public void setTelefone(String telefone) {
-        this.telefone = telefone;
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 
+
+    @Override
     public String toString() {
-        return this.nome;
+        if (this.usuario != null) {
+            return this.usuario.getNomeUsuario();
+        }
+        return "Profissional ID: " + this.id;
     }
 }

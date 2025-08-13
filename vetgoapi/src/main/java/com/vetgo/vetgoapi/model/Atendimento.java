@@ -10,15 +10,17 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn; // <-- Importar
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint; 
 
 
 @Entity
+// Suas constraints agora funcionarão porque os nomes das colunas estão garantidos
 @Table(uniqueConstraints = {
-    @UniqueConstraint(columnNames =  { "dataDeAtendimento", "horarioDeAtendimento", "profissional_id"}),
-    @UniqueConstraint(columnNames =  { "dataDeAtendimento", "horarioDeAtendimento", "paciente_id"})
+    @UniqueConstraint(columnNames = { "dataDeAtendimento", "horarioDeAtendimento", "profissional_id"}),
+    @UniqueConstraint(columnNames = { "dataDeAtendimento", "horarioDeAtendimento", "paciente_id"})
 })
 public class Atendimento implements Serializable {
     
@@ -33,10 +35,14 @@ public class Atendimento implements Serializable {
     @Column(nullable = false)
     private LocalTime horarioDeAtendimento;
 
+    // --- CORREÇÃO AQUI ---
     @ManyToOne
+    @JoinColumn(name = "profissional_id") // Define explicitamente o nome da coluna FK
     private Profissional profissional;
 
+    // --- E AQUI ---
     @ManyToOne
+    @JoinColumn(name = "paciente_id") // Define explicitamente o nome da coluna FK
     private Paciente paciente;
 
     @Column(nullable = false, unique = true)
@@ -51,6 +57,8 @@ public class Atendimento implements Serializable {
 
     private Long idPai;
 
+    // ... Getters e Setters ...
+    
     public Long getId() {
         return id;
     }
@@ -122,6 +130,5 @@ public class Atendimento implements Serializable {
     public void setIdPai(Long idPai) {
         this.idPai = idPai;
     }
-    
-}
 
+}
