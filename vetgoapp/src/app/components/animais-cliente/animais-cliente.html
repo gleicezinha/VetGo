@@ -1,1 +1,16 @@
-<p>animais-cliente works!</p>
+<div class="animais-container">
+
+  <section class="lista-animais">
+    <h2>Todos os Animais de {{ responsavel.nome }}</h2>
+    <div class="cards">
+      <div class="card" *ngFor="let animal of pacientes">
+        <h3>{{ animal.nome }}</h3>
+        <p><strong>Espécie:</strong> {{ animal.especie }}</p>
+        <p><strong>Idade:</strong> {{ animal.dataNascimento | date:'yyyy-MM-dd' }}</p>
+        <p><strong>Peso:</strong> {{ animal.peso }} kg</p>
+        <p><strong>Sexo:</strong> {{ animal.sexo }}</p>
+        <p><strong>Status:</strong> {{ animal.vida }}</p>
+      </div>
+    </div>
+  </section>
+</div>

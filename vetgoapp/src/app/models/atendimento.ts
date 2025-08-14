@@ -8,8 +8,8 @@ export type Atendimento = {
   horarioDeAtendimento: string; // 'HH:mm:ss.SSSSSS'
   status: string;
   tipoDeAtendimento: string;
-  paciente: Paciente;  
-  responsavel: Responsavel;
+  paciente?: Paciente;
+  responsavel?: Responsavel;
   profissional: Profissional;
   observacao: string;  
 }

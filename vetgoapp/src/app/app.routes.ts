@@ -5,6 +5,7 @@ import { FormPetComponent } from './components/form-pet/form-pet';
 import { LoginComponent } from './components/login/login';
 import { ListClienteComponent } from './components/list-cliente/list-cliente';
 import { FormAtendimentoComponent } from './components/form-atendimento/form-atendimento';
+import { AnimaisCliente} from './components/animais-cliente/animais-cliente';
 
 
 
@@ -15,6 +16,7 @@ export const routes: Routes = [
     { path: 'form-pet', component: FormPetComponent },
     { path: 'login', component: LoginComponent },
     { path: 'list-cliente', component: ListClienteComponent },
-    { path: 'form-atendimento', component: FormAtendimentoComponent }
+    { path: 'form-atendimento', component: FormAtendimentoComponent },
+    { path: 'animais-cliente', component: AnimaisCliente }
 
 ];
