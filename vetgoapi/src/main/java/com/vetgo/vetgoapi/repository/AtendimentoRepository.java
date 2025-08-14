@@ -32,5 +32,5 @@ public interface AtendimentoRepository extends JpaRepository<Atendimento, Long> 
      * @param end A data e hora de fim.
      * @return Uma lista de atendimentos para a agenda do profissional.
      */
-    List<Atendimento> findByProfissionalIdAndDataHoraBetween(Long profissionalId, LocalDateTime start, LocalDateTime end);
+    List<Atendimento> findByProfissionalIdAndDataHoraAtendimentoBetween(Long profissionalId, LocalDateTime start, LocalDateTime end);
 }
