@@ -2,95 +2,65 @@ package com.vetgo.vetgoapi.model;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
-public class Paciente implements Serializable{
+@Table(name = "pet")
+public class Paciente implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false, updatable = false)
+    @Column(name = "id_pet")
     private Long id;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_tutor", referencedColumnName = "id_tutor", nullable = false)
+    private Responsavel responsavel;
 
     @Column(nullable = false)
-    private String nomeResponsavel;
+    private String nome;
 
-    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private EEspecie especie;
-    
-    private String peso;
 
-    
-    @Column(nullable = false)
-    private LocalDate dataNascimento;
+    private String raca;
 
-    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private ESexo sexo;
 
+    @Column(name = "data_nascimento", nullable = false)
+    private LocalDate dataNascimento;
+
+    // --- CAMPO NOVO ADICIONADO AQUI ---
+    @Enumerated(EnumType.STRING) // Armazena "VIVO" ou "MORTO" no banco (RECOMENDADO)
     @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private EVida vida;
+    private ESituacao situacao;
+    // ------------------------------------
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+    // --- Getters e Setters ---
     
-    public String getNomeResponsavel() {
-        return nomeResponsavel;
-    }
-    public void setNomeResponsavel(String nomeResponsavel) {
-        this.nomeResponsavel = nomeResponsavel;
+    // ... (todos os outros getters e setters) ...
+
+    public ESituacao getSituacao() {
+        return situacao;
     }
 
-    public String getPeso(){
-        return peso;
-    }
-    
-    public void setPeso(String peso) {
-        this.peso = peso;
+    public void setSituacao(ESituacao situacao) {
+        this.situacao = situacao;
     }
 
-    public EEspecie getEespecie() {
-        return especie;
-    }
-
-    public void setEspecie(EEspecie especie) {
-        this.especie = especie;
-    }
-
-    public LocalDate getDataNascimento() {
-        return dataNascimento;
-    }
-
-    public void setDataNascimento(LocalDate dataNascimento) {
-        this.dataNascimento = dataNascimento;
-    }
-
-    public ESexo getSexo() {
-        return sexo;
-    }
-
-    public void setSexo(ESexo sexo) {
-        this.sexo = sexo;
-    }
-
-    public EVida getVida() {
-        return vida;
-    }
-    public void setVida(EVida vida) {
-        this.vida = vida;
-    }
-
+    // ... (resto da classe)
 }

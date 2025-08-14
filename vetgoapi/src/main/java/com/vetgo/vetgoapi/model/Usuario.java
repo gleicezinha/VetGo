@@ -2,6 +2,7 @@ package com.vetgo.vetgoapi.model;
 
 import java.io.Serializable;
 
+import jakarta.persistence.CascadeType; 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -9,8 +10,11 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn; 
+import jakarta.persistence.OneToOne; 
+
 @Entity
-public class Usuario implements Serializable{
+public class Usuario implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,7 +41,13 @@ public class Usuario implements Serializable{
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private EPapel papel;
-
+    
+ 
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "endereco_id_fk", referencedColumnName = "id_endereco")
+    private Endereco endereco;
+    
+  
     public Long getId() {
         return id;
     }
@@ -101,5 +111,14 @@ public class Usuario implements Serializable{
     public void setPapel(EPapel papel) {
         this.papel = papel;
     }
+
+   
+    public Endereco getEndereco() {
+        return endereco;
+    }
     
+    public void setEndereco(Endereco endereco) {
+        this.endereco = endereco;
+    }
+   
 }
