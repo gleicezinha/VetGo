@@ -2,50 +2,110 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { PacienteService } from '../../services/paciente';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Paciente } from '../../models/paciente';
 import { Responsavel } from '../../models/responsavel';
 import { ResponsavelService } from '../../services/responsavel';
 
+import { switchMap } from 'rxjs/operators';
+import { of } from 'rxjs';
+
 @Component({
+  standalone: true,
   selector: 'app-form-pet',
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, RouterModule],
   templateUrl: './form-pet.html',
   styleUrls: ['./form-pet.scss']
 })
 export class FormPetComponent implements OnInit {
-  ngOnInit(): void {
-    const id = this.route.snapshot.queryParamMap.get('id');
-    if (id) {
-      this.servico.getById(+id).subscribe({
-        next: (resposta: any) => {
-          this.registro = resposta;
-          this.responsavel = resposta.responsavel;
-        }
-      });
-    }
-  }
-  compareById = (a: any, b: any) => {
-    return a && b && a.id == b.id;
-  }
 
-  registro : Paciente = <Paciente>{};
-  responsavel: Responsavel = <Responsavel>{};
+  registro: Paciente = {} as Paciente;
+  responsavel: Responsavel = {} as Responsavel;
+  
+  responsaveisEncontrados: Responsavel[] = [];
+  termoBuscaResponsavel: string = '';
+
   constructor(
-    private servico: PacienteService, // Assuming this is a service for handling form data
+    private pacienteService: PacienteService,
     private responsavelService: ResponsavelService,
     private route: ActivatedRoute,
     private router: Router
   ) {}
-  save(): void {
-    this.servico.save(this.registro).subscribe({
-      complete: () => {
-        alert('Responsável cadastrado com sucesso!');
-        
-      }
-    });
+
+  ngOnInit(): void {
+    const id = this.route.snapshot.queryParamMap.get('id');
+    if (id) {
+      this.pacienteService.getById(+id).subscribe({
+        next: (resposta: Paciente) => {
+          this.registro = resposta;
+          if (resposta.responsavelId) {
+            this.responsavelService.getById(resposta.responsavelId).subscribe({
+              next: (resp: Responsavel) => {
+                this.responsavel = resp;
+                this.termoBuscaResponsavel = resp.nome;
+              },
+              error: (err) => {
+                console.error('Erro ao buscar responsável:', err);
+              }
+            });
+          }
+        },
+        error: (err) => {
+          console.error('Erro ao buscar pet para edição:', err);
+        }
+      });
+    }
   }
+
+  buscarResponsavel(): void {
+    if (this.termoBuscaResponsavel.length > 2) {
+      this.responsavelService.get(this.termoBuscaResponsavel).subscribe(
+        (responsaveis: Responsavel[]) => {
+          this.responsaveisEncontrados = responsaveis;
+        }
+      );
+    } else {
+      this.responsaveisEncontrados = [];
+    }
+  }
+
+  selecionarResponsavel(responsavel: Responsavel): void {
+    this.responsavel = responsavel;
+    this.termoBuscaResponsavel = responsavel.nome;
+    this.responsaveisEncontrados = []; // Limpa a lista de resultados
+  }
+
+  save(): void {
+    if (this.responsavel.id) {
+        this.registro.responsavelId = this.responsavel.id;
+        this.pacienteService.save(this.registro).subscribe({
+            complete: () => {
+                alert('Pet cadastrado com sucesso!');
+                this.router.navigate(['/']);
+            },
+            error: (err) => console.error('Erro ao salvar o pet:', err)
+        });
+    } else {
+      this.responsavelService.save(this.responsavel).pipe(
+          switchMap((responsavelSalvo: Responsavel) => {
+              this.registro.responsavelId = responsavelSalvo.id;
+              return this.pacienteService.save(this.registro);
+          })
+      ).subscribe({
+          complete: () => {
+              alert('Pet e Responsável cadastrados com sucesso!');
+              this.router.navigate(['/']);
+          },
+          error: (err) => console.error('Erro ao salvar:', err)
+      });
+    }
+  }
+
   cadastrarAtendimento(): void {
-    this.router.navigate(['/form-atendimento'], { queryParams: { id: this.registro.id } });
+    if (this.registro.id) {
+      this.router.navigate(['/form-atendimento'], { queryParams: { id: this.registro.id } });
+    } else {
+      alert('Por favor, salve o pet antes de cadastrar um atendimento.');
+    }
   }
 }

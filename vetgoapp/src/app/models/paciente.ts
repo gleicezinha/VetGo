@@ -3,8 +3,7 @@ import { Responsavel } from "./responsavel";
 export type Paciente = {
     id: number;
     nome: string;
-    responsavel: Responsavel;
-    telefone: string;
+    responsavelId: number;
     dataNascimento: Date;
     especie: string;
     raca: string;

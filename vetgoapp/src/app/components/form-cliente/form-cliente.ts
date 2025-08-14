@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink, RouterModule } from '@angular/router';
 import { Responsavel } from '../../models/responsavel';
 import { CommonModule } from '@angular/common';
 import { ResponsavelService } from '../../services/responsavel';
@@ -8,7 +8,7 @@ import { ResponsavelService } from '../../services/responsavel';
 @Component({
   standalone: true,
   selector: 'app-form-cliente',
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, RouterModule],
   templateUrl: './form-cliente.html',
   styleUrls: ['./form-cliente.scss']
 })

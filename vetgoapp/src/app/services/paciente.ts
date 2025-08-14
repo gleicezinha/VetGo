@@ -27,6 +27,10 @@ export class PacienteService implements ICrudService<Paciente> {
     return this.http.get<Paciente>(`${this.apiUrl}/${id}`);
   }
 
+  getByResponsavelId(responsavelId: number): Observable<Paciente[]> {
+    return this.http.get<Paciente[]>(`${this.apiUrl}?responsavelId=${responsavelId}`);
+  }
+
   save(objeto: Paciente): Observable<Paciente> {
     let url = this.apiUrl;
     if (objeto.id) {
