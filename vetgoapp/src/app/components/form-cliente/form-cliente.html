@@ -3,46 +3,46 @@
 
   <div class="form-group">
     <label>Nome Completo:</label>
-    <input type="text" [(ngModel)]="registro.nome" name="nome" required>
+    <input type="text" [(ngModel)]="registro.usuario.nomeUsuario" name="nomeUsuario" required>
   </div>
 
   <div class="form-row">
     <div class="form-group">
       <label>Contato:</label>
-      <input type="text" [(ngModel)]="registro.telefone" name="telefone" required>
+      <input type="text" [(ngModel)]="registro.usuario.telefone" name="telefone" required>
     </div>
     <div class="form-group">
       <label>CPF:</label>
-      <input type="text" [(ngModel)]="registro.cpf" name="cpf" required>
+      <input type="text" [(ngModel)]="registro.usuario.cpf" name="cpf" required>
     </div>
   </div>
 
   <div class="form-group">
     <label>Email:</label>
-    <input type="email" [(ngModel)]="registro.email" name="email" required>
+    <input type="email" [(ngModel)]="registro.usuario.email" name="email" required>
   </div>
 
   <div class="form-row">
     <div class="form-group">
       <label>CEP:</label>
-      <input type="text" [(ngModel)]="registro.cep" name="cep">
+      <input type="text" [(ngModel)]="registro.usuario.endereco.cep" name="cep">
     </div>
     <div class="form-group">
       <label>Bairro:</label>
-      <input type="text" [(ngModel)]="registro.bairro" name="bairro">
+      <input type="text" [(ngModel)]="registro.usuario.endereco.bairro" name="bairro">
     </div>
   </div>
 
   <div class="form-row">
     <div class="form-group">
       <label>UF:</label>
-      <select [(ngModel)]="registro.uf" name="uf" required>
+      <select [(ngModel)]="registro.usuario.endereco.estado" name="uf" required>
         <option *ngFor="let uf of ufs" [value]="uf.sigla">{{ uf.nome }}</option>
       </select>
     </div>
     <div class="form-group">
       <label>Complemento:</label>
-      <input type="text" [(ngModel)]="registro.complemento" name="complemento">
+      <input type="text" [(ngModel)]="registro.usuario.endereco.complemento" name="complemento">
     </div>
   </div>
 

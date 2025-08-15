@@ -1,7 +1,7 @@
-import {  Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { ICrudService } from './i-crud-service';
 import { Paciente } from '../models/paciente';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 
 import { Observable } from 'rxjs';
@@ -13,14 +13,16 @@ export class PacienteService implements ICrudService<Paciente> {
   constructor(
     private http: HttpClient
   ) { }
+
   apiUrl: string = environment.API_URL + '/pacientes';
-  
-  get(termoBusca?: string): Observable<Paciente[]>{
-    let url = this.apiUrl + '/consultar-todos';
-    if(termoBusca){
-      url += '?termoBusca=' + termoBusca;
+
+  get(termoBusca?: string): Observable<Paciente[]> {
+    let params = new HttpParams();
+    if (termoBusca) {
+      params = params.set('termoBusca', termoBusca);
     }
-    return this.http.get<Paciente[]>(url);
+
+    return this.http.get<Paciente[]>(this.apiUrl, { params });
   }
 
   getById(id: number): Observable<Paciente> {
@@ -28,21 +30,20 @@ export class PacienteService implements ICrudService<Paciente> {
   }
 
   getByResponsavelId(responsavelId: number): Observable<Paciente[]> {
-    return this.http.get<Paciente[]>(`${this.apiUrl}?responsavelId=${responsavelId}`);
+
+    return this.http.get<Paciente[]>(`${this.apiUrl}/responsavel/${responsavelId}`);
   }
 
   save(objeto: Paciente): Observable<Paciente> {
-    let url = this.apiUrl;
-    if (objeto.id) {
-      url += '/atualizar';
-      return this.http.put<Paciente>(url, objeto);
+
+    if (!objeto.id) {
+      return this.http.post<Paciente>(this.apiUrl, objeto);
     }
     else {
-      url += '/inserir';
-      return this.http.post<Paciente>(url, objeto);
+      return this.http.put<Paciente>(`${this.apiUrl}/${objeto.id}`, objeto);
     }
   }
   delete(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/remover/${id}`);
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }

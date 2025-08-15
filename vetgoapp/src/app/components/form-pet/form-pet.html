@@ -1,65 +1,47 @@
 <form #formPet="ngForm" class="form-container">
-  <h2>Formulário de Pet</h2>
+  <h2>Formulário de Pet</h2>
 
-  <div class="form-row">
-    <div class="form-group">
-      <label for="nomePet">Nome do Pet:</label>
-      <input id="nomePet" name="nomePet" type="text" [(ngModel)]="registro.nome" required />
-    </div>
+  <div class="form-row">
+    <div class="form-group">
+      <label for="nomePet">Nome do Pet:</label>
+      <input id="nomePet" name="nomePet" type="text" [(ngModel)]="registro.nome" required />
+    </div>
 
-    <div class="form-group">
-      <label for="especie">Espécie:</label>
-      <select id="especie" name="especie" [(ngModel)]="registro.especie" required>
-        <option value="Cachorro">Cachorro</option>
-        <option value="Gato">Gato</option>
-        <option value="Outro">Outro</option>
-      </select>
-    </div>
-  </div>
+    <div class="form-group">
+      <label for="especie">Espécie:</label>
+      <select id="especie" name="especie" [(ngModel)]="registro.especie" required>
+        <option value="CACHORRO">Cachorro</option>
+        <option value="GATO">Gato</option>
+      </select>
+    </div>
+  </div>
 
-  <div class="form-row">
-    <div class="form-group">
-      <label for="raca">Raça:</label>
-      <input id="raca" name="raca" type="text" [(ngModel)]="registro.raca" />
-    </div>
-    
-    <div class="form-group">
-      <label for="dataNascimento">Data de Nascimento:</label>
-      <input id="dataNascimento" name="dataNascimento" type="date" [(ngModel)]="registro.dataNascimento" required />
-    </div>
-  </div>
+  <div class="form-row">
+    <div class="form-group">
+      <label for="raca">Raça:</label>
+      <input id="raca" name="raca" type="text" [(ngModel)]="registro.raca" />
+    </div>
+    
+    <div class="form-group">
+      <label for="dataNascimento">Data de Nascimento:</label>
+      <input id="dataNascimento" name="dataNascimento" type="date" [(ngModel)]="registro.dataNascimento" required />
+    </div>
+  </div>
 
-  <div class="form-row">
-    <div class="form-group small">
-      <label for="peso">Peso (kg):</label>
-      <input id="peso" name="peso" type="number" [(ngModel)]="registro.peso" required />
-    </div>
+  <div class="form-row">
+    <div class="form-group small">
+      <label for="sexo">Gênero:</label>
+      <select id="sexo" name="sexo" [(ngModel)]="registro.sexo" required>
+        <option value="M">Macho</option>
+        <option value="F">Fêmea</option>
+      </select>
+    </div>
+  </div>
 
-    <div class="form-group small">
-      <label for="sexo">Gênero:</label>
-      <select id="sexo" name="sexo" [(ngModel)]="registro.sexo" required>
-        <option value="Macho">Macho</option>
-        <option value="Fêmea">Fêmea</option>
-      </select>
-    </div>
-  </div>
+  <hr>
 
-  <hr>
-
-  <h2>Dados do Responsável</h2>
-  <div class="form-row">
-    <div class="form-group">
-      <label for="nomeResponsavel">Nome do Responsável:</label>
-      <input id="nomeResponsavel" name="nomeResponsavel" type="text" [(ngModel)]="responsavel.nome" required />
-    </div>
-
-    <div class="form-group">
-      <label for="contato">Contato:</label>
-      <input id="contato" name="contato" type="text" [(ngModel)]="responsavel.telefone" required />
-    </div>
-</div>
-  <div class="form-buttons">
-    <button type="submit" [disabled]="formPet.invalid" class="btn-salvar" (click)="save()">Salvar</button>
-    <button type="button" class="btn-atendimento" (click)="cadastrarAtendimento()">Cadastrar Atendimento</button>
-  </div>
+  <div class="form-buttons">
+    <button type="submit" [disabled]="formPet.invalid" class="btn-salvar" (click)="save()">Salvar</button>
+    <button type="button" class="btn-atendimento" (click)="cadastrarAtendimento()">Cadastrar Atendimento</button>
+  </div>
 </form>

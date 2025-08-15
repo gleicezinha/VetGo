@@ -1,17 +1,10 @@
-import {Paciente } from './paciente';
-export type Responsavel = {
-    id: number;
-    nome: string;
-    pet: Paciente;
-    cpf: string;
-    email: string;
-    cep: string;
-    telefone: string;
-    endereco: string;
-    numero: string;
-    uf: string;
-    complemento: string;
-    bairro: string;
-    cidade: string;
-    estado: string;
+// src/app/models/responsavel.model.ts
+import { Usuario } from "./usuario";
+
+export interface Responsavel {
+  id: number;
+  usuario?: Usuario;
+  // O relacionamento inverso com o pet não é comum em APIs REST,
+  // mas se sua API o retornar, adicione o campo.
+  // pets?: Paciente[];
 }

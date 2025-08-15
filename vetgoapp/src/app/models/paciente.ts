@@ -1,14 +1,13 @@
 import { Responsavel } from "./responsavel";
 
-export type Paciente = {
+
+export interface Paciente {
     id: number;
     nome: string;
-    responsavelId: number;
-    dataNascimento: Date;
-    especie: string;
+    especie: 'GATO' | 'CACHORRO';
     raca: string;
-    sexo: 'Macho' | 'Fêmea';
-    vida: string;
-    peso: number;
-    
-};
+    sexo: 'M' | 'F';
+    dataNascimento: string; // Tipo string, o front-end precisa convertê-la se for usar como data
+    situacao: 'VIVO' | 'MORTO';
+    responsavel?: Responsavel;
+}

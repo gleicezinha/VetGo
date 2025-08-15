@@ -1,16 +1,12 @@
-export type Usuario = {
-    id: number;
-    nome: string;
-    email: string;
-    senha: string;
-    telefone: string;
-    cpf: string;
-    cep: string;
-    endereco: string;
-    numero: string;
-    bairro: string;
-    cidade: string;
-    estado: string;
-    papel: string;
-    ativo: boolean;
+import { Endereco } from "./endereco.model";
+
+export interface Usuario {
+  id: number;
+  nomeUsuario: string;
+  email: string;
+  telefone: string;
+  cpf: string;
+  ativo: boolean;
+  papel: 'ROLE_PROFISSIONAL' | 'ROLE_RESPONSAVEL' | 'ROLE_ADMIN';
+  endereco: Endereco;
 }

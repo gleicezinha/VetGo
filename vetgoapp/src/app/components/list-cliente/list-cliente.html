@@ -1,48 +1,48 @@
 <div class="clientes-container">
-  <h2 class="title">Todos os Pacientes</h2>
+  <h2 class="title">Todos os Clientes</h2>
 
-  <div class="clientes-layout">
-    <!-- Painel de Busca e Botão -->
-    <section class="painel-controle">
-      <mat-form-field appearance="outline" class="search-field">
-        <button mat-icon-button matPrefix class="search-button">
-          <img src="assets/imagens/search.svg" alt="Buscar" class="menu-icon" />
-        </button>
-        <input
-          matInput
-          placeholder="Buscar Clientes"
-          [(ngModel)]="termoBusca"
-          (input)="buscarComTermo(termoBusca)"
-        />
-      </mat-form-field>
+  <div class="clientes-layout">
+    <!-- Painel de Busca e Botão -->
+    <section class="painel-controle">
+      <mat-form-field appearance="outline" class="search-field">
+        <button mat-icon-button matPrefix class="search-button">
+          <img src="assets/imagens/search.svg" alt="Buscar" class="menu-icon" />
+        </button>
+        <input
+          matInput
+          placeholder="Buscar Clientes"
+          [(ngModel)]="termoBusca"
+          (input)="buscarComTermo(termoBusca)"
+        />
+      </mat-form-field>
 
-      <button mat-raised-button color="primary" class="add-button" (click)="cadastrar()">
-        Cadastrar Cliente
-      </button>
-    </section>
+      <button mat-raised-button color="primary" class="add-button" (click)="cadastrar()">
+        Cadastrar Cliente
+      </button>
+    </section>
 
-    <!-- Lista de Clientes -->
-    <section class="lista-clientes">
-      <article
-        class="cliente-item"
-        *ngFor="let cliente of registrosFiltrados; let i = index"
-      >
-        <span class="cliente-nome">{{ cliente.nome }}</span>
+    <!-- Lista de Clientes -->
+    <section class="lista-clientes">
+      <article
+        class="cliente-item"
+        *ngFor="let cliente of registrosFiltrados; let i = index"
+      >
+        <span class="cliente-nome">{{ cliente.usuario?.nomeUsuario }}</span>
 
-        <a class="ver-prontuario" [routerLink]="['/animais-cliente', cliente.id]">
-          Ver Animais
-        </a>
+        <a class="ver-prontuario" [routerLink]="['/animais-cliente', cliente.id]">
+          Ver Animais
+        </a>
 
-        <div class="acoes-cliente">
-          <button mat-icon-button color="primary" (click)="editar(cliente)">
-            <img src="assets/imagens/edit.svg" alt="Editar" class="menu-icon" />
-          </button>
+        <div class="acoes-cliente">
+          <button mat-icon-button color="primary" (click)="editar(cliente)">
+            <img src="assets/imagens/edit.svg" alt="Editar" class="menu-icon" />
+          </button>
 
-          <button mat-icon-button color="warn" (click)="delete(cliente.id)">
-            <img src="assets/imagens/delete.svg" alt="Excluir" class="menu-icon" />
-          </button>
-        </div>
-      </article>
-    </section>
-  </div>
+          <button mat-icon-button color="warn" (click)="delete(cliente.id)">
+            <img src="assets/imagens/delete.svg" alt="Excluir" class="menu-icon" />
+          </button>
+        </div>
+      </article>
+    </section>
+  </div>
 </div>

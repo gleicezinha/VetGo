@@ -10,65 +10,77 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
-  selector: 'app-list-cliente',
-  imports: [RouterLink,  MatFormFieldModule,
-    MatInputModule, MatMenuModule, CommonModule, FormsModule],
-  templateUrl: './list-cliente.html',
-  styleUrls: ['./list-cliente.scss']
+ standalone: true,
+ selector: 'app-list-cliente',
+ imports: [RouterLink, MatFormFieldModule, MatInputModule, MatMenuModule, CommonModule, FormsModule, RouterModule],
+ templateUrl: './list-cliente.html',
+ styleUrls: ['./list-cliente.scss']
 })
 export class ListClienteComponent implements ICrudList<Responsavel>, OnInit {
-  termoBusca: string = '';
-  constructor(
-    private servico: ResponsavelService,
-    private router: Router
-  ){ }
-  
-  ngOnInit(): void {
-    this.get();
-  }
-  termoBuscaAtual: string | undefined = '';
-  registros: Responsavel[] = [];
-  registrosFiltrados: Responsavel[] = [];
+ termoBusca: string = '';
  
-  get(termoBusca?: string): void {
-    this.termoBuscaAtual = termoBusca;
-    this.servico.get(this.termoBuscaAtual).subscribe({
-      next: (resposta: Responsavel[]) => {
-        this.registros = resposta;
-        this.registrosFiltrados = resposta;
-        console.log(this.registros);
-      },
-      error: (erro) => {
-        console.error('Erro ao buscar pacientes:', erro);
-      },
-    });
-  }
-buscarComTermo(termoBusca: string): void {
-    termoBusca = termoBusca.trim().toLowerCase();
-    this.registrosFiltrados = this.registros.filter(
-      (responsavel) =>
-        responsavel.nome.toLowerCase().startsWith(termoBusca) ||
-        responsavel.email.toLowerCase().startsWith(termoBusca) ||
-        responsavel.telefone.toLowerCase().startsWith(termoBusca)
-    );
-    console.log('Responsáveis filtrados:', this.registrosFiltrados);
-  }
-cadastrar(): void {
-    this.router.navigate(['/form-cliente']);
-  }
-  editar(responsavel: Responsavel): void {
-    this.router.navigate(['/form-cliente'], { queryParams: { id: responsavel.id } });
-  }
-  delete(id: number): void {
-    if(confirm('Deseja realmente EXCLUIR o responsável?')){
-      this.servico.delete(id).subscribe({
-        next: () => {
-          this.get(this.termoBuscaAtual);
-        },
-        error: (erro) => {
-          console.error('Erro ao excluir responsável:', erro);
-        }
-      });
-    }
-  }  
+ // Lista completa de responsáveis (sem filtro)
+ registros: Responsavel[] = [];
+ // Lista de responsáveis exibida na tela (filtrada)
+ registrosFiltrados: Responsavel[] = [];
+
+ constructor(
+  private servico: ResponsavelService,
+  private router: Router
+ ) { }
+
+ ngOnInit(): void {
+  this.get();
+ }
+
+ // Busca todos os responsáveis na API
+ get(): void {
+  this.servico.get().subscribe({
+   next: (resposta: Responsavel[]) => {
+    this.registros = resposta;
+    this.registrosFiltrados = resposta; // Inicialmente, a lista filtrada é a lista completa
+    console.log(this.registros);
+   },
+   error: (erro) => {
+    console.error('Erro ao buscar responsáveis:', erro);
+   },
+  });
+ }
+
+ // Filtra a lista local com base no termo de busca
+ buscarComTermo(termoBusca: string): void {
+  const termo = termoBusca.trim().toLowerCase();
+  
+  this.registrosFiltrados = this.registros.filter((responsavel) => {
+
+ const nomeUsuario = responsavel.usuario?.nomeUsuario?.toLowerCase() || '';
+ const email = responsavel.usuario?.email?.toLowerCase() || '';
+  const telefone = responsavel.usuario?.telefone?.toLowerCase() || '';
+
+ return nomeUsuario.includes(termo) || email.includes(termo) || telefone.includes(termo);
+  });
+ }
+
+ cadastrar(): void {
+   this.router.navigate(['/form-cliente']);
+ }
+
+  editar(responsavel: Responsavel): void {
+     this.router.navigate(['/form-cliente'], { queryParams: { id: responsavel.id } });
+  }
+ 
+  delete(id: number): void {
+    // Substituir 'confirm()' por um modal de confirmação personalizado
+    if (window.confirm('Deseja realmente EXCLUIR o responsável?')) {
+      this.servico.delete(id).subscribe({
+        next: () => {
+          // Atualiza a lista após a exclusão
+          this.get();
+        },
+        error: (erro) => {
+          console.error('Erro ao excluir responsável:', erro);
+        }
+      });
+    }
+  }
 }
