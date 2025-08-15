@@ -1,41 +1,165 @@
-.animais-container {
+.main-layout {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap; // Garante que os painéis se ajustem em telas menores
+}
+
+.left-panel {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.right-panel {
+  flex: 1;
+  background-color: #fff;
   padding: 20px;
-  font-family: Arial, sans-serif;
-  background: #f5f6fa;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
-  h2 {
-    margin-bottom: 15px;
+  h3 {
+    margin-top: 0;
     color: #333;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
   }
 
-  .cards {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
   }
 
-  .card {
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    padding: 15px;
-    width: 250px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  .atendimento-item {
+    background-color: #f0f0f0;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: #555;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+}
 
-    h3 {
-      margin: 0 0 10px;
-      color: #1976d2;
+// Estilo dos cards dos pacientes
+.paciente-card-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%; // Ocupa toda a largura do painel esquerdo
+}
+
+.paciente-card {
+  flex: 1;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.paciente-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+
+  h3 {
+    margin: 0;
+    color: #007bff;
+    font-size: 20px;
+  }
+}
+
+.paciente-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+
+  p {
+    margin: 0;
+    color: #555;
+    font-size: 14px;
+  }
+}
+
+// Estilo para os botões de ação
+.atendimento-actions {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 15px;
+
+  .action-button {
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+
+    &.atestado {
+      background-color: #007bff;
     }
 
-    p {
-      margin: 4px 0;
-      font-size: 14px;
-      color: #555;
+    &.pedir-exame {
+      background-color: #28a745;
+    }
+
+    &.medicamento {
+      background-color: #dc3545;
     }
 
     &:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+      filter: brightness(90%);
     }
+  }
+}
+
+// Estilo para o botão de status de vida
+.status-button {
+  display: inline-block;
+  padding: 8px 12px;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 12px;
+  text-transform: uppercase;
+  color: #fff;
+  align-self: flex-start;
+
+  &.vivo {
+    background-color: #28a745; // Verde para "VIVO"
+  }
+
+  &.morto {
+    background-color: #dc3545; // Vermelho para "MORTO"
+  }
+}
+
+// Mensagens informativas
+.info-message,
+.no-results-message {
+  text-align: center;
+  color: #888;
+  padding: 20px;
+}
+
+.no-results-message {
+  border: 1px dashed #ccc;
+  border-radius: 8px;
+}
+
+@media (max-width: 768px) {
+  .main-layout {
+    flex-direction: column;
+  }
+
+  .paciente-details {
+    grid-template-columns: 1fr;
   }
 }
