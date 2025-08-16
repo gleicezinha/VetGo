@@ -1,3 +1,9 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; 
+}
+
 body {
   padding-top: 64px;
 }
@@ -99,5 +105,65 @@ body {
     &:hover {
       background-color: #c82333;
     }
+  }
+}
+
+/* Adicione este código ao final do seu arquivo styles.scss */
+
+/* Estrutura para manter o rodapé embaixo */
+.app-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 64px); /* Altura da tela menos a altura do header */
+}
+
+.app-content {
+  flex: 1; /* Faz o conteúdo principal ocupar todo o espaço disponível */
+  width: 100%; /* Garante que o conteúdo ocupe toda a largura */
+}
+
+/* Estilo do Rodapé */
+.app-footer {
+  background-color: #005ed9; /* Alterado para o azul do seu header */
+  color: #ffffff; /* Cor do texto (branco) */
+  padding: 1.5rem 2rem;
+  width: 100%;
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap; 
+  gap: 1rem;
+}
+
+.footer-copyright {
+  font-size: 0.9rem;
+}
+
+.footer-links a {
+  color: #ffffff;
+  text-decoration: none;
+  margin-left: 1.5rem;
+  font-size: 0.9rem;
+  transition: color 0.2s ease-in-out;
+}
+
+.footer-links a:hover {
+  text-decoration: underline;
+}
+
+/* Ajuste para telas pequenas */
+@media (max-width: 768px) {
+  .footer-content {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .footer-links a {
+    margin: 0 0.5rem;
   }
 }

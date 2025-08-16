@@ -1,35 +1,56 @@
-<div class="container-principal">
-  <!-- Container da imagem -->
-  <div class="imagem-container">
-    <img src="../../assets/imagens/rayssa.png" alt="Rayssa">
-    <h3>Atendimento Veterinário em Domicílio Rayssa Gabriela</h3>
-    <ul>
-      <li>Consultas no conforto do lar</li>
-      <li>Vacinação cães e gatos</li>
-      <li>Coleta de exames</li>
-      <li>Atestado para viagem</li>
-    </ul>
-  </div>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VetGo - Agendamento</title>
+</head>
+<body>
+    <div class="container">
+        <main class="main-content">
+            <section class="vet-profile">
+                <div class="vet-card">
+                    <div class="vet-photo">
+                        <img src="assets/imagens/rayssa.png" alt="Dra. Rayssa Gabriela">
+                    </div>
+                    <h2 class="vet-name">Dra. Rayssa Gabriela</h2>
+                    <p class="vet-credentials">CRMV/AC 00424</p>
+                </div>
+                <div class="services-grid">
+                    <div class="service-card">
+                        <img src="assets/imagens/estetoscopio.jpg" alt="Consultas" class="service-icon">
+                        <div class="service-title">Consultas no conforto do lar</div>
+                    </div>
+                    <div class="service-card">
+                         <img src="assets/imagens/vacina.png" alt="Vacinação" class="service-icon">
+                        <div class="service-title">Vacinação cães e gatos</div>
+                    </div>
+                    <div class="service-card">
+                         <img src="assets/imagens/coletaexame.png" alt="Exames" class="service-icon">
+                        <div class="service-title">Coleta de exames</div>
+                    </div>
+                    <div class="service-card">
+                         <img src="assets/imagens/atestado.png" alt="Atestado" class="service-icon">
+                        <div class="service-title">Atestado para viagem</div>
+                    </div>
+                </div>
+            </section>
 
-  <!-- Container do calendário -->
-  <div class="calendario-container">
-    <h2>Escolha uma Data</h2>
-    <!-- Pode ser um datepicker ou um calendário customizado -->
-    <input type="date" (change)="selecionarData($event)">
-
-    <div *ngIf="dataSelecionada" class="horarios-container">
-      <h3>Horários disponíveis</h3>
-      <ul>
-        <li *ngFor="let hora of horarios" (click)="selecionarHorario(hora)">
-          {{ hora }}
-        </li>
-      </ul>
+            <section class="booking-section">
+                <h2 class="booking-title">Agende uma consulta</h2>
+                <div class="date-picker">
+                    <input type="date" class="date-input" (change)="selecionarData($event)">
+                </div>
+                <div class="time-slots" *ngIf="dataSelecionada">
+                    <div class="time-slot" *ngFor="let hora of horarios" (click)="selecionarHorario(hora)" [class.selected]="hora === horarioSelecionado">
+                        {{ hora }}
+                    </div>
+                </div>
+                 <button class="book-button" [disabled]="!horarioSelecionado" (click)="confirmarAgendamento()">
+                    Confirmar Agendamento
+                </button>
+            </section>
+        </main>
     </div>
-    
-    <button *ngIf="dataSelecionada" 
-        [disabled]="!horarioSelecionado" 
-        (click)="confirmarAgendamento()" routerLink="/form-atendimento" class="btn-confirmar">
-  Confirmar Agendamento
-</button>
-  </div>
-</div>
+</body>
+</html>

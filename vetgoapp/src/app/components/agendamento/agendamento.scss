@@ -1,77 +1,220 @@
-.container-principal {
-  display: flex;
-  justify-content: space-between;
-  padding: 20px;
+/* Estilos Gerais */
+:host {
+  display: block;
+  background-color: #f8fafc;
 }
 
-.imagem-container {
-  width: 40%;
-  text-align: center;
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: white;
+    min-height: 100vh;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
 
-  img {
+
+.main-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    padding: 3rem 2rem;
+    align-items: start;
+}
+
+/* Seção do Perfil da Veterinária */
+.vet-profile {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.vet-card {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    text-align: center;
+    border: 1px solid #e2e8f0;
+}
+
+
+.vet-photo {
+   
+    margin: 0 auto 1.5rem;
+    max-width: 300px; 
+}
+
+.vet-photo img {
+    
     max-width: 100%;
-    border-radius: 10px;
-  }
-
-  ul {
-    list-style-type: none;
-    padding: 0;
-  }
+    height: auto;
+    object-fit: cover;
+    border-radius: 12px; 
+    display: block;
 }
 
-.calendario-container {
-  width: 55%;
-  text-align: center;
-  border-left: 2px solid #ccc;
-  padding-left: 20px;
 
-  .horarios-container {
-    margin-top: 20px;
 
-    ul {
-      list-style-type: none;
-      padding: 0;
+.vet-name {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 0.5rem;
+}
 
-      li {
-        background-color: #1E3A8A; // azul
-        color: white;
-        margin: 5px 0;
-        padding: 10px;
-        cursor: pointer;
-        border-radius: 5px;
+.vet-credentials {
+    color: #64748b;
+    font-size: 0.9rem;
+}
 
-        &:hover {
-          background-color: #2563EB;
-        }
-      }
-    }
-  }
- button {
-  background-color: #1e90ff;      // azul dodger blue
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  font-size: 16px;
-  font-weight: 600;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+/* Grid de Serviços */
+.services-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
 
-  &:hover {
-    background-color: #187bcd;   // azul mais escuro no hover
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-  }
+.service-card {
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
 
-  &:active {
-    background-color: #135ea3;   // azul ainda mais escuro ao clicar
-    box-shadow: none;
-  }
+.service-card:hover {
+    border-color: #3b82f6;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.15);
+}
 
-  &:disabled {
-    background-color: #8abafc;   // azul clarinho quando desabilitado
+.service-icon {
+    width: 40px;
+    height: 40px;
+    margin: 0 auto 0.5rem; 
+}
+
+.service-title {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #1e293b;
+    line-height: 1.3;
+}
+
+/* Seção de Agendamento */
+.booking-section {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e2e8f0;
+}
+
+.booking-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 2rem;
+}
+
+.date-picker {
+    margin-bottom: 2rem;
+}
+
+.date-input {
+    width: 100%;
+    padding: 1rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 1rem;
+    background: white;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+}
+
+.date-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+}
+
+/* Horários */
+.time-slots {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+}
+
+.time-slot {
+    padding: 0.75rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: white;
+    font-weight: 500;
+}
+
+.time-slot:hover {
+    border-color: #3b82f6;
+    background: #eff6ff;
+}
+
+.time-slot.selected {
+    background: #3b82f6;
+    color: white;
+    border-color: #3b82f6;
+}
+
+/* Botão de Agendar */
+.book-button {
+    width: 100%;
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.book-button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+}
+
+.book-button:disabled {
+    background: #9ca3af;
     cursor: not-allowed;
-    box-shadow: none;
-  }
 }
 
+
+/* Design Responsivo */
+@media (max-width: 768px) {
+    .main-content {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        padding: 2rem 1rem;
+    }
+    .services-grid, .time-slots {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .vet-card,
+    .booking-section {
+        padding: 1.5rem;
+    }
+    .booking-title {
+        font-size: 1.25rem;
+    }
+    .services-grid, .time-slots {
+        grid-template-columns: 1fr;
+    }
 }
