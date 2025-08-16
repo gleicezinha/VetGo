@@ -13,21 +13,23 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "tutor") // O nome da tabela no banco é "tutor"
+@Table(name = "tutor")
 public class Responsavel implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_tutor") // Nome da coluna da chave primária
+    @Column(name = "id_tutor")
     private Long id;
 
-    // Relação Um-para-Um: Um Responsavel está ligado a um único Usuario
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id_usuario", referencedColumnName = "id", unique = true) // Define a FK para a tabela 'usuario'
+    @JoinColumn(name = "id_usuario", referencedColumnName = "id", unique = true)
     private Usuario usuario;
 
-    // Getters e Setters
+    // Construtor vazio para o Jackson
+    public Responsavel() {
+    }
 
+    // Getters e Setters
     public Long getId() {
         return id;
     }

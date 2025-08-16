@@ -15,8 +15,8 @@ public class Endereco implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_endereco") // O nome da coluna no banco de dados continua o mesmo
-    private Long id; // <-- ALTERADO DE idEndereco PARA id
+    @Column(name = "id_endereco")
+    private Long id;
 
     @Column(nullable = false, length = 255)
     private String logradouro;
@@ -39,13 +39,16 @@ public class Endereco implements Serializable {
     @Column(nullable = false, length = 8)
     private String cep;
 
-    // Getters e Setters ATUALIZADOS
+    // Construtor vazio para o Jackson
+    public Endereco() {
+    }
 
-    public Long getId() { // <-- GETTER ATUALIZADO
+    // Getters e Setters
+    public Long getId() {
         return id;
     }
 
-    public void setId(Long id) { // <-- SETTER ATUALIZADO
+    public void setId(Long id) {
         this.id = id;
     }
 
