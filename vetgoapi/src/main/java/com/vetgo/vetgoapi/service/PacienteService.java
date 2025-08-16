@@ -13,7 +13,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Service
-public class PacienteService {
+public class PacienteService implements ICrudService<Paciente> {
 
     private final PacienteRepository pacienteRepository;
     private final ResponsavelRepository responsavelRepository;
@@ -26,50 +26,79 @@ public class PacienteService {
     }
 
     /**
-     * Registra um novo paciente e o associa a um responsável existente.
-     * @param paciente O objeto do paciente a ser salvo.
-     * @param idResponsavel O ID do responsável (tutor).
-     * @return O paciente salvo.
+     * Implementação do método get() da interface ICrudService.
+     * @param termoBusca Termo de busca (não utilizado aqui, retorna todos).
+     * @return Uma lista de todos os pacientes.
      */
-    @Transactional
-    public Paciente registrarNovoPaciente(Paciente paciente, Long idResponsavel) {
-        Responsavel responsavel = responsavelRepository.findById(idResponsavel)
-                .orElseThrow(() -> new ResourceNotFoundException("Responsável (tutor) não encontrado com o ID: " + idResponsavel));
-        
-        paciente.setResponsavel(responsavel);
-        return pacienteRepository.save(paciente);
+    @Override
+    public List<Paciente> get(String termoBusca) {
+        return pacienteRepository.findAll();
     }
-    
+
     /**
-     * Busca um paciente pelo seu ID.
+     * Implementação do método get(id) da interface ICrudService.
      * @param id O ID do paciente.
      * @return O paciente encontrado.
      * @throws ResourceNotFoundException se o paciente não for encontrado.
      */
-    public Paciente buscarPorId(Long id) {
+    @Override
+    public Paciente get(Long id) {
         return pacienteRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Paciente não encontrado com o ID: " + id));
     }
-    
+
     /**
-     * Lista todos os pacientes de um determinado tutor.
-     * @param idResponsavel O ID do responsável (tutor).
-     * @return Uma lista de pacientes.
+     * Implementação do método save() da interface ICrudService.
+     * Este método é flexível para criar um novo ou atualizar um paciente.
+     * Valida a existência de um Responsavel ao criar um novo Paciente.
+     * @param paciente O objeto do paciente a ser salvo.
+     * @return O paciente salvo.
      */
+    @Override
+    @Transactional
+    public Paciente save(Paciente paciente) {
+        if (paciente.getId() == null) {
+            // Lógica para novo paciente: exige que um Responsável esteja associado.
+            Responsavel responsavel = paciente.getResponsavel();
+            if (responsavel == null || responsavel.getId() == null) {
+                 throw new IllegalArgumentException("O paciente deve ter um responsável com ID válido.");
+            }
+            return pacienteRepository.save(paciente);
+        } else {
+            // Lógica para atualizar um paciente existente
+            Paciente pacienteExistente = this.get(paciente.getId());
+            pacienteExistente.setNome(paciente.getNome());
+            pacienteExistente.setEspecie(paciente.getEspecie());
+            pacienteExistente.setRaca(paciente.getRaca());
+            pacienteExistente.setSexo(paciente.getSexo());
+            pacienteExistente.setDataNascimento(paciente.getDataNascimento());
+            pacienteExistente.setSituacao(paciente.getSituacao());
+            return pacienteRepository.save(pacienteExistente);
+        }
+    }
+
+    /**
+     * Implementação do método delete() da interface ICrudService.
+     * @param id O ID do paciente a ser deletado.
+     */
+    @Override
+    @Transactional
+    public void delete(Long id) {
+        if (!pacienteRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Paciente não encontrado com o ID: " + id);
+        }
+        pacienteRepository.deleteById(id);
+    }
+
+    // Mantidos os outros métodos específicos, que não são da interface.
+    
     public List<Paciente> listarPacientesPorTutor(Long idResponsavel) {
         return pacienteRepository.findByResponsavelId(idResponsavel);
     }
 
-    /**
-     * Adiciona uma nova entrada ao histórico clínico de um paciente.
-     * @param pacienteId O ID do paciente.
-     * @param descricao A descrição do evento clínico.
-     * @param observacoes Observações adicionais.
-     * @return A entrada do histórico clínico salva.
-     */
     @Transactional
     public HistoricoClinico adicionarEntradaHistorico(Long pacienteId, String descricao, String observacoes) {
-        Paciente paciente = buscarPorId(pacienteId);
+        Paciente paciente = get(pacienteId);
 
         HistoricoClinico entrada = new HistoricoClinico();
         entrada.setPaciente(paciente);
@@ -80,14 +109,8 @@ public class PacienteService {
         return historicoClinicoRepository.save(entrada);
     }
     
-    /**
-     * Retorna o histórico clínico completo de um paciente, ordenado por data decrescente.
-     * @param pacienteId O ID do paciente.
-     * @return A lista de entradas do histórico.
-     */
     public List<HistoricoClinico> verHistoricoCompleto(Long pacienteId) {
-        // Valida se o paciente existe antes de buscar o histórico
-        buscarPorId(pacienteId); 
+        get(pacienteId); 
         return historicoClinicoRepository.findByPacienteIdOrderByDataDesc(pacienteId);
     }
 }

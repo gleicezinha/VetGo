@@ -42,19 +42,19 @@ public class ResponsavelController {
         return new ResponseEntity<>(novoResponsavel, HttpStatus.CREATED);
     }
     
-    @PostMapping("/login-contato")
-    public ResponseEntity<Responsavel> loginComContato(@RequestBody Usuario usuario) {
-        Optional<Usuario> usuarioExistente = usuarioRepository.findByTelefone(usuario.getTelefone());
-        if (usuarioExistente.isPresent()) {
-            Optional<Responsavel> responsavel = responsavelRepository.findByUsuario(usuarioExistente.get());
-            if (responsavel.isPresent()) {
-                return ResponseEntity.ok(responsavel.get());
-            }
-            throw new BusinessRuleException("Usuário não é um responsável cadastrado.");
-        } else {
-            throw new ResourceNotFoundException("Contato não cadastrado.");
-        }
-    }
+    // @PostMapping("/login-contato")
+    // public ResponseEntity<Responsavel> loginComContato(@RequestBody Usuario usuario) {
+    //     Optional<Usuario> usuarioExistente = usuarioRepository.findByTelefone(usuario.getTelefone());
+    //     if (usuarioExistente.isPresent()) {
+    //         Optional<Responsavel> responsavel = responsavelRepository.findByUsuario(usuarioExistente.get());
+    //         if (responsavel.isPresent()) {
+    //             return ResponseEntity.ok(responsavel.get());
+    //         }
+    //         throw new BusinessRuleException("Usuário não é um responsável cadastrado.");
+    //     } else {
+    //         throw new ResourceNotFoundException("Contato não cadastrado.");
+    //     }
+    // }
 
     @GetMapping
     public ResponseEntity<List<Responsavel>> listarTodosResponsaveis() {

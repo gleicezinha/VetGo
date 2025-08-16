@@ -22,24 +22,24 @@ import { LoginService } from '../../services/login';
   styleUrl: './login.scss'
 })
 export class LoginComponent {
-  telefone: string = ''; // Nova propriedade para o telefone
+
 
   constructor(private loginService: LoginService, private router: Router) { }
 
-  loginComContato(): void {
-    if (this.telefone) {
-      this.loginService.loginComContato(this.telefone).subscribe({
-        next: (response) => {
-          console.log('Login bem-sucedido:', response);
-          // Redireciona o usuário para a página principal após o login
-          this.router.navigate(['/agendamento']);
-        },
-        error: (error) => {
-          alert(error.message);
-        }
-      });
-    } else {
-      alert('Por favor, digite seu número de telefone.');
-    }
-  }
+  // loginComContato(): void {
+  //   if (this.telefone) {
+  //     this.loginService.loginComContato(this.telefone).subscribe({
+  //       next: (response) => {
+  //         console.log('Login bem-sucedido:', response);
+  //         // Redireciona o usuário para a página principal após o login
+  //         this.router.navigate(['/agendamento']);
+  //       },
+  //       error: (error) => {
+  //         alert(error.message);
+  //       }
+  //     });
+  //   } else {
+  //     alert('Por favor, digite seu número de telefone.');
+  //   }
+  // }
 }

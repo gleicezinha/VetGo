@@ -19,7 +19,7 @@
 
   <div class="form-group">
     <label>Email:</label>
-    <input type="email" [(ngModel)]="registro.usuario.email" name="email" required>
+    <input type="email" [(ngModel)]="registro.usuario.email" name="email">
   </div>
 
   <div class="form-row">
@@ -36,7 +36,7 @@
   <div class="form-row">
     <div class="form-group">
       <label>UF:</label>
-      <select [(ngModel)]="registro.usuario.endereco.estado" name="uf" required>
+      <select [(ngModel)]="registro.usuario.endereco.estado" name="uf" >
         <option *ngFor="let uf of ufs" [value]="uf.sigla">{{ uf.nome }}</option>
       </select>
     </div>

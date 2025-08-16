@@ -51,7 +51,7 @@ public class CadastroService {
         validarNovoUsuario(usuario);
 
         // A criptografia de senha deve ser mantida para profissionais.
-        usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
+        // usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
         
         usuarioRepository.save(usuario);
         return profissionalRepository.save(profissional);

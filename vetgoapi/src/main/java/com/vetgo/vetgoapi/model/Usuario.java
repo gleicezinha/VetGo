@@ -67,13 +67,13 @@ public class Usuario implements Serializable {
         this.nomeUsuario = nomeUsuario;
     }
 
-    public String getSenha() {
-        return senha;
-    }
+    // public String getSenha() {
+    //     return senha;
+    // }
 
-    public void setSenha(String senha) {
-        this.senha = senha;
-    }
+    // public void setSenha(String senha) {
+    //     this.senha = senha;
+    // }
 
     public String getEmail() {
         return email;

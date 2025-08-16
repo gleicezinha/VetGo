@@ -91,17 +91,19 @@ export class FormClienteComponent implements OnInit {
     }
   }
 
-  save(): void {
-    this.servico.save(this.registro).subscribe({
-      complete: () => {
-        alert('Responsável cadastrado com sucesso!');
-        this.router.navigate(['/list-cliente']);
-      },
-      error: (err) => {
-        console.error('Erro ao salvar o responsável:', err);
-      }
-    });
-  }
+
+save(): void {
+  // A requisição HTTP `save` deve enviar o objeto 'this.registro'
+  this.servico.save(this.registro).subscribe({
+    complete: () => {
+      alert('Responsável cadastrado com sucesso!');
+      this.router.navigate(['/list-cliente']);
+    },
+    error: (err) => {
+      console.error('Erro ao salvar o responsável:', err);
+    }
+  });
+}
 
   cadastrarpet(): void {
     if (this.registro.id) {

@@ -10,34 +10,47 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/pacientes")
-public class PacienteController {
+public class PacienteController implements ICrudController<Paciente>  {
 
-    private final PacienteService pacienteService;
-
-    public PacienteController(PacienteService pacienteService) {
-        this.pacienteService = pacienteService;
-    }
     
-    // DTO de exemplo:
-    // public record PacienteCadastroDto(String nome, EEspecie especie, String raca, ESexo sexo, LocalDate dataNascimento, ESituacao situacao, Long idResponsavel) {}
+    private final PacienteService servico;
 
-    @PostMapping
-    public ResponseEntity<Paciente> registrarPaciente(@RequestBody Paciente paciente, @RequestParam Long idResponsavel) {
-        // O ideal é receber um DTO que contenha o ID do responsável
-        Paciente novoPaciente = pacienteService.registrarNovoPaciente(paciente, idResponsavel);
-        return new ResponseEntity<>(novoPaciente, HttpStatus.CREATED);
+    public PacienteController(PacienteService servico){
+        this.servico = servico;
     }
 
+    @Override
+    @DeleteMapping("/remover/{id}")
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        servico.delete(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @Override
+    @GetMapping("/consultar-todos")
+    public ResponseEntity<List<Paciente>> get(@RequestParam(required = false) String termoBusca) {
+        List<Paciente> registros = servico.get(termoBusca);
+        return ResponseEntity.ok(registros);
+    }
+
+    @Override
     @GetMapping("/{id}")
-    public ResponseEntity<Paciente> buscarPacientePorId(@PathVariable Long id) {
-        Paciente paciente = pacienteService.buscarPorId(id);
-        return ResponseEntity.ok(paciente);
+    public ResponseEntity<Paciente> get(@PathVariable Long id) {
+        Paciente registro = servico.get(id);
+        return ResponseEntity.ok(registro);
     }
 
-    // Endpoint para buscar todos os pets de um tutor específico. Muito útil!
-    @GetMapping("/por-tutor/{idResponsavel}")
-    public ResponseEntity<List<Paciente>> listarPacientesPorTutor(@PathVariable Long idResponsavel) {
-        List<Paciente> pacientes = pacienteService.listarPacientesPorTutor(idResponsavel);
-        return ResponseEntity.ok(pacientes);
+    @Override
+    @PostMapping("/inserir")
+    public ResponseEntity<Paciente> insert(@RequestBody Paciente objeto) {
+        Paciente registro = servico.save(objeto);
+        return ResponseEntity.ok(registro);
+    }
+
+    @Override
+    @PutMapping("/atualizar")
+    public ResponseEntity<Paciente> update(@RequestBody Paciente objeto) {
+        Paciente registro = servico.save(objeto);
+        return ResponseEntity.ok(registro);
     }
 }
