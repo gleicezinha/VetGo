@@ -33,23 +33,33 @@ export class FormPetComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const id = this.route.snapshot.queryParamMap.get('id');
-    if (id) {
-      this.pacienteService.getById(+id).subscribe({
-        next: (resposta: Paciente) => {
-          this.registro = resposta;
-          // Atribui o responsável recebido da API para o campo 'responsavel' do componente
-          if (resposta.responsavel) {
-            this.responsavel = resposta.responsavel;
-            this.termoBuscaResponsavel = resposta.responsavel.usuario?.nomeUsuario ?? '';
-          }
-        },
-        error: (err) => {
-          console.error('Erro ao buscar pet para edição:', err);
-        }
-      });
-    }
-  }
+    const responsavelId = this.route.snapshot.queryParamMap.get('responsavelId');
+    if (responsavelId) {
+        this.responsavelService.getById(+responsavelId).subscribe({
+            next: (resp: Responsavel) => {
+                this.responsavel = resp;
+                this.registro.responsavel = resp;
+            },
+            error: (err) => console.error('Erro ao buscar responsável:', err)
+        });
+    }
+
+    const id = this.route.snapshot.queryParamMap.get('id');
+    if (id) {
+        this.pacienteService.getById(+id).subscribe({
+            next: (resposta: Paciente) => {
+                this.registro = resposta;
+                if (resposta.responsavel) {
+                    this.responsavel = resposta.responsavel;
+                    this.termoBuscaResponsavel = resposta.responsavel.usuario?.nomeUsuario ?? '';
+                }
+            },
+            error: (err) => {
+                console.error('Erro ao buscar pet para edição:', err);
+            }
+        });
+    }
+}
 
   buscarResponsavel(): void {
     if (this.termoBuscaResponsavel.length > 2) {

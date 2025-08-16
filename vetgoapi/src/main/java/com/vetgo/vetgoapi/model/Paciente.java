@@ -48,7 +48,7 @@ public class Paciente implements Serializable {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private ESituacao situacao;
+    private ESituacao situacao = ESituacao.VIVO; // Adicionado valor padrão
 
     // --- Getters e Setters ---
 

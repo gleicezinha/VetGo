@@ -1,7 +1,10 @@
 package com.vetgo.vetgoapi.controller;
 
 import com.vetgo.vetgoapi.model.Paciente;
+import com.vetgo.vetgoapi.model.Responsavel;
+import com.vetgo.vetgoapi.repository.ResponsavelRepository;
 import com.vetgo.vetgoapi.service.PacienteService;
+import com.vetgo.vetgoapi.service.exception.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,9 +18,11 @@ public class PacienteController implements ICrudController<Paciente>  {
 
     
     private final PacienteService servico;
+    private final ResponsavelRepository responsavelRepository;
 
-    public PacienteController(PacienteService servico){
+    public PacienteController(PacienteService servico, ResponsavelRepository responsavelRepository){
         this.servico = servico;
+        this.responsavelRepository = responsavelRepository;
     }
 
     @Override
@@ -34,7 +39,6 @@ public class PacienteController implements ICrudController<Paciente>  {
         return ResponseEntity.ok(registros);
     }
     
-    // Novo endpoint para listar pacientes por ID de tutor
     @GetMapping("/por-tutor/{idResponsavel}")
     public ResponseEntity<List<Paciente>> listarPacientesPorTutor(@PathVariable Long idResponsavel) {
         List<Paciente> pacientes = servico.listarPacientesPorTutor(idResponsavel);
@@ -48,11 +52,14 @@ public class PacienteController implements ICrudController<Paciente>  {
         return ResponseEntity.ok(registro);
     }
 
-    @Override
-    @PostMapping("/inserir")
-    public ResponseEntity<Paciente> insert(@RequestBody Paciente objeto) {
+    @PostMapping
+    public ResponseEntity<Paciente> insert(@RequestBody Paciente objeto, @RequestParam Long idResponsavel) {
+        Responsavel responsavel = responsavelRepository.findById(idResponsavel)
+            .orElseThrow(() -> new ResourceNotFoundException("Responsável não encontrado com o ID: " + idResponsavel));
+        
+        objeto.setResponsavel(responsavel);
         Paciente registro = servico.save(objeto);
-        return ResponseEntity.ok(registro);
+        return ResponseEntity.status(HttpStatus.CREATED).body(registro);
     }
 
     @Override
