@@ -33,8 +33,9 @@ public class CadastroService {
     public Responsavel cadastrarTutor(Usuario usuario) {
         validarNovoUsuario(usuario);
         
-        // Criptografa a senha antes de salvar
-        usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
+        // A linha abaixo foi removida, pois a senha não é necessária para tutores.
+        // Se ela estiver presente, o erro continuará a ocorrer.
+        // usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
         
         Usuario novoUsuario = usuarioRepository.save(usuario);
 
@@ -49,7 +50,7 @@ public class CadastroService {
         Usuario usuario = profissional.getUsuario();
         validarNovoUsuario(usuario);
 
-        // Criptografa a senha antes de salvar
+        // A criptografia de senha deve ser mantida para profissionais.
         usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
         
         usuarioRepository.save(usuario);
