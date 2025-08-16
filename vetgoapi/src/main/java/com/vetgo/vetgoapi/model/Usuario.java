@@ -42,9 +42,9 @@ public class Usuario implements Serializable {
     @Enumerated(EnumType.STRING)
     private EPapel papel;
     
- 
+    
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "endereco_id_fk", referencedColumnName = "id_endereco")
+    @JoinColumn(name = "endereco_id_fk", referencedColumnName = "id_endereco") // O nome da coluna no banco continua o mesmo
     private Endereco endereco;
     
   
