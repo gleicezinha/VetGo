@@ -68,4 +68,10 @@ export class AnimaisCliente implements OnInit {
   getAtendimentosDePaciente(pacienteId: number): Atendimento[] {
     return this.atendimentosPorPaciente[pacienteId] || [];
   }
+  editarPaciente(paciente: Paciente): void {
+    this.router.navigate(['/form-pet'], { queryParams: { id: paciente.id, responsavelId: this.responsavel.id } });
+  }
+  cadastrarPet(): void {
+    this.router.navigate(['/form-pet'], { queryParams: { responsavelId: this.responsavel.id } });
+  }
 }

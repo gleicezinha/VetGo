@@ -1,6 +1,14 @@
 <div class="main-layout">
   <div class="left-panel">
-    <h2>Animais de {{ responsavel.usuario?.nomeUsuario }}</h2>
+    <div class="header-with-buttons">
+      <h2>Animais de {{ responsavel.usuario?.nomeUsuario }}</h2>
+      <div class="action-buttons-header">
+        <button class="action-button add-pet-button" (click)="cadastrarPet()">Cadastrar Pet</button>
+        <button class="action-button atestado">Atestado</button>
+        <button class="action-button pedir-exame">Pedir Exame</button>
+        <button class="action-button medicamento">Medicamento</button>
+      </div>
+    </div>
 
     <div *ngIf="pacientes.length > 0; else noPacientes">
       <div *ngFor="let paciente of pacientes" class="paciente-card-container">
@@ -12,31 +20,19 @@
             <p>Tipo: {{ paciente.especie }}</p>
             <p>Raça: {{ paciente.raca }}</p>
             <p>Gênero: {{ paciente.sexo }}</p>
-          </div>
-          
-          <div class="atendimentos-paciente">
-            <h4>Atendimentos de {{ paciente.nome }}</h4>
-            <div *ngIf="getAtendimentosDePaciente(paciente.id).length > 0; else noAtendimentosPaciente">
-              <ul>
-                <li *ngFor="let atendimento of getAtendimentosDePaciente(paciente.id)" class="atendimento-item">
-                  Data: {{ atendimento.dataDeAtendimento }}
-                  </li>
-              </ul>
-            </div>
-            <ng-template #noAtendimentosPaciente>
-              <p class="info-message">Nenhum atendimento encontrado para este animal.</p>
-            </ng-template>
-          </div>
-
-          <div class="atendimento-actions">
-            <button class="action-button atestado">Atestado</button>
-            <button class="action-button pedir-exame">Pedir Exame</button>
-            <button class="action-button medicamento">Medicamento</button>
+            <p>Data de Nascimento: {{ paciente.dataNascimento | date: 'dd/MM/yyyy' }}</p>
+            <p>Peso: {{ paciente.peso}} </p>
           </div>
         </div>
-        <span class="status-button" [class.vivo]="paciente.situacao === 'VIVO'" [class.morto]="paciente.situacao === 'MORTO'">
-          {{ paciente.situacao }}
-        </span>
+        
+        <div class="status-and-actions">
+          <span class="status-button" [class.vivo]="paciente.situacao === 'VIVO'" [class.morto]="paciente.situacao === 'MORTO'">
+            {{ paciente.situacao }}
+          </span>
+          <button mat-icon-button color="primary" (click)="editarPaciente(paciente)" class="edit-button">
+            <img src="assets/imagens/edit.svg" alt="Editar" class="menu-icon" />
+          </button>
+        </div>
       </div>
     </div>
     <ng-template #noPacientes>

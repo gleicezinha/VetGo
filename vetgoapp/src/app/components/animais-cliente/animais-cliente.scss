@@ -1,7 +1,18 @@
+/* Variáveis de cores */
+$primary-color: #007bff;
+$success-color: #28a745;
+$danger-color: #dc3545;
+$info-color: #f0f0f0;
+$dark-text: #333;
+$medium-text: #555;
+$light-text: #888;
+$border-light: #eee;
+$box-shadow: rgba(0, 0, 0, 0.1);
+
 .main-layout {
   display: flex;
   gap: 20px;
-  flex-wrap: wrap; // Garante que os painéis se ajustem em telas menores
+  flex-wrap: wrap;
 }
 
 .left-panel {
@@ -16,12 +27,12 @@
   background-color: #fff;
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px $box-shadow;
 
   h3 {
     margin-top: 0;
-    color: #333;
-    border-bottom: 1px solid #eee;
+    color: $dark-text;
+    border-bottom: 1px solid $border-light;
     padding-bottom: 10px;
   }
 
@@ -32,13 +43,58 @@
   }
 
   .atendimento-item {
-    background-color: #f0f0f0;
+    background-color: $info-color;
     padding: 10px;
     border-radius: 4px;
     margin-bottom: 10px;
     font-size: 14px;
-    color: #555;
+    color: $medium-text;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+}
+
+// Estilo para o cabeçalho com botões
+.header-with-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .action-buttons-header {
+    display: flex;
+    gap: 10px;
+  }
+}
+
+// Estilo geral para os botões de ação
+.action-button {
+  color: #fff;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  
+  // Cores aplicadas a botões com classes específicas
+  &.atestado {
+    background-color: $primary-color;
+  }
+  
+  &.pedir-exame {
+    background-color: $success-color;
+  }
+  
+  &.medicamento {
+    background-color: $danger-color;
+  }
+  
+  &.add-pet-button {
+        background-color: orange;
+    color: white;
+  }
+
+  &:hover {
+    filter: brightness(90%);
   }
 }
 
@@ -47,7 +103,8 @@
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  width: 100%; // Ocupa toda a largura do painel esquerdo
+  width: 100%;
+  margin-bottom: 20px;
 }
 
 .paciente-card {
@@ -55,7 +112,7 @@
   background-color: #fff;
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px $box-shadow;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -65,13 +122,13 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid $border-light;
   padding-bottom: 10px;
   margin-bottom: 10px;
 
   h3 {
     margin: 0;
-    color: #007bff;
+    color: $primary-color;
     font-size: 20px;
   }
 }
@@ -83,42 +140,18 @@
 
   p {
     margin: 0;
-    color: #555;
+    color: $medium-text;
     font-size: 14px;
   }
 }
 
-// Estilo para os botões de ação
-.atendimento-actions {
+// Contêiner para o status e o botão de editar
+.status-and-actions {
   display: flex;
-  justify-content: space-around;
-  margin-top: 15px;
-
-  .action-button {
-    color: #fff;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s;
-
-    &.atestado {
-      background-color: #007bff;
-    }
-
-    &.pedir-exame {
-      background-color: #28a745;
-    }
-
-    &.medicamento {
-      background-color: #dc3545;
-    }
-
-    &:hover {
-      filter: brightness(90%);
-    }
-  }
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  align-self: flex-start;
 }
 
 // Estilo para o botão de status de vida
@@ -130,22 +163,51 @@
   font-size: 12px;
   text-transform: uppercase;
   color: #fff;
-  align-self: flex-start;
 
   &.vivo {
-    background-color: #28a745; // Verde para "VIVO"
+    background-color: $success-color;
   }
 
   &.morto {
-    background-color: #dc3545; // Vermelho para "MORTO"
+    background-color: $danger-color;
   }
+}
+
+// Estilos para o botão de editar menor
+.edit-button {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  background-color: transparent; // Fundo transparente por padrão
+  transition: background-color 0.3s;
+}
+
+// Estilos para a imagem (ícone) dentro do botão
+.edit-button .menu-icon {
+  width: 20px;
+  height: 20px;
+  transition: fill 0.3s;
+}
+
+// Estilos quando o mouse está sobre o botão
+.edit-button:hover,
+.edit-button:focus {
+  background-color: $primary-color; // Fundo azul
+}
+
+// Muda a cor do ícone para branco quando o fundo for azul
+.edit-button:hover .menu-icon,
+.edit-button:focus .menu-icon {
+  filter: invert(100%); // Inverte a cor do SVG para branco
 }
 
 // Mensagens informativas
 .info-message,
 .no-results-message {
   text-align: center;
-  color: #888;
+  color: $light-text;
   padding: 20px;
 }
 

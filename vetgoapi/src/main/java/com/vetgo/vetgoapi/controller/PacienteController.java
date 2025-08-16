@@ -13,26 +13,24 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/pacientes")
-@CrossOrigin(origins = "http://localhost:4200") // Certifique-se de que a anotação está presente
-public class PacienteController implements ICrudController<Paciente>  {
+@CrossOrigin(origins = "http://localhost:4200")
+public class PacienteController { // Note que eu removi "implements ICrudController<Paciente>" para evitar conflitos de rota.
+                                  // Se precisar, adicione a interface de volta e adapte as anotações.
 
-    
     private final PacienteService servico;
     private final ResponsavelRepository responsavelRepository;
 
-    public PacienteController(PacienteService servico, ResponsavelRepository responsavelRepository){
+    public PacienteController(PacienteService servico, ResponsavelRepository responsavelRepository) {
         this.servico = servico;
         this.responsavelRepository = responsavelRepository;
     }
 
-    @Override
     @DeleteMapping("/remover/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         servico.delete(id);
         return ResponseEntity.ok().build();
     }
 
-    @Override
     @GetMapping("/consultar-todos")
     public ResponseEntity<List<Paciente>> get(@RequestParam(required = false) String termoBusca) {
         List<Paciente> registros = servico.get(termoBusca);
@@ -45,7 +43,6 @@ public class PacienteController implements ICrudController<Paciente>  {
         return ResponseEntity.ok(pacientes);
     }
 
-    @Override
     @GetMapping("/{id}")
     public ResponseEntity<Paciente> get(@PathVariable Long id) {
         Paciente registro = servico.get(id);
@@ -55,16 +52,25 @@ public class PacienteController implements ICrudController<Paciente>  {
     @PostMapping
     public ResponseEntity<Paciente> insert(@RequestBody Paciente objeto, @RequestParam Long idResponsavel) {
         Responsavel responsavel = responsavelRepository.findById(idResponsavel)
-            .orElseThrow(() -> new ResourceNotFoundException("Responsável não encontrado com o ID: " + idResponsavel));
+                .orElseThrow(() -> new ResourceNotFoundException("Responsável não encontrado com o ID: " + idResponsavel));
         
         objeto.setResponsavel(responsavel);
         Paciente registro = servico.save(objeto);
         return ResponseEntity.status(HttpStatus.CREATED).body(registro);
     }
 
-    @Override
-    @PutMapping("/atualizar")
-    public ResponseEntity<Paciente> update(@RequestBody Paciente objeto) {
+    @PutMapping("/{id}")
+    public ResponseEntity<Paciente> update(@PathVariable Long id, @RequestBody Paciente objeto) {
+        objeto.setId(id);
+        
+        if (objeto.getResponsavel() != null && objeto.getResponsavel().getId() != null) {
+            Responsavel responsavelExistente = responsavelRepository.findById(objeto.getResponsavel().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Responsável não encontrado com o ID: " + objeto.getResponsavel().getId()));
+            objeto.setResponsavel(responsavelExistente);
+        } else {
+            throw new IllegalArgumentException("O ID do responsável não pode ser nulo na atualização.");
+        }
+
         Paciente registro = servico.save(objeto);
         return ResponseEntity.ok(registro);
     }

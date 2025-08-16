@@ -39,6 +39,8 @@ public class Paciente implements Serializable {
 
     private String raca;
 
+    private String peso;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ESexo sexo;
@@ -49,6 +51,7 @@ public class Paciente implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ESituacao situacao = ESituacao.VIVO; // Adicionado valor padrão
+    
 
     // --- Getters e Setters ---
 
@@ -94,6 +97,12 @@ public class Paciente implements Serializable {
 
     public ESexo getSexo() {
         return sexo;
+    }
+    public String getPeso() {
+        return peso;
+    }
+    public void setPeso(String peso) {
+        this.peso = peso;
     }
 
     public void setSexo(ESexo sexo) {
