@@ -18,25 +18,25 @@ public class Endereco implements Serializable {
     @Column(name = "id_endereco")
     private Long id;
 
-    @Column(nullable = false, length = 255)
+    @Column(length = 255)
     private String logradouro;
 
-    @Column(nullable = false, length = 50)
+    @Column(length = 50)
     private String numero;
 
     @Column(length = 100)
     private String complemento;
 
-    @Column(nullable = false, length = 100)
+    @Column(length = 100)
     private String bairro;
 
-    @Column(nullable = false, length = 100)
+    @Column(length = 100)
     private String cidade;
 
-    @Column(nullable = false, length = 2)
+    @Column(length = 2)
     private String estado;
 
-    @Column(nullable = false, length = 8)
+    @Column(length = 8)
     private String cep;
 
     // Construtor vazio para o Jackson

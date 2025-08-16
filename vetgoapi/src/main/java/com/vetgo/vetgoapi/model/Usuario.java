@@ -24,7 +24,8 @@ public class Usuario implements Serializable {
     @Column(nullable = false)
     private String nomeUsuario;
 
-    private String senha;
+    // O campo de senha foi removido.
+    // private String senha;
 
     @Column(nullable = false, unique = true)
     private String email;
@@ -67,6 +68,7 @@ public class Usuario implements Serializable {
         this.nomeUsuario = nomeUsuario;
     }
 
+    // Os métodos getSenha e setSenha foram removidos.
     // public String getSenha() {
     //     return senha;
     // }

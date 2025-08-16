@@ -8,5 +8,5 @@ export interface Usuario {
   cpf: string;
   ativo: boolean;
   papel: 'ROLE_PROFISSIONAL' | 'ROLE_RESPONSAVEL' | 'ROLE_ADMIN';
-  endereco: Endereco;
+  endereco?: Endereco;
 }
