@@ -1,4 +1,4 @@
-<form (ngSubmit)="save()" #formCliente="ngForm" class="form-container">
+<form *ngIf="registro && registro.usuario && registro.usuario.endereco" (ngSubmit)="save()" #formCliente="ngForm" class="form-container">
   <h2>Formulário do Responsável</h2>
 
   <div class="form-group">

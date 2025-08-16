@@ -9,35 +9,35 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ResponsavelService implements ICrudService<Responsavel> {
-  public apiUrl: string = environment.API_URL + '/responsaveis';
+  public apiUrl: string = environment.API_URL + '/api/responsaveis';
 
   constructor(private http: HttpClient) { }
 
+  // GET: /api/responsaveis
   get(termoBusca?: string): Observable<Responsavel[]> {
-    let url = this.apiUrl + '/consultar-todos';
-    if (termoBusca) {
-      url += '?termoBusca=' + termoBusca;
-    }
-    return this.http.get<Responsavel[]>(url);
+    // A busca pode ser implementada no back-end com @RequestParam
+    // Por enquanto, este endpoint busca todos os responsáveis.
+    return this.http.get<Responsavel[]>(this.apiUrl);
   }
 
+  // GET: /api/responsaveis/{id}
   getById(id: number): Observable<Responsavel> {
     return this.http.get<Responsavel>(`${this.apiUrl}/${id}`);
   }
 
+  // POST: /api/responsaveis  ou  PUT: /api/responsaveis/{id}
   save(objeto: Responsavel): Observable<Responsavel> {
-    let url = this.apiUrl;
     if (objeto.id) {
-      url += '/atualizar';
-      return this.http.put<Responsavel>(url, objeto);
+      // Atualiza um responsável existente
+      return this.http.put<Responsavel>(`${this.apiUrl}/${objeto.id}`, objeto);
     } else {
-      url += '/inserir';
-      return this.http.post<Responsavel>(url, objeto);
+      // Cria um novo responsável
+      return this.http.post<Responsavel>(this.apiUrl, objeto);
     }
   }
 
+  // DELETE: /api/responsaveis/{id}
   delete(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/remover/${id}`);
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
-  
 }

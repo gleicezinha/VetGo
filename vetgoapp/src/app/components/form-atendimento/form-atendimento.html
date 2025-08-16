@@ -1,55 +1,13 @@
 <div class="form-container">
   <h2>Formulário de Atendimento</h2>
-
-  <form >
-    <div class="form-row">
-      <div class="form-group">
-        <label for="data">Data</label>
-        <input type="date" [(ngModel)]="registro.dataDeAtendimento" name="dataDeAtendimento" required>
-      </div>
-
-      <div class="form-group">
-        <label for="hora">Hora</label>
-        <input type="time" [(ngModel)]="registro.horarioDeAtendimento" name="horarioDeAtendimento" required>
-      </div>
-    
-
-      <div class="form-group">
-        <label for="tipoDeAtendimento">Tipo de Atendimento:</label>
-        <select id="tipoDeAtendimento" [(ngModel)]="registro.tipoDeAtendimento" name="tipoDeAtendimento">
-          <option *ngFor="let tipo of tiposDeAtendimento" [ngValue]="tipo">
-            {{ tipo }}
-          </option>
-        </select>
-      </div>
-    </div>
-  <div class="form-row">
-    <div class="form-group">
-      <label for="paciente">Paciente:</label>
-      <select id="paciente" [(ngModel)]="registro.paciente" name="paciente" [compareWith]="compararPacientes">
-        <option *ngFor="let paciente of pacientes" [ngValue]="paciente">
-          {{ paciente.nome }}
-        </option>
-      </select>
-    </div>
-
+  <form>
     <div class="form-group">
       <label for="responsavel">Responsável</label>
       <select id="responsavel" [(ngModel)]="registro.responsavel" name="responsavel" [compareWith]="compararResponsaveis">
         <option *ngFor="let responsavel of responsaveis" [ngValue]="responsavel">
-          {{ responsavel.nome }}
+          {{ responsavel.usuario?.nomeUsuario }}
         </option>
       </select>
     </div>
-  </div>
-    <div class="form-group">
-      <label for="observacao">Motivo</label>
-      <textarea id="observacao" [(ngModel)]="registro.observacao" name="observacao"></textarea>
-    </div>
-
-    <div class="form-buttons">
-      <button type="submit" class="btn-salvar" (click)="save()">Salvar</button>
-      <button type="button" id="cancelarBtn" class="btn-cancelar">Cancelar</button>
-    </div>
-  </form>
+    </form>
 </div>

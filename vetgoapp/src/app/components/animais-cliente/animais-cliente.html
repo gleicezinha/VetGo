@@ -1,6 +1,7 @@
-
+<div class="main-layout">
   <div class="left-panel">
-    <!-- Lista de Pacientes do Responsável -->
+    <h2>Animais de {{ responsavel.usuario?.nomeUsuario }}</h2>
+
     <div *ngIf="pacientes.length > 0; else noPacientes">
       <div *ngFor="let paciente of pacientes" class="paciente-card-container">
         <div class="paciente-card">
@@ -18,18 +19,22 @@
             <button class="action-button medicamento">Medicamento</button>
           </div>
         </div>
-        <span class="status-button" [class.vivo]="paciente.situacao === 'VIVO'" [class.morto]="paciente.situacao === 'MORTO'">{{ paciente.situacao }}</span>
+        <span class="status-button" [class.vivo]="paciente.situacao === 'VIVO'" [class.morto]="paciente.situacao === 'MORTO'">
+          {{ paciente.situacao }}
+        </span>
       </div>
     </div>
+    <ng-template #noPacientes>
+      <p class="info-message">Nenhum animal cadastrado para este cliente.</p>
+    </ng-template>
   </div>
-  
+
   <div class="right-panel">
-    <!-- Painel de Atendimentos -->
     <h3>Atendimentos</h3>
-    <div *ngIf="pacientes.length > 0">
+    <div *ngIf="pacientes.length > 0 && getAtendimentosDePaciente(pacientes[0].id).length > 0; else noAtendimentos">
       <ul>
         <li *ngFor="let atendimento of getAtendimentosDePaciente(pacientes[0].id)" class="atendimento-item">
-          Data {{ atendimento.dataDeAtendimento }}
+          Data: {{ atendimento.dataDeAtendimento }}
         </li>
       </ul>
     </div>

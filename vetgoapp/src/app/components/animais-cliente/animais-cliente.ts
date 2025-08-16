@@ -3,7 +3,7 @@ import { Responsavel } from '../../models/responsavel';
 import { Paciente } from '../../models/paciente';
 import { Atendimento } from '../../models/atendimento';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router'; // Removido RouterLink daqui
 import { FormsModule } from '@angular/forms';
 import { ResponsavelService } from '../../services/responsavel';
 import { PacienteService } from '../../services/paciente';
@@ -14,12 +14,12 @@ import { forkJoin, of, Observable } from 'rxjs';
 @Component({
   standalone: true,
   selector: 'app-animais-cliente',
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule], // Corrigido aqui
   templateUrl: './animais-cliente.html',
   styleUrls: ['./animais-cliente.scss']
 })
 export class AnimaisCliente implements OnInit {
-
+  // ... o resto da sua classe continua igual ...
   responsavel: Responsavel = {} as Responsavel;
   pacientes: Paciente[] = [];
   atendimentosPorPaciente: { [key: number]: Atendimento[] } = {};
@@ -33,51 +33,34 @@ export class AnimaisCliente implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    const id = this.route.snapshot.queryParamMap.get('id');
+    const id = this.route.snapshot.paramMap.get('id'); // Use paramMap para rotas como /animais-cliente/:id
 
     if (id) {
       this.responsavelService.getById(+id).pipe(
         switchMap((responsavel: Responsavel) => {
           this.responsavel = responsavel;
-          if (responsavel.id) {
-            return this.pacienteService.getByResponsavelId(responsavel.id);
-          } else {
-            return of([]);
-          }
+          return this.pacienteService.getByResponsavelId(responsavel.id);
         }),
         switchMap((pacientes: Paciente[]) => {
           this.pacientes = pacientes;
           if (pacientes.length === 0) {
-            return of(null);
-          }
-          
-          const atendimentos$: Observable<Atendimento[]>[] = pacientes.map(paciente => {
-            if (paciente.id) {
-              return this.atendimentoService.getByPacienteId(paciente.id);
-            }
             return of([]);
-          });
-
-          return forkJoin(atendimentos$).pipe(
-            switchMap((listasAtendimentos: Atendimento[][]) => {
-                listasAtendimentos.forEach((atendimentos, index) => {
-                    const pacienteId = pacientes[index].id;
-                    if (pacienteId) {
-                        this.atendimentosPorPaciente[pacienteId] = atendimentos;
-                    }
-                });
-                return of(null);
-            })
+          }
+          const atendimentos$: Observable<Atendimento[]>[] = pacientes.map(p =>
+            p.id ? this.atendimentoService.getByPacienteId(p.id) : of([])
           );
+          return forkJoin(atendimentos$);
         })
       ).subscribe({
-        next: () => {
-          console.log('Dados do responsável, pacientes e atendimentos carregados com sucesso.');
-          console.log('Atendimentos por paciente:', this.atendimentosPorPaciente);
+        next: (listasAtendimentos) => {
+          listasAtendimentos.forEach((atendimentos, index) => {
+            const pacienteId = this.pacientes[index].id;
+            if (pacienteId) {
+              this.atendimentosPorPaciente[pacienteId] = atendimentos;
+            }
+          });
         },
-        error: (erro) => {
-          console.error('Erro no fluxo de carregamento de dados:', erro);
-        },
+        error: (erro) => console.error('Erro ao carregar dados:', erro)
       });
     }
   }

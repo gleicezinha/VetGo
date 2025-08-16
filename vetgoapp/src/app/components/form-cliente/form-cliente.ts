@@ -16,12 +16,20 @@ import { Endereco } from '../../models/endereco.model';
 })
 export class FormClienteComponent implements OnInit {
 
-  // Inicializa o objeto com a estrutura completa para evitar erros
+  // A inicialização continua importante para garantir a estrutura ao criar um novo registro.
   registro: Responsavel = {
+    id: 0,
     usuario: {
+      id: 0,
+      nomeUsuario: '',
+      email: '',
+      telefone: '',
+      cpf: '',
+      ativo: true,
+      papel: 'ROLE_RESPONSAVEL',
       endereco: {} as Endereco
     } as Usuario
-  } as Responsavel;
+  };
 
   ufs = [
     { sigla: 'AC', nome: 'Acre' },
@@ -64,15 +72,17 @@ export class FormClienteComponent implements OnInit {
     if (id) {
       this.servico.getById(+id).subscribe({
         next: (resposta: Responsavel) => {
-          // Garante que o objeto 'usuario' e 'endereco' existam na resposta da API
-          // Se a API não retornar, ele usa a estrutura inicializada
-          this.registro = {
-            ...resposta,
-            usuario: {
-              ...resposta.usuario,
-              endereco: resposta.usuario?.endereco || {} as Endereco
-            } as Usuario
-          } as Responsavel;
+          // **LÓGICA DE CORREÇÃO AQUI**
+          // 1. Recebe a resposta da API
+          this.registro = resposta;
+
+          // 2. Garante que as propriedades aninhadas existam
+          if (!this.registro.usuario) {
+            this.registro.usuario = { endereco: {} as Endereco } as Usuario;
+          }
+          if (!this.registro.usuario.endereco) {
+            this.registro.usuario.endereco = {} as Endereco;
+          }
         },
         error: (err) => {
           console.error('Erro ao buscar cliente:', err);
