@@ -14,6 +14,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "pet")
@@ -26,6 +27,7 @@ public class Paciente implements Serializable {
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_tutor", referencedColumnName = "id_tutor", nullable = false)
+    @JsonIgnore // Adicione esta anotação para evitar erros de serialização
     private Responsavel responsavel;
 
     @Column(nullable = false)

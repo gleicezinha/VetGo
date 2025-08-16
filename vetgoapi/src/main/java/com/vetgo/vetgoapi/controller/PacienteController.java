@@ -10,6 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/pacientes")
+@CrossOrigin(origins = "http://localhost:4200") // Certifique-se de que a anotação está presente
 public class PacienteController implements ICrudController<Paciente>  {
 
     
@@ -31,6 +32,13 @@ public class PacienteController implements ICrudController<Paciente>  {
     public ResponseEntity<List<Paciente>> get(@RequestParam(required = false) String termoBusca) {
         List<Paciente> registros = servico.get(termoBusca);
         return ResponseEntity.ok(registros);
+    }
+    
+    // Novo endpoint para listar pacientes por ID de tutor
+    @GetMapping("/por-tutor/{idResponsavel}")
+    public ResponseEntity<List<Paciente>> listarPacientesPorTutor(@PathVariable Long idResponsavel) {
+        List<Paciente> pacientes = servico.listarPacientesPorTutor(idResponsavel);
+        return ResponseEntity.ok(pacientes);
     }
 
     @Override

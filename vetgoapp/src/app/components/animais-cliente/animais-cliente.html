@@ -13,6 +13,21 @@
             <p>Raça: {{ paciente.raca }}</p>
             <p>Gênero: {{ paciente.sexo }}</p>
           </div>
+          
+          <div class="atendimentos-paciente">
+            <h4>Atendimentos de {{ paciente.nome }}</h4>
+            <div *ngIf="getAtendimentosDePaciente(paciente.id).length > 0; else noAtendimentosPaciente">
+              <ul>
+                <li *ngFor="let atendimento of getAtendimentosDePaciente(paciente.id)" class="atendimento-item">
+                  Data: {{ atendimento.dataDeAtendimento }}
+                  </li>
+              </ul>
+            </div>
+            <ng-template #noAtendimentosPaciente>
+              <p class="info-message">Nenhum atendimento encontrado para este animal.</p>
+            </ng-template>
+          </div>
+
           <div class="atendimento-actions">
             <button class="action-button atestado">Atestado</button>
             <button class="action-button pedir-exame">Pedir Exame</button>
@@ -28,15 +43,20 @@
       <p class="info-message">Nenhum animal cadastrado para este cliente.</p>
     </ng-template>
   </div>
-
+  
   <div class="right-panel">
     <h3>Atendimentos</h3>
-    <div *ngIf="pacientes.length > 0 && getAtendimentosDePaciente(pacientes[0].id).length > 0; else noAtendimentos">
-      <ul>
-        <li *ngFor="let atendimento of getAtendimentosDePaciente(pacientes[0].id)" class="atendimento-item">
-          Data: {{ atendimento.dataDeAtendimento }}
-        </li>
-      </ul>
+    <div *ngIf="pacientes.length > 0">
+      <div *ngFor="let paciente of pacientes">
+        <div *ngIf="getAtendimentosDePaciente(paciente.id).length > 0">
+          <h4>Atendimentos de {{paciente.nome}}</h4>
+          <ul>
+            <li *ngFor="let atendimento of getAtendimentosDePaciente(paciente.id)" class="atendimento-item">
+              Data: {{ atendimento.dataDeAtendimento }}
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
     <ng-template #noAtendimentos>
       <p class="info-message">Nenhum atendimento encontrado.</p>

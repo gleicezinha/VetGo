@@ -1,23 +1,22 @@
-clientes-container {
+.clientes-container {
   display: flex;
   flex-direction: column;
-  gap: 20px;
   padding: 20px;
-  background-color: #f5f5f5;
-  height: 100%;
-  box-sizing: border-box;
+  background-color: #f0f2f5; /* Cor de fundo da imagem */
+  min-height: calc(100vh - 64px); /* Ajusta para a altura da tela menos o cabeçalho */
 }
 
 .title {
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin-bottom: 10px;
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 20px;
 }
 
 .content {
   display: flex;
   gap: 20px;
-  flex: 1;
+  flex-wrap: wrap; /* Permite que os painéis se ajustem em telas menores */
 }
 
 .left-panel {
@@ -25,10 +24,8 @@ clientes-container {
   display: flex;
   flex-direction: column;
   gap: 15px;
-  background: #fff;
-  padding: 15px;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  background: #f0f2f5; /* Fundo do painel de controle */
+  padding: 0;
 }
 
 .search-field {
@@ -46,14 +43,32 @@ clientes-container {
 
 .add-button {
   width: 100%;
+  padding: 12px 0;
+  background-color: #1e871e; /* Verde do protótipo */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #146c14; /* Verde mais escuro no hover */
+  }
+
+  &:disabled {
+    background-color: #999;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
 }
 
 .right-panel {
   flex: 1;
-  background: #fff;
-  padding: 15px;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  background: #f0f2f5;
+  padding: 0;
   overflow-y: auto;
 }
 
@@ -67,14 +82,58 @@ clientes-container {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 15px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  transition: background 0.2s ease;
+  padding: 15px 20px;
+  background-color: #fff;
+  border: none; /* Remove a borda para ficar mais suave */
+  border-radius: 8px; /* Arredonda as bordas */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1); /* Adiciona sombra para dar profundidade */
+  transition: all 0.2s ease;
+  margin-bottom: 10px;
 }
 
 .cliente-item:hover {
-  background: #f9f9f9;
+  transform: translateY(-2px); /* Efeito de elevação no hover */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.cliente-nome {
+  flex-grow: 1;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #333;
+  text-transform: capitalize; /* Deixa a primeira letra maiúscula */
+}
+
+.acoes-cliente {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.ver-prontuario {
+  margin: 0 15px;
+  color: #1a73e8; /* Azul mais próximo do protótipo */
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  flex-shrink: 0; /* Evita que o link diminua */
+}
+
+.ver-prontuario:hover {
+  text-decoration: underline;
+}
+
+.acoes-cliente button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: background-color 0.2s ease;
+}
+
+.acoes-cliente button:hover {
+  background-color: #f0f0f0;
 }
 
 .menu-icon {
@@ -82,33 +141,9 @@ clientes-container {
   height: 20px;
 }
 
-.ver-prontuario {
-  margin: 0 10px;
-  color: #1976d2;
-  font-weight: 500;
-  text-decoration: none;
-}
-
-.ver-prontuario:hover {
-  text-decoration: underline;
-}
-.add-button {
-    background-color: #1e871e;
-    color: white;
-
-    &:hover {
-      background-color: #146c14;
-    }
-
-    &:disabled {
-      background-color: #999;
-      cursor: not-allowed;
-    }
-  }
-
 /* Responsivo */
 @media (max-width: 768px) {
-  .content {
+  .clientes-layout {
     flex-direction: column;
   }
 

@@ -8,7 +8,6 @@ import { FormAtendimentoComponent } from './components/form-atendimento/form-ate
 import { AnimaisCliente} from './components/animais-cliente/animais-cliente';
 
 
-
 export const routes: Routes = [
     { path: '', redirectTo: 'agendamento', pathMatch: 'full' },
     { path: 'agendamento', component: AgendamentoComponent },
@@ -17,6 +16,5 @@ export const routes: Routes = [
     { path: 'login', component: LoginComponent },
     { path: 'list-cliente', component: ListClienteComponent },
     { path: 'form-atendimento', component: FormAtendimentoComponent },
-    { path: 'animais-cliente', component: AnimaisCliente }
-
+    { path: 'animais-cliente/:id', component: AnimaisCliente } // Rota corrigida para aceitar um parâmetro de ID
 ];
