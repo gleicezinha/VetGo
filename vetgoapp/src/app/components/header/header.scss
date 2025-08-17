@@ -1,7 +1,8 @@
+
 .app-toolbar {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between; 
   background-color: #0057ff;
   color: #ffffff;
   height: 64px;
@@ -10,149 +11,119 @@
   top: 0;
   left: 0;
   z-index: 1000;
+  padding: 0 16px;
 }
 
-.user-info {
-  position: absolute;
-  right: 16px; 
-  top: 50%; 
-  transform: translateY(-50%); 
+.toolbar-left {
   display: flex;
-  flex-direction: column; 
-  align-items: flex-end; 
-  color: white;
-  font-size: 16px;
-}
-
-.user-name {
-  font-weight: bold; 
-  font-size: 16px;
-}
-
-.user-role {
-  font-size: 12px;
-  color: #cfcfcf; 
-}
-.menu-icon {
-  width: 24px;
-  height: 24px;
-  margin-right: 8px;
+  align-items: center;
 }
 
 .hamburger {
-  position: absolute;
-  left: 16px;
-  top: 50%;
-  transform: translateY(-50%); 
-  z-index: 1100;
+  padding: 15px;
+  cursor: pointer;
+  display: inline-block;
+  background-color: transparent;
+  border: 0;
 }
 
 .hamburger-box {
-  display: flex;
-  justify-content: center;
-  align-items: center;
   width: 40px;
   height: 24px;
+  display: inline-block;
+  position: relative;
 }
 
-.hamburger-inner {
-  background-color: #ffffff; 
-}
-
+.hamburger-inner,
 .hamburger-inner::before,
 .hamburger-inner::after {
-  background-color: #ffffff; 
+  width: 40px;
+  height: 4px;
+  background-color: #fff;
+  border-radius: 4px;
+  position: absolute;
+  transition-property: transform;
+  transition-duration: 0.15s;
+  transition-timing-function: ease;
 }
+.hamburger-inner::before,
+.hamburger-inner::after {
+  content: "";
+  display: block;
+}
+.hamburger-inner::before { top: -10px; }
+.hamburger-inner::after { bottom: -10px; }
 
-.hamburger.is-active .hamburger-inner,
-.hamburger.is-active .hamburger-inner::before,
-.hamburger.is-active .hamburger-inner::after {
-  background-color: #ffffff; 
-}
 
 .app-title {
   display: flex;
   align-items: center;
-  font-size: 45px;
+  font-size: 24px;
   font-weight: bold;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
-.app-title mat-icon {
+.logo {
+  height: 40px;
+  width: auto;
   margin-right: 8px;
-  color: #ffffff;
 }
+
 
 .side-menu {
   position: fixed;
-  top: 64px;
-  left: -500px; 
-  width: 250px;
-  height: calc(100vh - 64px); 
-  background-color: #0057ff; 
-  color: #ffffff;
-  padding: 16px;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
-  transition: left 0.3s ease; 
-  z-index: 1100; 
+  top: 64px; 
+  left: -300px; 
+  width: 280px;
+  height: calc(100% - 64px);
+  background: linear-gradient(180deg, #0057ff, #0043c7); /* Gradiente sutil */
+  box-shadow: 4px 0px 15px rgba(0, 0, 0, 0.2);
+  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 999;
+
+  
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; 
+  padding: 1rem 0;
 }
 
 .side-menu.open {
   left: 0; 
 }
 
-.app-content {
-  margin-top: 64px; 
-  z-index: 1000;
-}
-
-.menu-item.mdc-button.mat-mdc-button {
-  color: #ffffff !important;
-  font-weight: bold; 
-}
-::ng-deep .mat-icon.mat-icon-no-color {
-  color: #ffffff !important; 
-}
-
-
 .menu-item {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  width: 100%;
-  padding: 12px;
-  margin-bottom: 16px;
+  width: calc(100% - 2rem);
+  margin: 0.5rem 1rem;
+  padding: 1rem;
   border-radius: 8px;
-  background-color: #6a8cff; 
-  color: #ffffff;
-  font-size: 16px;
-  font-weight: bold;
-  text-transform: none;
-  transition: background-color 0.3s ease;
+  color: #ffffff !important;
+  font-size: 1rem;
+  font-weight: 500;
+  text-align: left;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
 }
 
-.menu-item mat-icon {
-  margin-right: 12px;
-  color: #ffffff; 
-}
-
-::ng-deep .mat-mdc-button-persistent-ripple {
-  color: #ffffff !important; 
-}
 .menu-item:hover {
-  background-color: #02359c; 
-}
-.logo {
-  width: 65px; 
-  height: 60px;
-  margin-right: 8px; 
-  vertical-align: middle; 
+  background-color: rgba(255, 255, 255, 0.1); 
 }
 
-.app-content {
-  margin-top: 64px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: calc(100vh - 64px);
-  background-color: #ffffff;
+.menu-icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 16px;
+  filter: invert(1); 
+  vertical-align: middle;
+}
+
+.menu-rodape {
+  border-top: 1px solid rgba(255, 255, 255, 0.2); 
 }
