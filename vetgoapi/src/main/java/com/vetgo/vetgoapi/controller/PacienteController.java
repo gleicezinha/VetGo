@@ -56,20 +56,29 @@ public class PacienteController {
         Paciente registro = servico.save(objeto);
         return ResponseEntity.status(HttpStatus.CREATED).body(registro);
     }
+    @PutMapping("/{id}")
+        public ResponseEntity<Paciente> update(@PathVariable Long id, @RequestBody Paciente objeto) {
+            // 1. Busca o paciente existente no banco de dados.
+            Paciente pacienteExistente = servico.get(id); // Usa o método get do service, que lança exceção se não encontrar
+            
+            // 2. Atualiza apenas os campos do paciente com os dados da requisição.
+            pacienteExistente.setNome(objeto.getNome());
+            pacienteExistente.setEspecie(objeto.getEspecie());
+            pacienteExistente.setRaca(objeto.getRaca());
+            pacienteExistente.setPeso(objeto.getPeso());
+            pacienteExistente.setSexo(objeto.getSexo());
+            pacienteExistente.setDataNascimento(objeto.getDataNascimento());
+            pacienteExistente.setSituacao(objeto.getSituacao());
 
-    @PutMapping("/{id}") // ⬅️ CORREÇÃO: URL alinhada com o front-end
-    public ResponseEntity<Paciente> update(@PathVariable Long id, @RequestBody Paciente objeto) {
-        objeto.setId(id);
-        
-        if (objeto.getResponsavel() != null && objeto.getResponsavel().getId() != null) {
-            Responsavel responsavelExistente = responsavelRepository.findById(objeto.getResponsavel().getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Responsável não encontrado com o ID: " + objeto.getResponsavel().getId()));
-            objeto.setResponsavel(responsavelExistente);
-        } else {
-            throw new IllegalArgumentException("O ID do responsável não pode ser nulo na atualização.");
+            // 3. Se um novo responsável for enviado com um ID válido, atualiza a referência. Caso contrário, mantém a existente.
+            if (objeto.getResponsavel() != null && objeto.getResponsavel().getId() != null) {
+                Responsavel novoResponsavel = responsavelRepository.findById(objeto.getResponsavel().getId())
+                        .orElseThrow(() -> new ResourceNotFoundException("Responsável não encontrado com o ID: " + objeto.getResponsavel().getId()));
+                pacienteExistente.setResponsavel(novoResponsavel);
+            }
+
+            // 4. Salva o paciente atualizado no banco de dados.
+            Paciente registro = servico.save(pacienteExistente);
+            return ResponseEntity.ok(registro);
         }
-
-        Paciente registro = servico.save(objeto);
-        return ResponseEntity.ok(registro);
     }
-}

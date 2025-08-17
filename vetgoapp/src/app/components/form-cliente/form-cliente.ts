@@ -92,26 +92,37 @@ export class FormClienteComponent implements OnInit {
   }
 
 
-save(): void {
-  // A requisição HTTP `save` deve enviar o objeto 'this.registro'
-  this.servico.save(this.registro).subscribe({
-    complete: () => {
-      alert('Responsável cadastrado com sucesso!');
-      this.router.navigate(['/list-cliente']);
-    },
-    error: (err) => {
-      console.error('Erro ao salvar o responsável:', err);
-    }
-  });
-}
-
+  save(): void {
+    // A requisição HTTP `save` deve enviar o objeto 'this.registro'
+    this.servico.save(this.registro).subscribe({
+      complete: () => {
+        alert('Responsável cadastrado com sucesso!');
+        this.router.navigate(['/list-cliente']);
+      },
+      error: (err) => {
+        console.error('Erro ao salvar o responsável:', err);
+      }
+    });
+  } 
   cadastrarpet(): void {
-    if (this.registro.id) {
-      this.router.navigate(['/form-pet'], {
-        queryParams: { responsavelId: this.registro.id }
-      });
-    } else {
-      alert('Por favor, salve o responsável antes de cadastrar um pet.');
-    }
+    console.log('Dados do responsável antes de salvar:', this.registro);
+
+    this.servico.save(this.registro).subscribe({
+      next: (responsavelSalvo: Responsavel) => {
+        console.log('Responsável salvo com sucesso:', responsavelSalvo);
+
+        if (responsavelSalvo.id) {
+          alert('Responsável salvo com sucesso! Redirecionando para cadastro de Pet.');
+          this.router.navigate(['/form-pet'], {
+            queryParams: { responsavelId: responsavelSalvo.id }
+          });
+        }
+      },
+      error: (err) => {
+        console.error('Erro detalhado ao salvar o responsável:', err);
+        // Exibe um alerta mais claro com a mensagem de erro da API
+        alert(`Erro ao salvar o responsável: ${err.message || 'Erro desconhecido'}`);
+      }
+    });
   }
 }

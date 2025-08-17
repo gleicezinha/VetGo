@@ -76,48 +76,33 @@ export class FormPetComponent implements OnInit {
     this.termoBuscaResponsavel = responsavel.usuario?.nomeUsuario ?? ''; 
     this.responsaveisEncontrados = [];
   }
-
-  save(): void {
-    // ⬅️ CORREÇÃO PRINCIPAL: Atribui o responsável ao registro
-    this.registro.responsavel = this.responsavel;
-    
-    // Verifique se o objeto Paciente a ser salvo tem um ID válido.
+save(): void {
+    // ...
     if (this.registro.id) {
       this.pacienteService.save(this.registro).subscribe({
         complete: () => {
           alert('Pet atualizado com sucesso!');
-          this.router.navigate(['/animais-cliente'], { queryParams: { id: this.responsavel.id } });
+          // Altere esta linha
+          this.router.navigate(['/animais-cliente', this.responsavel.id]);
         },
-        error: (err) => console.error('Erro ao salvar o pet:', err)
+        // ...
       });
     } else {
-      // Lógica para criar um novo pet
+      // ...
       if (this.responsavel.id) {
         this.pacienteService.save(this.registro).subscribe({
           complete: () => {
             alert('Pet cadastrado com sucesso!');
-            this.router.navigate(['/animais-cliente'], { queryParams: { id: this.responsavel.id } });
+            // Altere esta linha
+            this.router.navigate(['/animais-cliente', this.responsavel.id]);
           },
-          error: (err) => console.error('Erro ao salvar o pet:', err)
-        });
-      } else {
-        // Lógica para criar um novo pet e um novo responsável
-        this.responsavelService.save(this.responsavel).pipe(
-          switchMap((responsavelSalvo: Responsavel) => {
-            this.responsavel = responsavelSalvo;
-            this.registro.responsavel = this.responsavel;
-            return this.pacienteService.save(this.registro);
-          })
-        ).subscribe({
-          complete: () => {
-            alert('Pet e Responsável cadastrados com sucesso!');
-            this.router.navigate(['/']);
-          },
-          error: (err) => console.error('Erro ao salvar:', err)
+          // ...
         });
       }
+      // ...
     }
   }
+
 
   cancel(): void {
     if (this.registro.responsavel?.id) {

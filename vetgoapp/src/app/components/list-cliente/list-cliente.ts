@@ -8,79 +8,114 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { PacienteService } from '../../services/paciente';
+import { forkJoin, of } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import { Paciente } from '../../models/paciente';
+import { Endereco } from '../../models/endereco.model';
 
 @Component({
- standalone: true,
- selector: 'app-list-cliente',
- imports: [RouterLink, MatFormFieldModule, MatInputModule, MatMenuModule, CommonModule, FormsModule, RouterModule],
- templateUrl: './list-cliente.html',
- styleUrls: ['./list-cliente.scss']
+  standalone: true,
+  selector: 'app-list-cliente',
+  imports: [RouterLink, MatFormFieldModule, MatInputModule, MatMenuModule, CommonModule, FormsModule, RouterModule],
+  templateUrl: './list-cliente.html',
+  styleUrls: ['./list-cliente.scss']
 })
 export class ListClienteComponent implements ICrudList<Responsavel>, OnInit {
- termoBusca: string = '';
- 
- // Lista completa de responsáveis (sem filtro)
- registros: Responsavel[] = [];
- // Lista de responsáveis exibida na tela (filtrada)
- registrosFiltrados: Responsavel[] = [];
+  termoBusca: string = '';
 
- constructor(
-  private servico: ResponsavelService,
-  private router: Router
- ) { }
+  registros: Responsavel[] = [];
+  registrosFiltrados: Responsavel[] = [];
+  pacientesPorResponsavel: { [key: number]: Paciente[] } = {};
 
- ngOnInit(): void {
-  this.get();
- }
+  constructor(
+    private servico: ResponsavelService,
+    private pacienteService: PacienteService,
+    private router: Router
+  ) { }
 
- // Busca todos os responsáveis na API
- get(): void {
-  this.servico.get().subscribe({
-   next: (resposta: Responsavel[]) => {
-    this.registros = resposta;
-    this.registrosFiltrados = resposta; // Inicialmente, a lista filtrada é a lista completa
-    console.log(this.registros);
-   },
-   error: (erro) => {
-    console.error('Erro ao buscar responsáveis:', erro);
-   },
-  });
- }
+  ngOnInit(): void {
+    this.get();
+  }
 
- // Filtra a lista local com base no termo de busca
- buscarComTermo(termoBusca: string): void {
-  const termo = termoBusca.trim().toLowerCase();
-  
-  this.registrosFiltrados = this.registros.filter((responsavel) => {
+  get(): void {
+    this.servico.get().pipe(
+      switchMap((responsaveis: Responsavel[]) => {
+        this.registros = responsaveis;
+        this.registrosFiltrados = responsaveis;
 
- const nomeUsuario = responsavel.usuario?.nomeUsuario?.toLowerCase() || '';
- const email = responsavel.usuario?.email?.toLowerCase() || '';
-  const telefone = responsavel.usuario?.telefone?.toLowerCase() || '';
+        const pacienteCalls = responsaveis.map(resp =>
+          resp.id ? this.pacienteService.getByResponsavelId(resp.id) : of([])
+        );
 
- return nomeUsuario.includes(termo) || email.includes(termo) || telefone.includes(termo);
-  });
- }
+        if (pacienteCalls.length === 0) {
+          return of([]);
+        }
 
- cadastrar(): void {
-   this.router.navigate(['/form-cliente']);
- }
+        return forkJoin(pacienteCalls);
+      })
+    ).subscribe({
+      next: (pacientesList: Paciente[][]) => {
+        pacientesList.forEach((pacientes, index) => {
+          const responsavelId = this.registros[index].id;
+          if (responsavelId) {
+            this.pacientesPorResponsavel[responsavelId] = pacientes;
+          }
+        });
+      },
+      error: (erro) => {
+        console.error('Erro ao buscar dados:', erro);
+      },
+    });
+  }
 
-  editar(responsavel: Responsavel): void {
-     this.router.navigate(['/form-cliente'], { queryParams: { id: responsavel.id } });
-  }
- 
-  delete(id: number): void {
-    // Substituir 'confirm()' por um modal de confirmação personalizado
-    if (window.confirm('Deseja realmente EXCLUIR o responsável?')) {
-      this.servico.delete(id).subscribe({
-        next: () => {
-          // Atualiza a lista após a exclusão
-          this.get();
-        },
-        error: (erro) => {
-          console.error('Erro ao excluir responsável:', erro);
-        }
-      });
-    }
-  }
+  getPetNames(responsavelId: number): string {
+    const pets = this.pacientesPorResponsavel[responsavelId];
+    return pets && pets.length > 0
+      ? pets.map(p => p.nome).join(', ')
+      : 'Nenhum pet';
+  }
+
+  formatAddress(endereco: Endereco | undefined): string {
+    if (!endereco) {
+      return 'Endereço não disponível';
+    }
+    const { logradouro, numero, bairro, cidade, estado } = endereco;
+    const partes = [logradouro, numero, bairro, cidade, estado].filter(p => !!p);
+    return partes.length > 0 ? partes.join(', ') : 'Endereço não disponível';
+  }
+
+  buscarComTermo(termoBusca: string): void {
+    const termo = termoBusca.trim().toLowerCase();
+
+    this.registrosFiltrados = this.registros.filter((responsavel) => {
+      const nomeUsuario = responsavel.usuario?.nomeUsuario?.toLowerCase() || '';
+      const telefone = responsavel.usuario?.telefone?.toLowerCase() || '';
+      const email = responsavel.usuario?.email?.toLowerCase() || '';
+
+      return nomeUsuario.includes(termo) || telefone.includes(termo) || email.includes(termo);
+    });
+  }
+
+  cadastrar(): void {
+    this.router.navigate(['/form-cliente']);
+  }
+
+  editar(responsavel: Responsavel): void {
+    this.router.navigate(['/form-cliente'], { queryParams: { id: responsavel.id } });
+  }
+
+  delete(id: number): void {
+    if (window.confirm('Deseja realmente EXCLUIR o responsável?')) {
+      this.servico.delete(id).subscribe({
+        next: () => {
+          this.get();
+        },
+        error: (erro) => {
+          console.error('Erro ao excluir responsável:', erro);
+          alert('Erro ao excluir responsável: ' + (erro.message || 'Erro desconhecido'));
+        }
+      });
+    }
+  }
 }

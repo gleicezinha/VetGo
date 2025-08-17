@@ -25,10 +25,8 @@
         <tr>
           <th>Nome</th>
           <th>Telefone</th>
-          <th>E-mail</th>
-          <th>Pet</th>
-          <th>Última Visita</th>
-          <th>Status</th>
+          <th>Pets</th>
+          <th>Endereço</th>
           <th>Ações</th>
         </tr>
       </thead>
@@ -36,14 +34,8 @@
         <tr *ngFor="let cliente of registrosFiltrados">
           <td>{{ cliente.usuario?.nomeUsuario }}</td>
           <td>{{ cliente.usuario?.telefone }}</td>
-          <td>{{ cliente.usuario?.email }}</td>
-          <td>Billy (det)</td>
-          <td>29/03/2024</td>
-          <td>
-            <span class="status" [ngClass]="{'status-ativo': cliente.usuario?.ativo, 'status-inativo': !cliente.usuario?.ativo}">
-              {{ cliente.usuario?.ativo ? 'Ativo' : 'Inativo' }}
-            </span>
-          </td>
+          <td>{{ getPetNames(cliente.id) }}</td>
+          <td>{{ formatAddress(cliente.usuario?.endereco) }}</td>
           <td class="actions-cell">
              <button class="action-button" [matMenuTriggerFor]="menu">
               <img src="assets/imagens/list_alt.svg" alt="Ações">
