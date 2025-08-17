@@ -26,11 +26,17 @@
         </div>
         
         <div class="status-and-actions">
-          <span class="status-button" [class.vivo]="paciente.situacao === 'VIVO'" [class.morto]="paciente.situacao === 'MORTO'">
-            {{ paciente.situacao }}
-          </span>
+            <span class="status-button" 
+                    [class.vivo]="paciente.situacao === 'VIVO'" 
+                    [class.morto]="paciente.situacao === 'MORTO'"
+                    (click)="toggleSituacao(paciente)">
+                {{ situacaoPaciente(paciente) }}
+              </span>
           <button mat-icon-button color="primary" (click)="editarPaciente(paciente)" class="edit-button">
             <img src="assets/imagens/edit.svg" alt="Editar" class="menu-icon" />
+          </button>
+          <button mat-icon-button color="warn" (click)="excluirPaciente(paciente)" class="edit-button">
+            <img src="assets/imagens/delete.svg" alt="Excluir" class="menu-icon" />
           </button>
         </div>
       </div>

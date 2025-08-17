@@ -19,7 +19,6 @@ import { forkJoin, of, Observable } from 'rxjs';
   styleUrls: ['./animais-cliente.scss']
 })
 export class AnimaisCliente implements OnInit {
-  // ... o resto da sua classe continua igual ...
   responsavel: Responsavel = {} as Responsavel;
   pacientes: Paciente[] = [];
   atendimentosPorPaciente: { [key: number]: Atendimento[] } = {};
@@ -33,7 +32,7 @@ export class AnimaisCliente implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    const id = this.route.snapshot.paramMap.get('id'); // Use paramMap para rotas como /animais-cliente/:id
+    const id = this.route.snapshot.paramMap.get('id');
 
     if (id) {
       this.responsavelService.getById(+id).pipe(
@@ -68,10 +67,46 @@ export class AnimaisCliente implements OnInit {
   getAtendimentosDePaciente(pacienteId: number): Atendimento[] {
     return this.atendimentosPorPaciente[pacienteId] || [];
   }
+  
   editarPaciente(paciente: Paciente): void {
     this.router.navigate(['/form-pet'], { queryParams: { id: paciente.id, responsavelId: this.responsavel.id } });
   }
+
   cadastrarPet(): void {
     this.router.navigate(['/form-pet'], { queryParams: { responsavelId: this.responsavel.id } });
+  }
+
+  situacaoPaciente(paciente: Paciente): string {
+    return paciente.situacao === 'VIVO' ? 'Vivo' : 'Morto';
+  }
+
+  toggleSituacao(paciente: Paciente): void {
+    if (paciente.situacao === 'VIVO') {
+      paciente.situacao = 'MORTO';
+    } else {
+      paciente.situacao = 'VIVO';
+    }
+    // Opcional: Chame o serviço para atualizar a situação no backend
+    // this.pacienteService.update(paciente).subscribe();
+  }
+
+  podeExcluir(paciente: Paciente): boolean {
+    return paciente.situacao === 'MORTO';
+  }
+
+  excluirPaciente(paciente: Paciente): void {
+    if (this.podeExcluir(paciente)) {
+      if (confirm(`Tem certeza que deseja excluir o paciente ${paciente.nome}?`)) {
+        this.pacienteService.delete(paciente.id).subscribe({
+          next: () => {
+            console.log('Paciente excluído com sucesso!');
+          },
+          complete: () => {
+            this.pacientes = this.pacientes.filter(p => p.id !== paciente.id);
+          },
+          error: (erro) => console.error('Erro ao excluir o paciente:', erro)
+        });
+      }
+    }
   }
 }

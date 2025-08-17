@@ -1,5 +1,4 @@
 package com.vetgo.vetgoapi.controller;
-
 import com.vetgo.vetgoapi.model.Paciente;
 import com.vetgo.vetgoapi.model.Responsavel;
 import com.vetgo.vetgoapi.repository.ResponsavelRepository;
@@ -13,9 +12,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/pacientes")
-@CrossOrigin(origins = "http://localhost:4200")
-public class PacienteController { // Note que eu removi "implements ICrudController<Paciente>" para evitar conflitos de rota.
-                                  // Se precisar, adicione a interface de volta e adapte as anotações.
+@CrossOrigin(origins = "http://localhost:4200") // ⬅️ ANOTAÇÃO DE CORS ADICIONADA/CORRIGIDA
+public class PacienteController {
 
     private final PacienteService servico;
     private final ResponsavelRepository responsavelRepository;
@@ -25,7 +23,7 @@ public class PacienteController { // Note que eu removi "implements ICrudControl
         this.responsavelRepository = responsavelRepository;
     }
 
-    @DeleteMapping("/remover/{id}")
+    @DeleteMapping("/{id}") // ⬅️ CORREÇÃO: URL alinhada com o front-end
     public ResponseEntity<?> delete(@PathVariable Long id) {
         servico.delete(id);
         return ResponseEntity.ok().build();
@@ -59,7 +57,7 @@ public class PacienteController { // Note que eu removi "implements ICrudControl
         return ResponseEntity.status(HttpStatus.CREATED).body(registro);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id}") // ⬅️ CORREÇÃO: URL alinhada com o front-end
     public ResponseEntity<Paciente> update(@PathVariable Long id, @RequestBody Paciente objeto) {
         objeto.setId(id);
         
