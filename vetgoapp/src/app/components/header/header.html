@@ -12,33 +12,32 @@
 </mat-toolbar>
 
 <div class="side-menu" [class.open]="menuOpen">
-  <button mat-button [matMenuTriggerFor]="configMenu">
-    Configurações
-  </button>
-  <mat-menu #configMenu="matMenu">
-    <button mat-menu-item [routerLink]="'/usuario'">
-      <img src="assets/imagens/person.svg" alt="Usuário" class="menu-icon" />
-      Usuário
-    </button>
-  </mat-menu>
+    <div class="menu-links-principais">
+        <button mat-button class="menu-item" [routerLink]="'/agendamento'">
+            <img src="assets/imagens/medical_services.svg" alt="agendamento" class="menu-icon" />
+            Agendamento
+        </button>
 
-  <button mat-button class="menu-item" [routerLink]="'/agendamento'">
-    <img src="assets/imagens/medical_services.svg" alt="agendamento" class="menu-icon" />
-    Agendamento
-  </button>
+        <button mat-button class="menu-item" [routerLink]="'/list-cliente'">
+            <img src="assets/imagens/star.svg" alt="Clientes" class="menu-icon" />
+            Clientes
+        </button>
 
-  <button mat-button class="menu-item" [routerLink]="'/list-cliente'">
-    <img src="assets/imagens/star.svg" alt="Especialidades" class="menu-icon" />
-    Clientes
-  </button>
+        <button mat-button class="menu-item" [routerLink]="'/form-cliente'">
+            <img src="assets/imagens/assignment.svg" alt="Formulário Cliente" class="menu-icon" />
+            Formulário Cliente
+        </button>
 
-  <button mat-button class="menu-item" [routerLink]="'/form-cliente'">
-    <img src="assets/imagens/assignment.svg" alt="form-cliente" class="menu-icon" />
-    Formulário Cliente
-  </button>
+        <button mat-button class="menu-item" [routerLink]="'/calendario'">
+            <img src="assets/imagens/list_alt.svg" alt="Calendário" class="menu-icon" />
+            Calendário
+        </button>
+    </div>
 
-  <button mat-button class="menu-item" [routerLink]="'/calendario'">
-    <img src="assets/imagens/list_alt.svg" alt="Calendario" class="menu-icon" />
-    Calendário
-  </button>
+    <div class="menu-rodape">
+        <button mat-button class="menu-item" [routerLink]="'/usuario'">
+            <img src="assets/imagens/eng.png" alt="Configurações" class="menu-icon" />
+            Configurações
+        </button>
+    </div>
 </div>
