@@ -46,6 +46,8 @@ select {
     border-radius: 6px;
     font-size: 1rem;
     transition: border-color 0.3s;
+    /* Ajuste para que os selects fiquem do tamanho do conteúdo */
+    width: auto;
 }
 
 input:focus,
