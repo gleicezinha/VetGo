@@ -1,48 +1,35 @@
-<div class="clientes-container">
-  <h2 class="title">Todos os Clientes</h2>
-
-  <div class="clientes-layout">
-    <!-- Painel de Busca e Botão -->
-    <section class="painel-controle">
-      <mat-form-field appearance="outline" class="search-field">
-        <button mat-icon-button matPrefix class="search-button">
-          <img src="assets/imagens/search.svg" alt="Buscar" class="menu-icon" />
-        </button>
-        <input
-          matInput
-          placeholder="Buscar Clientes"
-          [(ngModel)]="termoBusca"
-          (input)="buscarComTermo(termoBusca)"
-        />
-      </mat-form-field>
-
-      <button mat-raised-button color="primary" class="add-button" (click)="cadastrar()">
-        Cadastrar Cliente
-      </button>
-    </section>
-
-    <!-- Lista de Clientes -->
-    <section class="lista-clientes">
-      <article
-        class="cliente-item"
-        *ngFor="let cliente of registrosFiltrados; let i = index"
-      >
-        <span class="cliente-nome">{{ cliente.usuario?.nomeUsuario }}</span>
-
-        <a class="ver-prontuario" [routerLink]="['/animais-cliente', cliente.id]">
-          Ver Animais
-        </a>
-
-        <div class="acoes-cliente">
-          <button mat-icon-button color="primary" (click)="editar(cliente)">
-            <img src="assets/imagens/edit.svg" alt="Editar" class="menu-icon" />
-          </button>
-
-          <button mat-icon-button color="warn" (click)="delete(cliente.id)">
-            <img src="assets/imagens/delete.svg" alt="Excluir" class="menu-icon" />
-          </button>
-        </div>
-      </article>
-    </section>
-  </div>
+<div class="main-layout">
+  <div class="search-and-add">
+    <div class="header-with-buttons">
+      <h2>Lista de Clientes</h2>
+    </div>
+    <div class="panel-actions">
+      <div class="search-input-container">
+        <img src ="assets/imagens/search.svg" alt="Buscar" class="search-icon" />
+        <input type="text" placeholder="Buscar clientes..." [(ngModel)]="termoBusca" (input)="buscarComTermo(termoBusca)">
+      </div>
+      <div class="add-button-container">
+        <button class="add-cliente-button" routerLink="/form-cliente">Cadastrar</button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="right-panel">
+    <div class="list-cliente">
+      <div class="cliente-item" *ngFor="let cliente of registros">
+        <div class="cliente-info">
+          <span class="cliente-nome">{{ cliente.usuario?.nomeUsuario }}</span>
+        </div>
+        <div class="acoes-cliente">
+          <a class="ver-prontuario" [routerLink]="['/animais-cliente']" [queryParams]="{ id: cliente.id }">Ver Animais</a>
+          <button class="edit-button">
+            <img src="assets/imagens/edit.svg" alt="Editar" class="menu-icon" />
+          </button>
+          <button class="delete-button">
+            <img src="assets/imagens/delete.svg" alt="Excluir" class="menu-icon" />
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
