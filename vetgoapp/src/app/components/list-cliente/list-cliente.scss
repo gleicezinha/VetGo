@@ -1,153 +1,162 @@
-.clientes-container {
+/* Variáveis de Cor e Estilo */
+:host {
+  --primary-color: #0057ff;
+  --success-color: #10b981;
+  --success-bg-color: #ecfdf5;
+  --danger-color: #6b7280;
+  --danger-bg-color: #f3f4f6;
+  --border-color: #e5e7eb;
+  --text-color-dark: #1f2937;
+  --text-color-light: #6b7280;
+  --background-color: #f9fafb;
+}
+
+/* Container Principal da Página */
+.page-container {
+  padding: 2rem;
+  background-color: var(--background-color);
+}
+
+.page-header {
+  margin-bottom: 1.5rem;
+}
+
+.page-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--text-color-dark);
+}
+
+/* Card Branco do Conteúdo */
+.content-card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+}
+
+/* Barra de Ferramentas (Busca e Botão) */
+.toolbar {
   display: flex;
-  flex-direction: column;
-  padding: 20px;
-  background-color: #f0f2f5; /* Cor de fundo da imagem */
-  min-height: calc(100vh - 64px); /* Ajusta para a altura da tela menos o cabeçalho */
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
-.title {
-  font-size: 1.8rem;
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 20px;
-}
-
-.content {
+.search-container {
   display: flex;
-  gap: 20px;
-  flex-wrap: wrap; /* Permite que os painéis se ajustem em telas menores */
+  align-items: center;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  min-width: 250px;
 }
 
-.left-panel {
-  flex: 0 0 280px;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  background: #f0f2f5; /* Fundo do painel de controle */
-  padding: 0;
-}
-
-.search-field {
-  width: 100%;
-}
-
-.search-button img {
+.search-icon {
   width: 20px;
   height: 20px;
+  margin-right: 0.5rem;
+  opacity: 0.5;
 }
 
-.add-button-container {
-  text-align: center;
+.search-input {
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  width: 100%;
+  background: transparent;
 }
 
 .add-button {
-  width: 100%;
-  padding: 12px 0;
-  background-color: #1e871e; /* Verde do protótipo */
+  background-color: var(--success-color);
   color: white;
+  font-weight: 600;
   border: none;
   border-radius: 8px;
-  font-weight: bold;
-  font-size: 16px;
+  padding: 0.6rem 1.2rem;
   cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  transition: background-color 0.3s ease;
+  transition: background-color 0.2s ease;
 
   &:hover {
-    background-color: #146c14; /* Verde mais escuro no hover */
-  }
-
-  &:disabled {
-    background-color: #999;
-    cursor: not-allowed;
-    box-shadow: none;
+    background-color: #059669;
   }
 }
 
-.right-panel {
-  flex: 1;
-  background: #f0f2f5;
-  padding: 0;
-  overflow-y: auto;
+/* Tabela de Clientes */
+.clients-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th, td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  thead th {
+    color: var(--text-color-light);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  tbody td {
+    color: var(--text-color-dark);
+    font-weight: 500;
+  }
+
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
 }
 
-.list-cliente {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+/* Badges de Status */
+.status {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 0.8rem;
 }
 
-.cliente-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 15px 20px;
-  background-color: #fff;
-  border: none; /* Remove a borda para ficar mais suave */
-  border-radius: 8px; /* Arredonda as bordas */
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1); /* Adiciona sombra para dar profundidade */
-  transition: all 0.2s ease;
-  margin-bottom: 10px;
+.status-ativo {
+  color: var(--success-color);
+  background-color: var(--success-bg-color);
 }
 
-.cliente-item:hover {
-  transform: translateY(-2px); /* Efeito de elevação no hover */
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+.status-inativo {
+  color: var(--danger-color);
+  background-color: var(--danger-bg-color);
 }
 
-.cliente-nome {
-  flex-grow: 1;
-  font-size: 1.1rem;
-  font-weight: 500;
-  color: #333;
-  text-transform: capitalize; /* Deixa a primeira letra maiúscula */
+/* Célula de Ações */
+.actions-cell {
+  text-align: right;
 }
 
-.acoes-cliente {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.ver-prontuario {
-  margin: 0 15px;
-  color: #1a73e8; /* Azul mais próximo do protótipo */
-  font-weight: 500;
-  text-decoration: none;
-  cursor: pointer;
-  flex-shrink: 0; /* Evita que o link diminua */
-}
-
-.ver-prontuario:hover {
-  text-decoration: underline;
-}
-
-.acoes-cliente button {
+.action-button {
   background: transparent;
   border: none;
   cursor: pointer;
-  padding: 8px;
+  padding: 0.5rem;
   border-radius: 50%;
-  transition: background-color 0.2s ease;
+
+  img {
+    width: 20px;
+    height: 20px;
+    display: block;
+  }
+
+  &:hover {
+    background-color: #f3f4f6;
+  }
 }
 
-.acoes-cliente button:hover {
-  background-color: #f0f0f0;
-}
-
+/* Ícones dentro do menu de ações */
 .menu-icon {
-  width: 20px;
-  height: 20px;
-}
-
-/* Responsivo */
-@media (max-width: 768px) {
-  .clientes-layout {
-    flex-direction: column;
-  }
-
-  .left-panel {
-    flex: 1;
-  }
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+  opacity: 0.7;
 }

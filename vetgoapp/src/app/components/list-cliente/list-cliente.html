@@ -1,48 +1,70 @@
-<div class="clientes-container">
-  <h2 class="title">Todos os Clientes</h2>
+<div class="page-container">
+  <header class="page-header">
+    <h1 class="page-title">Todos os Clientes</h1>
+  </header>
 
-  <div class="clientes-layout">
-    <!-- Painel de Busca e Botão -->
-    <section class="painel-controle">
-      <mat-form-field appearance="outline" class="search-field">
-        <button mat-icon-button matPrefix class="search-button">
-          <img src="assets/imagens/search.svg" alt="Buscar" class="menu-icon" />
-        </button>
-        <input
-          matInput
-          placeholder="Buscar Clientes"
-          [(ngModel)]="termoBusca"
-          (input)="buscarComTermo(termoBusca)"
-        />
-      </mat-form-field>
+  <div class="content-card">
+    <div class="toolbar">
+      <div class="search-container">
+        <img src="assets/imagens/search.svg" alt="Pesquisar" class="search-icon" />
+        <input 
+          type="text" 
+          class="search-input" 
+          placeholder="Pesquisar"
+          [(ngModel)]="termoBusca"
+          (input)="buscarComTermo(termoBusca)"
+        />
+      </div>
+      <button class="add-button" (click)="cadastrar()">
+        Cadastrar Cliente
+      </button>
+    </div>
 
-      <button mat-raised-button color="primary" class="add-button" (click)="cadastrar()">
-        Cadastrar Cliente
-      </button>
-    </section>
-
-    <!-- Lista de Clientes -->
-    <section class="lista-clientes">
-      <article
-        class="cliente-item"
-        *ngFor="let cliente of registrosFiltrados; let i = index"
-      >
-        <span class="cliente-nome">{{ cliente.usuario?.nomeUsuario }}</span>
-
-        <a class="ver-prontuario" [routerLink]="['/animais-cliente', cliente.id]">
-          Ver Animais
-        </a>
-
-        <div class="acoes-cliente">
-          <button mat-icon-button color="primary" (click)="editar(cliente)">
-            <img src="assets/imagens/edit.svg" alt="Editar" class="menu-icon" />
-          </button>
-
-          <button mat-icon-button color="warn" (click)="delete(cliente.id)">
-            <img src="assets/imagens/delete.svg" alt="Excluir" class="menu-icon" />
-          </button>
-        </div>
-      </article>
-    </section>
-  </div>
+    <table class="clients-table">
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>Telefone</th>
+          <th>E-mail</th>
+          <th>Pet</th>
+          <th>Última Visita</th>
+          <th>Status</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let cliente of registrosFiltrados">
+          <td>{{ cliente.usuario?.nomeUsuario }}</td>
+          <td>{{ cliente.usuario?.telefone }}</td>
+          <td>{{ cliente.usuario?.email }}</td>
+          <td>Billy (det)</td>
+          <td>29/03/2024</td>
+          <td>
+            <span class="status" [ngClass]="{'status-ativo': cliente.usuario?.ativo, 'status-inativo': !cliente.usuario?.ativo}">
+              {{ cliente.usuario?.ativo ? 'Ativo' : 'Inativo' }}
+            </span>
+          </td>
+          <td class="actions-cell">
+             <button class="action-button" [matMenuTriggerFor]="menu">
+              <img src="assets/imagens/list_alt.svg" alt="Ações">
+            </button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="editar(cliente)">
+                <img src="assets/imagens/edit.svg" alt="Editar" class="menu-icon">
+                <span>Editar</span>
+              </button>
+              <button mat-menu-item (click)="delete(cliente.id)">
+                <img src="assets/imagens/delete.svg" alt="Excluir" class="menu-icon">
+                <span>Excluir</span>
+              </button>
+              <button mat-menu-item [routerLink]="['/animais-cliente', cliente.id]">
+                <img src="assets/imagens/pet.svg" alt="Ver Animais" class="menu-icon">
+                <span>Ver Animais</span>
+              </button>
+            </mat-menu>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
