@@ -204,6 +204,32 @@ $box-shadow: rgba(0, 0, 0, 0.1);
   filter: invert(100%); // Inverte a cor do SVG para branco
 }
 
+
+.delete-button {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  background-color: transparent;
+  transition: background-color 0.3s;
+
+  .menu-icon {
+    width: 20px;
+    height: 20px;
+    transition: fill 0.3s;
+  }
+
+  &:hover,
+  &:focus {
+    background-color: #dc3545; /* Fundo vermelho no hover */
+
+    .menu-icon {
+      filter: invert(100%); /* Ícone branco no hover */
+    }
+  }
+}
+
 // Mensagens informativas
 .info-message,
 .no-results-message {
