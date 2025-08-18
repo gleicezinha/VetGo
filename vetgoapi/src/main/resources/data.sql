@@ -1,7 +1,7 @@
 INSERT INTO endereco (id_endereco, logradouro, numero, complemento, bairro, cidade, estado, cep) VALUES
 (1, 'Rua das Flores', '123', 'Apto 101', 'Centro', 'São Paulo', 'SP', '01000000'),
 (2, 'Avenida Brasil', '456', 'Casa', 'Jardins', 'Rio de Janeiro', 'RJ', '20000000'),
-(3, 'Rua da Tecnologia', '789', NULL, 'Liberdade', 'Belo Horizonte', 'MG', '30000000');
+(3, 'Rua da Tecnologia', '789', NULL, 'Liberdade', 'Belo Horizonte', 'MG', '30000000'),
 (4, 'Rua da Floresta', '500', NULL, 'Centro', 'Rio Branco', 'AC', '69900000'),
 (5, 'Travessa das Águas', '10', 'Casa', 'Bairro do Lago', 'Cruzeiro do Sul', 'AC', '69980000');
 
