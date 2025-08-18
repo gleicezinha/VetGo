@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import com.vetgo.vetgoapi.model.Responsavel;
 import com.vetgo.vetgoapi.model.Usuario;
@@ -21,6 +22,7 @@ import com.vetgo.vetgoapi.repository.UsuarioRepository;
 import com.vetgo.vetgoapi.service.CadastroService;
 import com.vetgo.vetgoapi.service.exception.BusinessRuleException;
 import com.vetgo.vetgoapi.service.exception.ResourceNotFoundException;
+import com.vetgo.vetgoapi.service.ResponsavelService;
 
 @RestController
 @RequestMapping("/api/responsaveis")
@@ -29,11 +31,13 @@ public class ResponsavelController {
     private final CadastroService cadastroService;
     private final ResponsavelRepository responsavelRepository;
     private final UsuarioRepository usuarioRepository;
+    private final ResponsavelService responsavelService;
 
-    public ResponsavelController(CadastroService cadastroService, ResponsavelRepository responsavelRepository, UsuarioRepository usuarioRepository) {
+    public ResponsavelController(CadastroService cadastroService, ResponsavelRepository responsavelRepository, UsuarioRepository usuarioRepository, ResponsavelService responsavelService) {
         this.cadastroService = cadastroService;
         this.responsavelRepository = responsavelRepository;
         this.usuarioRepository = usuarioRepository;
+        this.responsavelService = responsavelService;
     }
 
     @PostMapping
@@ -42,19 +46,15 @@ public class ResponsavelController {
         return new ResponseEntity<>(novoResponsavel, HttpStatus.CREATED);
     }
     
-    // @PostMapping("/login-contato")
-    // public ResponseEntity<Responsavel> loginComContato(@RequestBody Usuario usuario) {
-    //     Optional<Usuario> usuarioExistente = usuarioRepository.findByTelefone(usuario.getTelefone());
-    //     if (usuarioExistente.isPresent()) {
-    //         Optional<Responsavel> responsavel = responsavelRepository.findByUsuario(usuarioExistente.get());
-    //         if (responsavel.isPresent()) {
-    //             return ResponseEntity.ok(responsavel.get());
-    //         }
-    //         throw new BusinessRuleException("Usuário não é um responsável cadastrado.");
-    //     } else {
-    //         throw new ResourceNotFoundException("Contato não cadastrado.");
-    //     }
-    // }
+    @PostMapping("/login-contato")
+    public ResponseEntity<Responsavel> loginComContato(@RequestBody Usuario usuario) {
+        Optional<Responsavel> responsavel = responsavelService.getByTelefone(usuario.getTelefone());
+        if (responsavel.isPresent()) {
+            return ResponseEntity.ok(responsavel.get());
+        } else {
+            throw new ResourceNotFoundException("Contato não cadastrado.");
+        }
+    }
 
     @GetMapping
     public ResponseEntity<List<Responsavel>> listarTodosResponsaveis() {
