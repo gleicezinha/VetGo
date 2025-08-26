@@ -1,7 +1,7 @@
 /* Variáveis de Cor e Estilo */
 :host {
-  --primary-color: #0057ff;
-  --success-color: #10b981;
+  --primary-color: #0055ff;
+  --success-color: #087853;
   --success-bg-color: #ecfdf5;
   --danger-color: #6b7280;
   --danger-bg-color: #f3f4f6;
@@ -80,7 +80,7 @@
   transition: background-color 0.2s ease;
 
   &:hover {
-    background-color: #059669;
+    background-color: #5cc213;
   }
 }
 

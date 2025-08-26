@@ -1,6 +1,6 @@
 /* Variáveis de cores */
-$primary-color: #007bff;
-$success-color: #28a745;
+$primary-color: #0961be;
+$success-color: #087853;
 $danger-color: #dc3545;
 $info-color: #f0f0f0;
 $dark-text: #333;
@@ -84,13 +84,13 @@ $box-shadow: rgba(0, 0, 0, 0.1);
   &.pedir-exame {
     background-color: $success-color;
   }
-  
+
   &.medicamento {
     background-color: $danger-color;
   }
   
   &.add-pet-button {
-        background-color: orange;
+        background-color: #c04b20;
     color: white;
   }
 
