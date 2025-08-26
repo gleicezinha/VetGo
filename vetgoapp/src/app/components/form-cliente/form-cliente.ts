@@ -16,7 +16,6 @@ import { Endereco } from '../../models/endereco.model';
 })
 export class FormClienteComponent implements OnInit {
 
-  // A inicialização continua importante para garantir a estrutura ao criar um novo registro.
   registro: Responsavel = {
     id: 0,
     usuario: {
@@ -27,8 +26,16 @@ export class FormClienteComponent implements OnInit {
       cpf: '',
       ativo: true,
       papel: 'ROLE_RESPONSAVEL',
-      endereco: {} as Endereco
-    } as Usuario
+      endereco: {
+        logradouro: '',
+        numero: '',
+        complemento: '',
+        bairro: '',
+        cidade: '',
+        estado: '',
+        cep: ''
+      }
+    }
   };
 
   ufs = [
@@ -72,11 +79,8 @@ export class FormClienteComponent implements OnInit {
     if (id) {
       this.servico.getById(+id).subscribe({
         next: (resposta: Responsavel) => {
-          // **LÓGICA DE CORREÇÃO AQUI**
-          // 1. Recebe a resposta da API
           this.registro = resposta;
 
-          // 2. Garante que as propriedades aninhadas existam
           if (!this.registro.usuario) {
             this.registro.usuario = { endereco: {} as Endereco } as Usuario;
           }
@@ -93,7 +97,6 @@ export class FormClienteComponent implements OnInit {
 
 
   save(): void {
-    // A requisição HTTP `save` deve enviar o objeto 'this.registro'
     this.servico.save(this.registro).subscribe({
       complete: () => {
         alert('Responsável cadastrado com sucesso!');
@@ -103,7 +106,7 @@ export class FormClienteComponent implements OnInit {
         console.error('Erro ao salvar o responsável:', err);
       }
     });
-  } 
+  }
   cadastrarpet(): void {
     console.log('Dados do responsável antes de salvar:', this.registro);
 
@@ -120,7 +123,6 @@ export class FormClienteComponent implements OnInit {
       },
       error: (err) => {
         console.error('Erro detalhado ao salvar o responsável:', err);
-        // Exibe um alerta mais claro com a mensagem de erro da API
         alert(`Erro ao salvar o responsável: ${err.message || 'Erro desconhecido'}`);
       }
     });
