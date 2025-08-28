@@ -1,13 +1,69 @@
 <div class="form-container">
   <h2>Formulário de Atendimento</h2>
-  <form>
+  <form #formAtendimento="ngForm" (ngSubmit)="save()">
+    
     <div class="form-group">
       <label for="responsavel">Responsável</label>
-      <select id="responsavel" [(ngModel)]="registro.responsavel" name="responsavel" [compareWith]="compararResponsaveis">
-        <option *ngFor="let responsavel of responsaveis" [ngValue]="responsavel">
-          {{ responsavel.usuario?.nomeUsuario }}
+      <select id="responsavel" 
+              name="responsavel" 
+              [ngModel]="responsavelSelecionado"
+              (ngModelChange)="onResponsavelChange($event)"
+              [compareWith]="compararResponsaveis"
+              [disabled]="!!route.snapshot.queryParamMap.get('responsavelId')"
+              required>
+        <option *ngIf="!responsavelSelecionado" [ngValue]="undefined">Selecione um responsável</option>
+        <option *ngFor="let resp of responsaveis" [ngValue]="resp">
+          {{ resp.usuario?.nomeUsuario }}
         </option>
       </select>
     </div>
-    </form>
+
+    <div class="form-group" *ngIf="responsavelSelecionado || pacientesDoResponsavel.length > 0">
+      <label for="paciente">Paciente (Pet)</label>
+      <select id="paciente" 
+              name="paciente" 
+              [ngModel]="pacienteSelecionado"
+              (ngModelChange)="onPacienteChange($event)"
+              [compareWith]="compararPacientes"
+              [disabled]="!!route.snapshot.queryParamMap.get('pacienteId')"
+              required>
+        <option *ngIf="!pacienteSelecionado" [ngValue]="undefined">Selecione um pet</option>
+        <option *ngFor="let pet of pacientesDoResponsavel" [ngValue]="pet">
+          {{ pet.nome }}
+        </option>
+      </select>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="profissional">Profissional</label>
+        <select id="profissional" name="profissional" [(ngModel)]="registro.profissional" required>
+          <option *ngFor="let prof of profissionais" [ngValue]="prof">{{ prof.usuario?.nomeUsuario }}</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="tipo">Tipo de Atendimento</label>
+        <select id="tipo" name="tipo" [(ngModel)]="registro.tipoDeAtendimento" required>
+          <option *ngFor="let tipo of tiposDeAtendimento" [ngValue]="tipo">{{ tipo }}</option>
+        </select>
+      </div>
+    </div>
+    
+    <div class="form-row">
+      <div class="form-group">
+        <label for="data">Data do Atendimento</label>
+        <input type="datetime-local" id="data" name="data" [(ngModel)]="registro.dataHoraAtendimento" required>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="observacao">Observações</label>
+      <textarea id="observacao" name="observacao" [(ngModel)]="registro.observacao" rows="4"></textarea>
+    </div>
+
+    <div class="form-buttons">
+      <button type="submit" [disabled]="formAtendimento.invalid" class="btn-salvar">Salvar</button>
+      <button type="button" class="btn-cancelar" [routerLink]="['/list-cliente']">Cancelar</button>
+    </div>
+  </form>
 </div>

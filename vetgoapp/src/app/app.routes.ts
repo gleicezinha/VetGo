@@ -15,6 +15,7 @@ export const routes: Routes = [
     { path: 'form-pet', component: FormPetComponent },
     { path: 'login', component: LoginComponent },
     { path: 'list-cliente', component: ListClienteComponent },
+    // Rota atualizada para o formulário de atendimento
     { path: 'form-atendimento', component: FormAtendimentoComponent },
-    { path: 'animais-cliente/:id', component: AnimaisCliente } // Rota corrigida para aceitar um parâmetro de ID
+    { path: 'animais-cliente/:id', component: AnimaisCliente } 
 ];

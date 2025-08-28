@@ -1,16 +1,20 @@
 package com.vetgo.vetgoapi.controller;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.vetgo.vetgoapi.controller.dto.AgendamentoRequestDTO;
 import com.vetgo.vetgoapi.model.Atendimento;
+import com.vetgo.vetgoapi.repository.AtendimentoRepository;
 import com.vetgo.vetgoapi.service.AtendimentoService;
 
 @RestController
@@ -18,19 +22,16 @@ import com.vetgo.vetgoapi.service.AtendimentoService;
 public class AtendimentoController {
 
     private final AtendimentoService atendimentoService;
+    private final AtendimentoRepository atendimentoRepository;
 
-    public AtendimentoController(AtendimentoService atendimentoService) {
+    public AtendimentoController(AtendimentoService atendimentoService, AtendimentoRepository atendimentoRepository) {
         this.atendimentoService = atendimentoService;
+        this.atendimentoRepository = atendimentoRepository;
     }
 
-    // DTO de exemplo
-    // public record AgendamentoDto(Long pacienteId, Long profissionalId, LocalDateTime dataHoraAtendimento) {}
-
     @PostMapping("/agendar")
-    public ResponseEntity<Atendimento> agendar(@RequestBody Atendimento atendimento, 
-                                               @RequestParam Long pacienteId, 
-                                               @RequestParam Long profissionalId) {
-        Atendimento novoAgendamento = atendimentoService.agendarConsulta(atendimento, pacienteId, profissionalId);
+    public ResponseEntity<Atendimento> agendar(@RequestBody AgendamentoRequestDTO dto) {
+        Atendimento novoAgendamento = atendimentoService.agendarConsulta(dto);
         return new ResponseEntity<>(novoAgendamento, HttpStatus.CREATED);
     }
 
@@ -38,5 +39,10 @@ public class AtendimentoController {
     public ResponseEntity<Atendimento> cancelar(@PathVariable Long id) {
         Atendimento atendimentoCancelado = atendimentoService.cancelarConsulta(id);
         return ResponseEntity.ok(atendimentoCancelado);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Atendimento>> listarTodos() {
+        return ResponseEntity.ok(atendimentoRepository.findAll());
     }
 }

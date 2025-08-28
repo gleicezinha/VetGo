@@ -1,8 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { ICrudForm } from '../i-crud-form';
+import { FormsModule } from '@angular/forms';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router'; // Adicionado RouterLink
 import { Atendimento } from '../../models/atendimento';
 import { AtendimentoService } from '../../services/atendimento';
 import { PacienteService } from '../../services/paciente';
@@ -15,88 +14,107 @@ import { EAtendimento } from '../../models/eatendimento.model';
 
 @Component({
   selector: 'app-form-atendimento',
-  imports: [FormsModule, CommonModule,  ReactiveFormsModule],
+  standalone: true,
+  imports: [FormsModule, CommonModule, RouterLink], // Adicionado RouterLink
   templateUrl: './form-atendimento.html',
-  styleUrl: './form-atendimento.scss'
+  styleUrls: ['./form-atendimento.scss']
 })
 export class FormAtendimentoComponent implements OnInit {
 
-
-  constructor(
-    private servico: AtendimentoService,
-    private servicoPaciente: PacienteService,
-    private servicoResponsavel: ResponsavelService,
-    private servicoProfissional: ProfissionalService,
-    private router: Router,
-    private rota: ActivatedRoute
-  ) {}
-  ngOnInit(): void {
-    const id = this.rota.snapshot.queryParamMap.get('id');
-    if (id) {
-      this.servico.getById(+id).subscribe({
-        next: (resposta: Atendimento) => {
-          this.registro = resposta;
-        },
-        error: (erro: any) => {
-          console.error('Erro ao carregar atendimento:', erro);
-        }
-    
-      })
-   
-    }
-    else{
-      this.carregarPacientes();
-      this.carregarResponsaveis();
-    }
-
-    
-  }
   registro: Atendimento = <Atendimento>{};
   tiposDeAtendimento = Object.values(EAtendimento);
-  pacientes: Paciente[] = []; 
+  
   responsaveis: Responsavel[] = [];
+  pacientesDoResponsavel: Paciente[] = [];
   profissionais: Profissional[] = [];
 
-  compararTipos(tipo1: any, tipo2: any): boolean {
-    return tipo1 && tipo2 ? tipo1 === tipo2 : tipo1 === tipo2;
-  }
+  responsavelSelecionado?: Responsavel;
+  pacienteSelecionado?: Paciente;
   
-  compararPacientes(p1: Paciente, p2: Paciente): boolean {
-    return p1 && p2 ? p1.id === p2.id : p1 === p2;
+  constructor(
+    private servico: AtendimentoService,
+    private responsavelService: ResponsavelService,
+    private pacienteService: PacienteService,
+    private profissionalService: ProfissionalService,
+    private router: Router,
+    public route: ActivatedRoute // Modificado para public
+  ) {}
+
+  ngOnInit(): void {
+    this.carregarProfissionais();
+
+    const responsavelId = this.route.snapshot.queryParamMap.get('responsavelId');
+    const pacienteId = this.route.snapshot.queryParamMap.get('pacienteId');
+
+    if (responsavelId && pacienteId) {
+      this.responsavelService.getById(+responsavelId).subscribe(resp => {
+        this.responsavelSelecionado = resp;
+        this.registro.responsavel = resp;
+        this.carregarPacientesDoResponsavel(+responsavelId);
+        this.pacienteService.getById(+pacienteId).subscribe(pac => {
+          this.pacienteSelecionado = pac;
+          this.registro.paciente = pac;
+        });
+      });
+    } else {
+      this.carregarResponsaveis();
+    }
   }
+
+  // Função de comparação para Responsáveis
   compararResponsaveis(r1: Responsavel, r2: Responsavel): boolean {
     return r1 && r2 ? r1.id === r2.id : r1 === r2;
   }
 
-  carregarPacientes(): void {
-    this.servicoPaciente.get().subscribe({
-      next: (res: Paciente[]) => {
-        this.pacientes = res;
-      }
-    });
+  // Função de comparação para Pacientes
+  compararPacientes(p1: Paciente, p2: Paciente): boolean {
+    return p1 && p2 ? p1.id === p2.id : p1 === p2;
   }
+
   carregarResponsaveis(): void {
-    this.servicoResponsavel.get().subscribe({
-      next: (res: Responsavel[]) => {
-        this.responsaveis = res;
-      }
+    this.responsavelService.get().subscribe(data => {
+      this.responsaveis = data;
     });
   }
-  save(): void {
-    if (this.registro.id) {
-      this.servico.save(this.registro).subscribe({
-        complete: () => {
-          alert('Prontuário salvo com sucesso!');
-          //console.log(this.atendimento.paciente.id)
-          //const idPaciente = this.atendimento.paciente.id
-          this.router.navigate(['/atendimento'])
-        },
-      error(err) {
-        alert('Erro ao salvar prontuário');
-      },
+
+  carregarPacientesDoResponsavel(responsavelId: number): void {
+    this.pacienteService.getByResponsavelId(responsavelId).subscribe(data => {
+      this.pacientesDoResponsavel = data;
     });
+  }
+  
+  carregarProfissionais(): void {
+    this.profissionalService.get().subscribe(data => {
+      this.profissionais = data;
+    });
+  }
+
+  onResponsavelChange(responsavel: Responsavel): void {
+    this.responsavelSelecionado = responsavel;
+    this.registro.responsavel = responsavel;
+    this.pacientesDoResponsavel = [];
+    this.pacienteSelecionado = undefined;
+    this.registro.paciente = undefined;
+    if (responsavel && responsavel.id) {
+      this.carregarPacientesDoResponsavel(responsavel.id);
     }
   }
+
+  onPacienteChange(paciente: Paciente): void {
+    this.pacienteSelecionado = paciente;
+    this.registro.paciente = paciente;
+  }
+  
+  save(): void {
+    this.servico.save(this.registro).subscribe({
+      complete: () => {
+        alert('Atendimento salvo com sucesso!');
+        this.router.navigate(['/list-cliente']);
+      },
+      error: (err) => {
+        console.error('Erro ao salvar o atendimento:', err);
+        alert('Erro ao salvar o atendimento. Verifique o console para mais detalhes.');
+      }
+    });
+  }
 }
-
-
