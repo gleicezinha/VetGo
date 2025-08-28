@@ -1,34 +1,31 @@
 <div class="form-container">
-  <h2>Formulário de Atendimento</h2>
+  <h2>Agende seu atendimento</h2>
   <form #formAtendimento="ngForm" (ngSubmit)="save()">
     
     <div class="form-group">
       <label for="responsavel">Responsável</label>
       <select id="responsavel" 
               name="responsavel" 
-              [ngModel]="responsavelSelecionado"
+              [(ngModel)]="responsavelIdSelecionado"
               (ngModelChange)="onResponsavelChange($event)"
-              [compareWith]="compararResponsaveis"
               [disabled]="!!route.snapshot.queryParamMap.get('responsavelId')"
               required>
-        <option *ngIf="!responsavelSelecionado" [ngValue]="undefined">Selecione um responsável</option>
-        <option *ngFor="let resp of responsaveis" [ngValue]="resp">
+        <option [ngValue]="undefined">Selecione um responsável</option>
+        <option *ngFor="let resp of responsaveis" [value]="resp.id">
           {{ resp.usuario?.nomeUsuario }}
         </option>
       </select>
     </div>
 
-    <div class="form-group" *ngIf="responsavelSelecionado || pacientesDoResponsavel.length > 0">
+    <div class="form-group" *ngIf="pacientesDoResponsavel.length > 0">
       <label for="paciente">Paciente (Pet)</label>
       <select id="paciente" 
               name="paciente" 
-              [ngModel]="pacienteSelecionado"
-              (ngModelChange)="onPacienteChange($event)"
-              [compareWith]="compararPacientes"
+              [(ngModel)]="pacienteIdSelecionado"
               [disabled]="!!route.snapshot.queryParamMap.get('pacienteId')"
               required>
-        <option *ngIf="!pacienteSelecionado" [ngValue]="undefined">Selecione um pet</option>
-        <option *ngFor="let pet of pacientesDoResponsavel" [ngValue]="pet">
+        <option [ngValue]="undefined">Selecione um pet</option>
+        <option *ngFor="let pet of pacientesDoResponsavel" [value]="pet.id">
           {{ pet.nome }}
         </option>
       </select>

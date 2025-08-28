@@ -23,14 +23,14 @@
   </div>
 
   <div class="form-group">
-    <label>Logradouro:</label>
-    <input type="text" [(ngModel)]="registro.usuario.endereco.logradouro" name="logradouro" required>
+    <label>Rua:</label>
+    <input type="text" [(ngModel)]="registro.usuario.endereco.logradouro" name="logradouro">
   </div>
 
   <div class="form-row">
     <div class="form-group">
       <label>Número:</label>
-      <input type="text" [(ngModel)]="registro.usuario.endereco.numero" name="numero" required>
+      <input type="text" [(ngModel)]="registro.usuario.endereco.numero" name="numero">
     </div>
     <div class="form-group">
       <label>Complemento:</label>
@@ -41,24 +41,24 @@
   <div class="form-row">
     <div class="form-group">
       <label>Bairro:</label>
-      <input type="text" [(ngModel)]="registro.usuario.endereco.bairro" name="bairro" required>
+      <input type="text" [(ngModel)]="registro.usuario.endereco.bairro" name="bairro">
     </div>
     <div class="form-group">
       <label>Cidade:</label>
-      <input type="text" [(ngModel)]="registro.usuario.endereco.cidade" name="cidade" required>
+      <input type="text" [(ngModel)]="registro.usuario.endereco.cidade" name="cidade">
     </div>
   </div>
 
   <div class="form-row">
     <div class="form-group">
       <label>UF:</label>
-      <select [(ngModel)]="registro.usuario.endereco.estado" name="uf" required>
+      <select [(ngModel)]="registro.usuario.endereco.estado" name="uf">
         <option *ngFor="let uf of ufs" [value]="uf.sigla">{{ uf.nome }}</option>
       </select>
     </div>
     <div class="form-group">
       <label>CEP:</label>
-      <input type="text" [(ngModel)]="registro.usuario.endereco.cep" name="cep" required>
+      <input type="text" [(ngModel)]="registro.usuario.endereco.cep" name="cep">
     </div>
   </div>
 
