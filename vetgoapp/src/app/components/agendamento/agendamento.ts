@@ -1,13 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { ICrudForm } from '../i-crud-form';
-import { Atendimento } from '../atendimento/atendimento';
-import { AtendimentoService } from '../../services/atendimento';
-import { PacienteService } from '../../services/paciente';
-import { ResponsavelService } from '../../services/responsavel';
-import { ProfissionalService } from '../../services/profissional';
-import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   standalone: true,
@@ -27,6 +21,8 @@ export class AgendamentoComponent implements OnInit {
     "14:00", "15:00", "16:00", "17:00"
   ];
   horarios: string[] = [];
+
+  constructor(private router: Router) { }
 
   ngOnInit(): void {
     // Inicialização, se precisar
@@ -63,14 +59,14 @@ export class AgendamentoComponent implements OnInit {
       return;
     }
 
-    const agendamentos = JSON.parse(localStorage.getItem('agendamentos') || '[]');
-    agendamentos.push({ data: this.dataSelecionada, horario: this.horarioSelecionado });
-    localStorage.setItem('agendamentos', JSON.stringify(agendamentos));
+    // Combina a data e a hora no formato esperado pelo input datetime-local
+    const dataHora = `${this.dataSelecionada}T${this.horarioSelecionado}`;
 
-    localStorage.setItem('agendamentoSelecionado', JSON.stringify({ data: this.dataSelecionada, horario: this.horarioSelecionado }));
-
-    alert(`Agendamento confirmado para ${this.dataSelecionada} às ${this.horarioSelecionado}`);
-
-
+    // Navega para o formulário de atendimento com a data e hora como parâmetros
+    this.router.navigate(['/form-atendimento'], { 
+      queryParams: { 
+        dataHora: dataHora
+      } 
+    });
   }
 }
