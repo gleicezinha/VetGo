@@ -4,8 +4,7 @@ import { Responsavel } from "./responsavel";
 
 export type Atendimento = {
   id?: number;
-  dataDeAtendimento: string; // 'YYYY-MM-DD'
-  horarioDeAtendimento: string; // 'HH:mm:ss.SSSSSS'
+  dataHoraAtendimento: string; // Corrigido para corresponder ao backend
   status: string;
   tipoDeAtendimento: string;
   paciente?: Paciente;

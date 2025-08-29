@@ -3,7 +3,7 @@ import { Responsavel } from '../../models/responsavel';
 import { Paciente } from '../../models/paciente';
 import { Atendimento } from '../../models/atendimento';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router'; // Removido RouterLink daqui
+import { ActivatedRoute, Router } from '@angular/router'; 
 import { FormsModule } from '@angular/forms';
 import { ResponsavelService } from '../../services/responsavel';
 import { PacienteService } from '../../services/paciente';
@@ -14,7 +14,7 @@ import { forkJoin, of, Observable } from 'rxjs';
 @Component({
   standalone: true,
   selector: 'app-animais-cliente',
-  imports: [CommonModule, FormsModule], // Corrigido aqui
+  imports: [CommonModule, FormsModule],
   templateUrl: './animais-cliente.html',
   styleUrls: ['./animais-cliente.scss']
 })
@@ -62,6 +62,16 @@ export class AnimaisCliente implements OnInit {
         error: (erro) => console.error('Erro ao carregar dados:', erro)
       });
     }
+  }
+
+  // Novo método para navegar para o formulário de atendimento
+  cadastrarAtendimento(paciente: Paciente): void {
+    this.router.navigate(['/form-atendimento'], { 
+      queryParams: { 
+        responsavelId: this.responsavel.id,
+        pacienteId: paciente.id 
+      } 
+    });
   }
 
   getAtendimentosDePaciente(pacienteId: number): Atendimento[] {

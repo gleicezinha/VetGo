@@ -13,16 +13,14 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.CrossOrigin;
 
 import com.vetgo.vetgoapi.model.Responsavel;
 import com.vetgo.vetgoapi.model.Usuario;
 import com.vetgo.vetgoapi.repository.ResponsavelRepository;
 import com.vetgo.vetgoapi.repository.UsuarioRepository;
 import com.vetgo.vetgoapi.service.CadastroService;
-import com.vetgo.vetgoapi.service.exception.BusinessRuleException;
+import com.vetgo.vetgoapi.service.ResponsavelService; // Importe o ResponsavelService
 import com.vetgo.vetgoapi.service.exception.ResourceNotFoundException;
-import com.vetgo.vetgoapi.service.ResponsavelService;
 
 @RestController
 @RequestMapping("/api/responsaveis")
@@ -31,13 +29,13 @@ public class ResponsavelController {
     private final CadastroService cadastroService;
     private final ResponsavelRepository responsavelRepository;
     private final UsuarioRepository usuarioRepository;
-    private final ResponsavelService responsavelService;
+    private final ResponsavelService responsavelService; // Adicionado
 
     public ResponsavelController(CadastroService cadastroService, ResponsavelRepository responsavelRepository, UsuarioRepository usuarioRepository, ResponsavelService responsavelService) {
         this.cadastroService = cadastroService;
         this.responsavelRepository = responsavelRepository;
         this.usuarioRepository = usuarioRepository;
-        this.responsavelService = responsavelService;
+        this.responsavelService = responsavelService; // Adicionado
     }
 
     @PostMapping
@@ -46,6 +44,7 @@ public class ResponsavelController {
         return new ResponseEntity<>(novoResponsavel, HttpStatus.CREATED);
     }
     
+    // Método para login do tutor
     @PostMapping("/login-contato")
     public ResponseEntity<Responsavel> loginComContato(@RequestBody Usuario usuario) {
         Optional<Responsavel> responsavel = responsavelService.getByTelefone(usuario.getTelefone());

@@ -1,7 +1,7 @@
+import { Usuario } from "./usuario";
+
 export type Profissional = {
     id: number;
-    nome: string;
     registro: string;
-    telefone: string;
-    
+    usuario?: Usuario; // Adicionado para corresponder ao backend
 }

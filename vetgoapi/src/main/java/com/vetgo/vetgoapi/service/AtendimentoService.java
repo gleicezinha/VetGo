@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.vetgo.vetgoapi.controller.dto.AgendamentoRequestDTO;
 import com.vetgo.vetgoapi.model.Atendimento;
 import com.vetgo.vetgoapi.model.EStatus;
 import com.vetgo.vetgoapi.model.Paciente;
@@ -29,28 +30,30 @@ public class AtendimentoService {
     }
 
     @Transactional
-    public Atendimento agendarConsulta(Atendimento atendimento, Long pacienteId, Long profissionalId) {
-        Paciente paciente = pacienteRepository.findById(pacienteId)
-                .orElseThrow(() -> new ResourceNotFoundException("Paciente não encontrado com o ID: " + pacienteId));
+    public Atendimento agendarConsulta(AgendamentoRequestDTO dto) {
+        Paciente paciente = pacienteRepository.findById(dto.getPacienteId())
+                .orElseThrow(() -> new ResourceNotFoundException("Paciente não encontrado com o ID: " + dto.getPacienteId()));
         
-        Profissional profissional = profissionalRepository.findById(profissionalId)
-                .orElseThrow(() -> new ResourceNotFoundException("Profissional não encontrado com o ID: " + profissionalId));
+        Profissional profissional = profissionalRepository.findById(dto.getProfissionalId())
+                .orElseThrow(() -> new ResourceNotFoundException("Profissional não encontrado com o ID: " + dto.getProfissionalId()));
 
-        if (atendimento.getDataHoraAtendimento().isBefore(LocalDateTime.now())) {
+        if (dto.getDataHoraAtendimento().isBefore(LocalDateTime.now())) {
             throw new BusinessRuleException("Não é possível agendar uma consulta em uma data passada.");
         }
         
-        // Verifica se já existe um agendamento para o mesmo profissional em um intervalo de 1 hora
-        LocalDateTime inicioJanela = atendimento.getDataHoraAtendimento().minusMinutes(59);
-        LocalDateTime fimJanela = atendimento.getDataHoraAtendimento().plusMinutes(59);
-        var conflitos = atendimentoRepository.findByProfissionalIdAndDataHoraAtendimentoBetween(profissionalId, inicioJanela, fimJanela);
+        LocalDateTime inicioJanela = dto.getDataHoraAtendimento().minusMinutes(59);
+        LocalDateTime fimJanela = dto.getDataHoraAtendimento().plusMinutes(59);
+        var conflitos = atendimentoRepository.findByProfissionalIdAndDataHoraAtendimentoBetween(dto.getProfissionalId(), inicioJanela, fimJanela);
         
         if (!conflitos.isEmpty()) {
             throw new BusinessRuleException("O profissional já possui um atendimento neste horário.");
         }
 
+        Atendimento atendimento = new Atendimento();
         atendimento.setPaciente(paciente);
         atendimento.setProfissional(profissional);
+        atendimento.setDataHoraAtendimento(dto.getDataHoraAtendimento());
+        atendimento.setTipoDeAtendimento(dto.getTipoDeAtendimento());
         atendimento.setStatus(EStatus.AGENDADO);
         
         return atendimentoRepository.save(atendimento);

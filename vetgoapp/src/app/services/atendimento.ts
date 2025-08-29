@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { ICrudService } from './i-crud-service';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Atendimento } from '../models/atendimento';
@@ -8,7 +7,7 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class AtendimentoService { // Não implementa ICrudService pois os métodos são mais específicos
+export class AtendimentoService { 
   constructor(private http: HttpClient) {}
 
   apiUrl: string = environment.API_URL + '/api/atendimentos';
@@ -18,12 +17,12 @@ export class AtendimentoService { // Não implementa ICrudService pois os métod
     return this.http.get<Atendimento>(`${this.apiUrl}/${id}`);
   }
 
-  // GET: /api/atendimentos/por-paciente/{id} (Exemplo de como seria um endpoint customizado)
+  // GET: /api/atendimentos/por-paciente/{id}
   getByPacienteId(id: number): Observable<Atendimento[]> {
     return this.http.get<Atendimento[]>(`${this.apiUrl}/por-paciente/${id}`);
   }
 
-  // POST: /api/atendimentos/agendar?pacienteId=X&profissionalId=Y
+  // POST: /api/atendimentos/agendar
   save(objeto: Atendimento): Observable<Atendimento> {
     if (objeto.id) {
         // PUT: /api/atendimentos/{id}
@@ -32,11 +31,16 @@ export class AtendimentoService { // Não implementa ICrudService pois os métod
         if (!objeto.paciente?.id || !objeto.profissional?.id) {
             throw new Error('IDs do paciente e do profissional são obrigatórios para agendar.');
         }
-        const params = new HttpParams()
-            .set('pacienteId', objeto.paciente.id.toString())
-            .set('profissionalId', objeto.profissional.id.toString());
+        
+        // Usamos o DTO que o backend espera agora
+        const agendamentoRequest = {
+          pacienteId: objeto.paciente.id,
+          profissionalId: objeto.profissional.id,
+          dataHoraAtendimento: objeto.dataHoraAtendimento,
+          tipoDeAtendimento: objeto.tipoDeAtendimento
+        };
             
-        return this.http.post<Atendimento>(`${this.apiUrl}/agendar`, objeto, { params });
+        return this.http.post<Atendimento>(`${this.apiUrl}/agendar`, agendamentoRequest);
     }
   }
 
