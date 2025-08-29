@@ -1,5 +1,3 @@
-// vetgoapp/src/app/components/login/login.ts
-
 import { Router } from '@angular/router';
 import { HttpClientModule, HttpErrorResponse } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -10,7 +8,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { LoginService } from '../../services/login';
-
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   standalone: true,
@@ -26,7 +24,11 @@ export class LoginComponent implements OnInit {
 
   telefone: string = '';
 
-  constructor(private loginService: LoginService, private router: Router) { }
+  constructor(
+    private loginService: LoginService, 
+    private router: Router,
+    private authService: AuthService
+  ) { }
 
   ngOnInit(): void { }
 
@@ -35,6 +37,7 @@ export class LoginComponent implements OnInit {
       this.loginService.loginComContato(this.telefone).subscribe({
         next: (response) => {
           console.log('Login bem-sucedido:', response);
+          this.authService.login();
           this.router.navigate(['/agendamento']);
         },
         error: (error) => {

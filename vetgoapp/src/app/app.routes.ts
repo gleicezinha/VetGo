@@ -9,11 +9,11 @@ import { AnimaisCliente} from './components/animais-cliente/animais-cliente';
 
 
 export const routes: Routes = [
-    { path: '', redirectTo: 'agendamento', pathMatch: 'full' },
     { path: 'agendamento', component: AgendamentoComponent },
+    { path: 'login', component: LoginComponent },
+    { path: '', redirectTo: 'login', pathMatch: 'full' },
     { path: 'form-cliente', component: FormClienteComponent },
     { path: 'form-pet', component: FormPetComponent },
-    { path: 'login', component: LoginComponent },
     { path: 'list-cliente', component: ListClienteComponent },
     // Rota atualizada para o formulário de atendimento
     { path: 'form-atendimento', component: FormAtendimentoComponent },
