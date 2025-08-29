@@ -104,6 +104,15 @@ export class ListClienteComponent implements ICrudList<Responsavel>, OnInit {
   editar(responsavel: Responsavel): void {
     this.router.navigate(['/form-cliente'], { queryParams: { id: responsavel.id } });
   }
+  
+  // Nova função para criar o link do WhatsApp
+  getWhatsappLink(telefone: string | undefined): string {
+    if (!telefone) {
+      return '#';
+    }
+    const telefoneLimpo = telefone.replace(/\D/g, ''); // Remove caracteres não numéricos
+    return `https://wa.me/55${telefoneLimpo}`; // Adiciona o código do país do Brasil
+  }
 
   delete(id: number): void {
     if (window.confirm('Deseja realmente EXCLUIR o responsável?')) {

@@ -33,7 +33,13 @@
       <tbody>
         <tr *ngFor="let cliente of registrosFiltrados">
           <td>{{ cliente.usuario?.nomeUsuario }}</td>
-          <td>{{ cliente.usuario?.telefone }}</td>
+          <td>
+            <img src="assets/imagens/whatsapp.svg" alt="WhatsApp" class="whatsapp-icon">
+            <a [href]="getWhatsappLink(cliente.usuario?.telefone)" target="_blank">
+              {{ cliente.usuario?.telefone }}
+               
+            </a>
+          </td>
           <td>{{ getPetNames(cliente.id) }}</td>
           <td>{{ formatAddress(cliente.usuario?.endereco) }}</td>
           <td class="actions-cell">
