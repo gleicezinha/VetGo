@@ -2,6 +2,7 @@
 $primary-color: #0961be;
 $success-color: #087853;
 $danger-color: #dc3545;
+$add-color: #117b2d;
 $info-color: #f0f0f0;
 $dark-text: #333;
 $medium-text: #555;
@@ -85,8 +86,8 @@ $box-shadow: rgba(0, 0, 0, 0.1);
     background-color: $success-color;
   }
 
-  &.medicamento {
-    background-color: $danger-color;
+  &.cadastropet {
+    background-color: $add-color;
   }
   
   &.add-pet-button {

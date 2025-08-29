@@ -45,6 +45,12 @@ export class FormAtendimentoComponent implements OnInit {
   ngOnInit(): void {
     const responsavelIdParam = this.route.snapshot.queryParamMap.get('responsavelId');
     const pacienteIdParam = this.route.snapshot.queryParamMap.get('pacienteId');
+    const dataHoraParam = this.route.snapshot.queryParamMap.get('dataHora');
+
+    // Se a data e hora vierem da tela de agendamento, preenche o campo
+    if (dataHoraParam) {
+      this.registro.dataHoraAtendimento = dataHoraParam;
+    }
 
     // Carrega sempre os profissionais
     this.carregarProfissionais();
