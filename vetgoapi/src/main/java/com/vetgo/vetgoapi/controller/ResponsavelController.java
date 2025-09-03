@@ -1,7 +1,6 @@
 package com.vetgo.vetgoapi.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,16 +12,13 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.CrossOrigin;
 
 import com.vetgo.vetgoapi.model.Responsavel;
-import com.vetgo.vetgoapi.model.Usuario;
 import com.vetgo.vetgoapi.repository.ResponsavelRepository;
 import com.vetgo.vetgoapi.repository.UsuarioRepository;
 import com.vetgo.vetgoapi.service.CadastroService;
-import com.vetgo.vetgoapi.service.exception.BusinessRuleException;
-import com.vetgo.vetgoapi.service.exception.ResourceNotFoundException;
 import com.vetgo.vetgoapi.service.ResponsavelService;
+import com.vetgo.vetgoapi.service.exception.ResourceNotFoundException;
 
 @RestController
 @RequestMapping("/api/responsaveis")
@@ -46,16 +42,6 @@ public class ResponsavelController {
         return new ResponseEntity<>(novoResponsavel, HttpStatus.CREATED);
     }
     
-    @PostMapping("/login-contato")
-    public ResponseEntity<Responsavel> loginComContato(@RequestBody Usuario usuario) {
-        Optional<Responsavel> responsavel = responsavelService.getByTelefone(usuario.getTelefone());
-        if (responsavel.isPresent()) {
-            return ResponseEntity.ok(responsavel.get());
-        } else {
-            throw new ResourceNotFoundException("Contato não cadastrado.");
-        }
-    }
-
     @GetMapping
     public ResponseEntity<List<Responsavel>> listarTodosResponsaveis() {
         List<Responsavel> responsaveis = responsavelRepository.findAll();

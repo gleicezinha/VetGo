@@ -1,24 +1,25 @@
-// vetgoapp/src/app/services/login.ts
-
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { environment } from '../../environments/environment';
+
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { Responsavel } from '../models/responsavel';
+import { environment } from '../../environments/environment';
 import { Usuario } from '../models/usuario';
+ // A autenticação agora retorna um Usuario
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoginService {
-  private apiUrl = environment.API_URL + '/api/responsaveis/login-contato';
+  // URL da API atualizada para o novo endpoint de login
+  private apiUrl = environment.API_URL + '/api/login/contato';
 
   constructor(private http: HttpClient) { }
 
-  loginComContato(telefone: string): Observable<Responsavel> {
+  loginComContato(telefone: string): Observable<Usuario> {
     const usuario: Partial<Usuario> = { telefone };
-    return this.http.post<Responsavel>(this.apiUrl, usuario)
+    return this.http.post<Usuario>(this.apiUrl, usuario)
       .pipe(
         catchError(this.handleError)
       );

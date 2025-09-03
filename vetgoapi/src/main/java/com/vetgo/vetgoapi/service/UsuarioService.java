@@ -1,6 +1,5 @@
 package com.vetgo.vetgoapi.service;
 
-
 import java.util.List;
 import java.util.Optional;
 
@@ -10,11 +9,9 @@ import org.springframework.stereotype.Service;
 import com.vetgo.vetgoapi.model.Usuario;
 import com.vetgo.vetgoapi.repository.UsuarioRepository;
 
-
 @Service
 public class UsuarioService implements ICrudService<Usuario> {
-    
- 
+
     @Autowired
     private UsuarioRepository repo;
 
@@ -29,6 +26,12 @@ public class UsuarioService implements ICrudService<Usuario> {
         Usuario registro = repo.findById(id).orElse(null);
         return registro;
     }
+
+    // Este método é o que o novo LoginController usará.
+    public Optional<Usuario> getByTelefone(String telefone) {
+        return repo.findByTelefone(telefone);
+    }
+
     @Override
     public Usuario save(Usuario objeto) {
         Optional<Usuario> usuarioExistente = repo.findById(objeto.getId());
@@ -46,5 +49,4 @@ public class UsuarioService implements ICrudService<Usuario> {
     public void delete(Long id) {
         repo.deleteById(id);
     }
-
 }
