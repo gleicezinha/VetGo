@@ -11,35 +11,44 @@
   </span>
 </mat-toolbar>
 
-<div class="side-menu" [class.open]="menuOpen">
+<div class="side-menu" [class.open]="menuOpen" *ngIf="isLoggedIn">
     <div class="menu-links-principais">
-        <button mat-button class="menu-item" [routerLink]="'/agendamento'">
+        <button mat-button class="menu-item" [routerLink]="'/agendamento'" (click)="toggleMenu()">
             <img src="assets/imagens/medical_services.svg" alt="agendamento" class="menu-icon" />
             Agendamento
         </button>
 
-        <button mat-button class="menu-item" [routerLink]="'/list-cliente'">
-            <img src="assets/imagens/star.svg" alt="Clientes" class="menu-icon" />
-            Clientes
-        </button>
+        <ng-container *ngIf="userRole === 'ROLE_PROFISSIONAL' || userRole === 'ROLE_ADMIN'">
+            <button mat-button class="menu-item" [routerLink]="'/list-cliente'" (click)="toggleMenu()">
+                <img src="assets/imagens/star.svg" alt="Clientes" class="menu-icon" />
+                Clientes
+            </button>
+    
+            <button mat-button class="menu-item" [routerLink]="'/form-cliente'" (click)="toggleMenu()">
+                <img src="assets/imagens/assignment.svg" alt="Formulário Cliente" class="menu-icon" />
+                Formulário Cliente
+            </button>
+        </ng-container>
 
-        <button mat-button class="menu-item" [routerLink]="'/form-cliente'">
-            <img src="assets/imagens/assignment.svg" alt="Formulário Cliente" class="menu-icon" />
-            Formulário Cliente
-        </button>
+        <ng-container *ngIf="userRole === 'ROLE_RESPONSAVEL'">
+            <button mat-button class="menu-item" [routerLink]="['/animais-cliente', currentUserId]" (click)="toggleMenu()">
+                <img src="assets/imagens/pet.svg" alt="Ver Animais" class="menu-icon" />
+                Ver Animais
+            </button>
+        </ng-container>
 
-        <button mat-button class="menu-item" [routerLink]="'/calendario'">
+        <button mat-button class="menu-item" [routerLink]="'/calendario'" (click)="toggleMenu()">
             <img src="assets/imagens/list_alt.svg" alt="Calendário" class="menu-icon" />
             Calendário
         </button>
     </div>
 
     <div class="menu-rodape">
-        <button mat-button class="menu-item" [routerLink]="'/usuario'">
+        <button mat-button class="menu-item" [routerLink]="'/usuario'" (click)="toggleMenu()">
             <img src="assets/imagens/eng.png" alt="Configurações" class="menu-icon" />
             Configurações
         </button>
-        <button mat-button class="menu-item" [routerLink]="'/login'">
+        <button mat-button class="menu-item" (click)="logout()">
             <img src="assets/imagens/lock.svg" alt="Sair" class="menu-icon" />
             Sair
         </button>

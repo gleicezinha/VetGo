@@ -2,6 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthService } from '../../services/AuthService';
+// Importe o AuthService
 
 @Component({
   standalone: true,
@@ -14,6 +16,7 @@ export class AgendamentoComponent implements OnInit {
 
   dataSelecionada: string = '';
   horarioSelecionado: string | null = null;
+  isLoggedIn: boolean = false; // Adicione esta propriedade
 
   horariosDisponiveis: string[] = [
     "08:00", "09:00", "10:00", "11:00",
@@ -22,10 +25,13 @@ export class AgendamentoComponent implements OnInit {
   ];
   horarios: string[] = [];
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private authService: AuthService) { }
 
   ngOnInit(): void {
-    // Inicialização, se precisar
+    // Assina o estado de login para verificar a autenticação
+    this.authService.isLoggedIn.subscribe(status => {
+      this.isLoggedIn = status;
+    });
   }
 
   selecionarData(event: Event): void {
@@ -54,15 +60,20 @@ export class AgendamentoComponent implements OnInit {
   }
 
   confirmarAgendamento(): void {
+    // Lógica para verificar o login antes de agendar
+    if (!this.isLoggedIn) {
+      alert('Você precisa estar logado para agendar um atendimento.');
+      this.router.navigate(['/login']);
+      return;
+    }
+
     if (!this.dataSelecionada || !this.horarioSelecionado) {
       alert('Selecione a data e o horário antes de confirmar.');
       return;
     }
 
-    // Combina a data e a hora no formato esperado pelo input datetime-local
     const dataHora = `${this.dataSelecionada}T${this.horarioSelecionado}`;
 
-    // Navega para o formulário de atendimento com a data e hora como parâmetros
     this.router.navigate(['/form-atendimento'], { 
       queryParams: { 
         dataHora: dataHora

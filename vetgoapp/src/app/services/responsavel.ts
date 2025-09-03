@@ -13,30 +13,27 @@ export class ResponsavelService implements ICrudService<Responsavel> {
 
   constructor(private http: HttpClient) { }
 
-  // GET: /api/responsaveis
   get(termoBusca?: string): Observable<Responsavel[]> {
-    // A busca pode ser implementada no back-end com @RequestParam
-    // Por enquanto, este endpoint busca todos os responsáveis.
     return this.http.get<Responsavel[]>(this.apiUrl);
   }
 
-  // GET: /api/responsaveis/{id}
   getById(id: number): Observable<Responsavel> {
     return this.http.get<Responsavel>(`${this.apiUrl}/${id}`);
   }
 
-  // POST: /api/responsaveis  ou  PUT: /api/responsaveis/{id}
+  // NOVO MÉTODO: Obtém o Responsavel a partir do ID do Usuario
+  getByUsuarioId(usuarioId: number): Observable<Responsavel> {
+    return this.http.get<Responsavel>(`${this.apiUrl}/por-usuario/${usuarioId}`);
+  }
+
   save(objeto: Responsavel): Observable<Responsavel> {
     if (objeto.id) {
-      // Atualiza um responsável existente
       return this.http.put<Responsavel>(`${this.apiUrl}/${objeto.id}`, objeto);
     } else {
-      // Cria um novo responsável
       return this.http.post<Responsavel>(this.apiUrl, objeto);
     }
   }
 
-  // DELETE: /api/responsaveis/{id}
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }

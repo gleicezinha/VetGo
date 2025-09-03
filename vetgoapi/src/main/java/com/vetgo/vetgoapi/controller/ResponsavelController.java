@@ -54,6 +54,14 @@ public class ResponsavelController {
                 .map(ResponseEntity::ok)
                 .orElseThrow(() -> new ResourceNotFoundException("Responsável não encontrado com o ID: " + id));
     }
+    
+    // NOVO ENDPOINT ADICIONADO PARA BUSCAR RESPONSAVEL POR ID DO USUARIO
+    @GetMapping("/por-usuario/{usuarioId}")
+    public ResponseEntity<Responsavel> buscarPorUsuarioId(@PathVariable Long usuarioId) {
+        return responsavelService.getByUsuarioId(usuarioId)
+            .map(ResponseEntity::ok)
+            .orElseThrow(() -> new ResourceNotFoundException("Responsável não encontrado para o Usuário com ID: " + usuarioId));
+    }
 
     @PutMapping("/{id}")
     public ResponseEntity<Responsavel> atualizarTutor(@PathVariable Long id, @RequestBody Responsavel dadosAtualizados) {
