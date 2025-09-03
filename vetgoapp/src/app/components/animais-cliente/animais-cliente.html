@@ -44,6 +44,7 @@
     </ng-template>
   </div>
   
+<div class="main-layout">
   <div class="right-panel">
     <h3>Atendimentos</h3>
     <div *ngIf="pacientes.length > 0">
@@ -52,7 +53,7 @@
           <h4>Atendimentos de {{paciente.nome}}</h4>
           <ul>
             <li *ngFor="let atendimento of getAtendimentosDePaciente(paciente.id)" class="atendimento-item">
-              Data: {{ atendimento.dataHoraAtendimento | date: 'dd/MM/yyyy HH:mm' }}
+              Data: {{ formatarData(atendimento.dataHoraAtendimento) }}
             </li>
           </ul>
         </div>

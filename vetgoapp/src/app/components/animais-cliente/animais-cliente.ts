@@ -119,4 +119,14 @@ export class AnimaisCliente implements OnInit {
       }
     }
   }
+
+  // NOVA FUNÇÃO: Converte a data do formato de array para string
+  formatarData(data: any): string {
+    if (Array.isArray(data) && data.length >= 5) {
+      const [ano, mes, dia, hora, minuto] = data;
+      const dataFormatada = new Date(ano, mes - 1, dia, hora, minuto);
+      return dataFormatada.toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
+    }
+    return data;
+  }
 }

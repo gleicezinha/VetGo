@@ -46,7 +46,6 @@ export class LoginComponent implements OnInit {
         })
       ).subscribe({
         next: (response: any) => {
-          // Acesso corrigido ao valor do BehaviorSubject
           const userRole = this.authService.currentUser.value?.papel;
           if (userRole === 'ROLE_RESPONSAVEL') {
             this.router.navigate(['/animais-cliente', response.id]);

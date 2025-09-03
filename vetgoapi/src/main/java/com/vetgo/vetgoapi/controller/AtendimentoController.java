@@ -29,6 +29,13 @@ public class AtendimentoController {
         this.atendimentoRepository = atendimentoRepository;
     }
 
+    // NOVO ENDPOINT ADICIONADO PARA CORRIGIR O ERRO 404
+    @GetMapping("/por-paciente/{pacienteId}")
+    public ResponseEntity<List<Atendimento>> listarPorPaciente(@PathVariable Long pacienteId) {
+        List<Atendimento> atendimentos = atendimentoRepository.findByPacienteId(pacienteId);
+        return ResponseEntity.ok(atendimentos);
+    }
+
     @PostMapping("/agendar")
     public ResponseEntity<Atendimento> agendar(@RequestBody AgendamentoRequestDTO dto) {
         Atendimento novoAgendamento = atendimentoService.agendarConsulta(dto);

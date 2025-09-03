@@ -18,12 +18,22 @@ export class Header implements OnInit {
   title = 'vetgoapp';
   menuOpen = false;
   isLoggedIn: boolean = false;
+  
+  // PROPRIEDADES CORRIGIDAS
+  userRole: string | null = null;
+  currentUserId: number | null = null;
 
   constructor(private authService: AuthService, private router: Router) { }
 
   ngOnInit(): void {
+    // Assina as mudanças no estado de login e nos dados do usuário
     this.authService.isLoggedIn.subscribe(status => {
       this.isLoggedIn = status;
+    });
+
+    this.authService.currentUser.subscribe(user => {
+      this.userRole = user ? user.papel : null;
+      this.currentUserId = user ? user.id : null;
     });
   }
 
