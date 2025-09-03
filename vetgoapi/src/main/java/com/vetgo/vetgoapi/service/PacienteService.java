@@ -1,10 +1,12 @@
 package com.vetgo.vetgoapi.service;
 
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
 import com.vetgo.vetgoapi.model.Paciente;
 import com.vetgo.vetgoapi.repository.PacienteRepository;
 import com.vetgo.vetgoapi.service.exception.ResourceNotFoundException;
-import org.springframework.stereotype.Service;
-import java.util.List;
 
 @Service
 public class PacienteService implements ICrudService<Paciente> {
@@ -41,5 +43,10 @@ public class PacienteService implements ICrudService<Paciente> {
     @Override
     public void delete(Long id) {
         pacienteRepository.deleteById(id);
+    }
+
+    public Object getPacientesByResponsavelId(Long idResponsavel) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getPacientesByResponsavelId'");
     }
 }

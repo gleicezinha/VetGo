@@ -3,18 +3,20 @@ import { Responsavel } from '../../models/responsavel';
 import { Paciente } from '../../models/paciente';
 import { Atendimento } from '../../models/atendimento';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router'; 
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ResponsavelService } from '../../services/responsavel';
 import { PacienteService } from '../../services/paciente';
 import { AtendimentoService } from '../../services/atendimento';
 import { switchMap } from 'rxjs/operators';
 import { forkJoin, of, Observable } from 'rxjs';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
   standalone: true,
   selector: 'app-animais-cliente',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, MatCardModule, MatButtonModule],
   templateUrl: './animais-cliente.html',
   styleUrls: ['./animais-cliente.scss']
 })
@@ -35,7 +37,8 @@ export class AnimaisCliente implements OnInit {
     const id = this.route.snapshot.paramMap.get('id');
 
     if (id) {
-      this.responsavelService.getById(+id).pipe(
+      // CORREÇÃO: Usar o método getByUsuarioId para buscar o ID correto do responsável.
+      this.responsavelService.getByUsuarioId(+id).pipe(
         switchMap((responsavel: Responsavel) => {
           this.responsavel = responsavel;
           return this.pacienteService.getByResponsavelId(responsavel.id);
@@ -96,8 +99,6 @@ export class AnimaisCliente implements OnInit {
     } else {
       paciente.situacao = 'VIVO';
     }
-    // Opcional: Chame o serviço para atualizar a situação no backend
-    // this.pacienteService.update(paciente).subscribe();
   }
 
   podeExcluir(paciente: Paciente): boolean {
@@ -118,15 +119,5 @@ export class AnimaisCliente implements OnInit {
         });
       }
     }
-  }
-
-  // NOVA FUNÇÃO: Converte a data do formato de array para string
-  formatarData(data: any): string {
-    if (Array.isArray(data) && data.length >= 5) {
-      const [ano, mes, dia, hora, minuto] = data;
-      const dataFormatada = new Date(ano, mes - 1, dia, hora, minuto);
-      return dataFormatada.toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
-    }
-    return data;
   }
 }
