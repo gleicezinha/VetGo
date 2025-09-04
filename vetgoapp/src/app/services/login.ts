@@ -1,18 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { Usuario } from '../models/usuario';
- // A autenticação agora retorna um Usuario
-
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoginService {
-  // URL da API atualizada para o novo endpoint de login
   private apiUrl = environment.API_URL + '/api/login/contato';
 
   constructor(private http: HttpClient) { }

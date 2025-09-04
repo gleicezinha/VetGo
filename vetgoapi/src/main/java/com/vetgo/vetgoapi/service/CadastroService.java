@@ -1,5 +1,8 @@
 package com.vetgo.vetgoapi.service;
 
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.vetgo.vetgoapi.model.Profissional;
 import com.vetgo.vetgoapi.model.Responsavel;
 import com.vetgo.vetgoapi.model.Usuario;
@@ -7,9 +10,6 @@ import com.vetgo.vetgoapi.repository.ProfissionalRepository;
 import com.vetgo.vetgoapi.repository.ResponsavelRepository;
 import com.vetgo.vetgoapi.repository.UsuarioRepository;
 import com.vetgo.vetgoapi.service.exception.BusinessRuleException;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CadastroService {
@@ -17,25 +17,18 @@ public class CadastroService {
     private final UsuarioRepository usuarioRepository;
     private final ResponsavelRepository responsavelRepository;
     private final ProfissionalRepository profissionalRepository;
-    private final PasswordEncoder passwordEncoder;
 
     public CadastroService(UsuarioRepository usuarioRepository, 
                            ResponsavelRepository responsavelRepository,
-                           ProfissionalRepository profissionalRepository, 
-                           PasswordEncoder passwordEncoder) {
+                           ProfissionalRepository profissionalRepository) {
         this.usuarioRepository = usuarioRepository;
         this.responsavelRepository = responsavelRepository;
         this.profissionalRepository = profissionalRepository;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
     public Responsavel cadastrarTutor(Usuario usuario) {
         validarNovoUsuario(usuario);
-        
-        // A linha abaixo foi removida, pois a senha não é necessária para tutores.
-        // Se ela estiver presente, o erro continuará a ocorrer.
-        // usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
         
         Usuario novoUsuario = usuarioRepository.save(usuario);
 
@@ -49,9 +42,6 @@ public class CadastroService {
     public Profissional cadastrarProfissional(Profissional profissional) {
         Usuario usuario = profissional.getUsuario();
         validarNovoUsuario(usuario);
-
-        // A criptografia de senha deve ser mantida para profissionais.
-        // usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
         
         usuarioRepository.save(usuario);
         return profissionalRepository.save(profissional);

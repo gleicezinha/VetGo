@@ -7,12 +7,14 @@ import { Router } from '@angular/router';
   providedIn: 'root'
 })
 export class AuthService {
-  private _isLoggedIn = new BehaviorSubject<boolean>(false);
-  
-  // CORREÇÃO: Mude a visibilidade e o tipo para o BehaviorSubject
+
+  // CORREÇÃO: Mantenha esta propriedade, é a fonte da verdade do estado do usuário.
   public currentUser = new BehaviorSubject<Usuario | null>(null);
 
-  isLoggedIn: Observable<boolean> = this._isLoggedIn.asObservable();
+  // Remova a propriedade 'isLoggedIn' de tipo 'Observable' e use um getter.
+  get isLoggedIn(): boolean {
+    return !!this.currentUser.value;
+  }
 
   constructor(private router: Router) {
     const user = localStorage.getItem('currentUser');
@@ -22,14 +24,12 @@ export class AuthService {
   }
 
   login(usuario: Usuario): void {
-    this._isLoggedIn.next(true);
-    this.currentUser.next(usuario); // Use o BehaviorSubject
+    this.currentUser.next(usuario);
     localStorage.setItem('currentUser', JSON.stringify(usuario));
   }
 
   logout(): void {
-    this._isLoggedIn.next(false);
-    this.currentUser.next(null); // Use o BehaviorSubject
+    this.currentUser.next(null);
     localStorage.removeItem('currentUser');
     this.router.navigate(['/login']);
   }
