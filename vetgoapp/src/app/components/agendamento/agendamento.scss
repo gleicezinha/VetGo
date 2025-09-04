@@ -1,14 +1,16 @@
 /* Estilos Gerais */
 :host {
   display: block;
-  background-color: #f8fafc;
+  background-color: #ffffff;
 }
 
 .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    background-color: white;
-    min-height: 100vh;
+    max-width: 1200px;  
+    margin: 2rem auto;
+    background-color: #fff8f8;
+    padding: 2rem;
+     border-radius: 16px;
+    // min-height: 100vh;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 }
 

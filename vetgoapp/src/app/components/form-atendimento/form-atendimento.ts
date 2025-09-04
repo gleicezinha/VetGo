@@ -22,17 +22,25 @@ import { forkJoin } from 'rxjs';
 })
 export class FormAtendimentoComponent implements OnInit {
 
-  registro: Atendimento = {} as Atendimento;
+  // Objeto para os campos que não são de seleção
+  registroParcial = {
+    dataHoraAtendimento: '',
+    tipoDeAtendimento: EAtendimento.CONSULTA,
+    observacao: ''
+  };
+
   tiposDeAtendimento = Object.values(EAtendimento);
-  
+
+  // Listas para popular os selects
   responsaveis: Responsavel[] = [];
   pacientesDoResponsavel: Paciente[] = [];
   profissionais: Profissional[] = [];
 
-  // Variáveis para controlar os IDs selecionados
+  // IDs para controlar os valores selecionados nos selects
   responsavelIdSelecionado?: number;
   pacienteIdSelecionado?: number;
-  
+  profissionalIdSelecionado?: number;
+
   constructor(
     private servico: AtendimentoService,
     private responsavelService: ResponsavelService,
@@ -47,30 +55,25 @@ export class FormAtendimentoComponent implements OnInit {
     const pacienteIdParam = this.route.snapshot.queryParamMap.get('pacienteId');
     const dataHoraParam = this.route.snapshot.queryParamMap.get('dataHora');
 
-    // Se a data e hora vierem da tela de agendamento, preenche o campo
     if (dataHoraParam) {
-      this.registro.dataHoraAtendimento = dataHoraParam;
+      this.registroParcial.dataHoraAtendimento = dataHoraParam;
     }
 
-    // Carrega sempre os profissionais
     this.carregarProfissionais();
 
     if (responsavelIdParam && pacienteIdParam) {
-      // Se vier da página de animais, pré-seleciona
       this.responsavelIdSelecionado = +responsavelIdParam;
       this.pacienteIdSelecionado = +pacienteIdParam;
-      
-      // Carrega tanto o responsável quanto os seus pets
+
       forkJoin({
         responsavel: this.responsavelService.getById(this.responsavelIdSelecionado),
         pacientes: this.pacienteService.getByResponsavelId(this.responsavelIdSelecionado)
       }).subscribe(({responsavel, pacientes}) => {
-        this.responsaveis = [responsavel]; // Coloca apenas o responsável relevante na lista
+        this.responsaveis = [responsavel];
         this.pacientesDoResponsavel = pacientes;
       });
 
     } else {
-      // Senão, carrega todos os responsáveis para o dropdown
       this.carregarResponsaveis();
     }
   }
@@ -80,18 +83,17 @@ export class FormAtendimentoComponent implements OnInit {
       this.responsaveis = data;
     });
   }
-  
+
   carregarProfissionais(): void {
     this.profissionalService.get().subscribe(data => {
       this.profissionais = data;
     });
   }
 
-  // Quando o usuário muda o responsável no dropdown
   onResponsavelChange(responsavelId: number): void {
     this.responsavelIdSelecionado = responsavelId;
-    this.pacienteIdSelecionado = undefined; // Limpa a seleção de pet
-    this.pacientesDoResponsavel = []; // Limpa a lista de pets
+    this.pacienteIdSelecionado = undefined;
+    this.pacientesDoResponsavel = [];
 
     if (responsavelId) {
       this.pacienteService.getByResponsavelId(responsavelId).subscribe(data => {
@@ -99,13 +101,32 @@ export class FormAtendimentoComponent implements OnInit {
       });
     }
   }
-  
-  save(): void {
-    // Monta o objeto de atendimento com os IDs antes de salvar
-    this.registro.paciente = this.pacientesDoResponsavel.find(p => p.id === this.pacienteIdSelecionado);
-    this.registro.responsavel = this.responsaveis.find(r => r.id === this.responsavelIdSelecionado);
 
-    this.servico.save(this.registro).subscribe({
+  // ✅ CORRIGIDO E MAIS ROBUSTO:
+  // A função agora valida os dados e monta o objeto final apenas no momento de salvar.
+  save(): void {
+    // 1. Validação: Verifica se todos os IDs necessários foram selecionados
+    if (!this.responsavelIdSelecionado || !this.pacienteIdSelecionado || !this.profissionalIdSelecionado) {
+      alert('Por favor, selecione o responsável, o paciente e o profissional.');
+      return; // Interrompe a execução se algo estiver faltando
+    }
+
+    // 2. Busca os objetos completos com base nos IDs
+    const responsavelSelecionado = this.responsaveis.find(r => r.id === this.responsavelIdSelecionado);
+    const pacienteSelecionado = this.pacientesDoResponsavel.find(p => p.id === this.pacienteIdSelecionado);
+    const profissionalSelecionado = this.profissionais.find(p => p.id === this.profissionalIdSelecionado);
+
+    // 3. Monta o objeto 'Atendimento' completo
+    const atendimentoCompleto: Atendimento = {
+      ...this.registroParcial,
+      status: 'AGENDADO',
+      responsavel: responsavelSelecionado,
+      paciente: pacienteSelecionado,
+      profissional: profissionalSelecionado!
+    };
+
+    // 4. Envia o objeto completo para o serviço
+    this.servico.save(atendimentoCompleto).subscribe({
       complete: () => {
         alert('Atendimento salvo com sucesso!');
         this.router.navigate(['/list-cliente']);

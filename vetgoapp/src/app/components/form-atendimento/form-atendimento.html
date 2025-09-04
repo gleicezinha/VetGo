@@ -1,11 +1,11 @@
 <div class="form-container">
   <h2>Agende seu atendimento</h2>
   <form #formAtendimento="ngForm" (ngSubmit)="save()">
-    
+
     <div class="form-group">
       <label for="responsavel">Responsável</label>
-      <select id="responsavel" 
-              name="responsavel" 
+      <select id="responsavel"
+              name="responsavel"
               [(ngModel)]="responsavelIdSelecionado"
               (ngModelChange)="onResponsavelChange($event)"
               [disabled]="!!route.snapshot.queryParamMap.get('responsavelId')"
@@ -19,8 +19,8 @@
 
     <div class="form-group" *ngIf="pacientesDoResponsavel.length > 0">
       <label for="paciente">Paciente (Pet)</label>
-      <select id="paciente" 
-              name="paciente" 
+      <select id="paciente"
+              name="paciente"
               [(ngModel)]="pacienteIdSelecionado"
               [disabled]="!!route.snapshot.queryParamMap.get('pacienteId')"
               required>
@@ -34,28 +34,29 @@
     <div class="form-row">
       <div class="form-group">
         <label for="profissional">Profissional</label>
-        <select id="profissional" name="profissional" [(ngModel)]="registro.profissional" required>
-          <option *ngFor="let prof of profissionais" [ngValue]="prof">{{ prof.usuario?.nomeUsuario }}</option>
+        <select id="profissional" name="profissional" [(ngModel)]="profissionalIdSelecionado" required>
+          <option [ngValue]="undefined">Selecione um profissional</option>
+          <option *ngFor="let prof of profissionais" [value]="prof.id">{{ prof.usuario?.nomeUsuario }}</option>
         </select>
       </div>
       <div class="form-group">
         <label for="tipo">Tipo de Atendimento</label>
-        <select id="tipo" name="tipo" [(ngModel)]="registro.tipoDeAtendimento" required>
+        <select id="tipo" name="tipo" [(ngModel)]="registroParcial.tipoDeAtendimento" required>
           <option *ngFor="let tipo of tiposDeAtendimento" [ngValue]="tipo">{{ tipo }}</option>
         </select>
       </div>
     </div>
-    
+
     <div class="form-row">
       <div class="form-group">
         <label for="data">Data do Atendimento</label>
-        <input type="datetime-local" id="data" name="data" [(ngModel)]="registro.dataHoraAtendimento" required>
+        <input type="datetime-local" id="data" name="data" [(ngModel)]="registroParcial.dataHoraAtendimento" required>
       </div>
     </div>
 
     <div class="form-group">
       <label for="observacao">Observações</label>
-      <textarea id="observacao" name="observacao" [(ngModel)]="registro.observacao" rows="4"></textarea>
+      <textarea id="observacao" name="observacao" [(ngModel)]="registroParcial.observacao" rows="4"></textarea>
     </div>
 
     <div class="form-buttons">

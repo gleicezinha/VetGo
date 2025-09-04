@@ -9,12 +9,13 @@ import { ICrudService } from './i-crud-service';
   providedIn: 'root'
 })
 export class ProfissionalService implements ICrudService<Profissional> {
-  public apiUrl: string = environment.API_URL + '/profissionais';
+  public apiUrl: string = environment.API_URL + '/api/profissionais';
 
   constructor(private http: HttpClient) { }
 
+  // CORRIGIDO: O método agora aponta para o endpoint correto
   get(termoBusca?: string): Observable<Profissional[]> {
-    let url = this.apiUrl + '/consultar-todos';
+    let url = `${this.apiUrl}/consultar-todos`; 
     if (termoBusca) {
       url += '?termoBusca=' + termoBusca;
     }
@@ -39,5 +40,4 @@ export class ProfissionalService implements ICrudService<Profissional> {
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/remover/${id}`);
   }
-  
 }

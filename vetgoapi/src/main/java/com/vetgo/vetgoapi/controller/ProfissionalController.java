@@ -13,7 +13,7 @@ import com.vetgo.vetgoapi.repository.ProfissionalRepository;
 
 @RestController
 @RequestMapping("/api/profissionais")
-@CrossOrigin(origins = "http://localhost:4200") // ⬅️ ANOTAÇÃO DE CORS ADICIONADA/CORRIGIDA
+@CrossOrigin(origins = "http://localhost:4200") // Garante que o frontend pode acessar
 public class ProfissionalController {
 
     private final ProfissionalRepository profissionalRepository;
@@ -22,6 +22,7 @@ public class ProfissionalController {
         this.profissionalRepository = profissionalRepository;
     }
 
+    // O frontend vai chamar este endpoint
     @GetMapping("/consultar-todos")
     public ResponseEntity<List<Profissional>> listarTodos() {
         return ResponseEntity.ok(profissionalRepository.findAll());
