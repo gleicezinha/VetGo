@@ -22,24 +22,21 @@ import { forkJoin } from 'rxjs';
 })
 export class FormAtendimentoComponent implements OnInit {
 
-  // Objeto para os campos que não são de seleção
-  registroParcial = {
+  // ✅ CORRIGIDO: Todos os campos do formulário agora vivem em um único objeto.
+  registro = {
+    responsavelId: undefined as number | undefined,
+    pacienteId: undefined as number | undefined,
+    profissionalId: undefined as number | undefined,
     dataHoraAtendimento: '',
     tipoDeAtendimento: EAtendimento.CONSULTA,
     observacao: ''
   };
 
+  // Listas de dados para os selects
   tiposDeAtendimento = Object.values(EAtendimento);
-
-  // Listas para popular os selects
   responsaveis: Responsavel[] = [];
   pacientesDoResponsavel: Paciente[] = [];
   profissionais: Profissional[] = [];
-
-  // IDs para controlar os valores selecionados nos selects
-  responsavelIdSelecionado?: number;
-  pacienteIdSelecionado?: number;
-  profissionalIdSelecionado?: number;
 
   constructor(
     private servico: AtendimentoService,
@@ -56,18 +53,18 @@ export class FormAtendimentoComponent implements OnInit {
     const dataHoraParam = this.route.snapshot.queryParamMap.get('dataHora');
 
     if (dataHoraParam) {
-      this.registroParcial.dataHoraAtendimento = dataHoraParam;
+      this.registro.dataHoraAtendimento = dataHoraParam;
     }
 
     this.carregarProfissionais();
 
     if (responsavelIdParam && pacienteIdParam) {
-      this.responsavelIdSelecionado = +responsavelIdParam;
-      this.pacienteIdSelecionado = +pacienteIdParam;
+      this.registro.responsavelId = +responsavelIdParam;
+      this.registro.pacienteId = +pacienteIdParam;
 
       forkJoin({
-        responsavel: this.responsavelService.getById(this.responsavelIdSelecionado),
-        pacientes: this.pacienteService.getByResponsavelId(this.responsavelIdSelecionado)
+        responsavel: this.responsavelService.getById(this.registro.responsavelId),
+        pacientes: this.pacienteService.getByResponsavelId(this.registro.responsavelId)
       }).subscribe(({responsavel, pacientes}) => {
         this.responsaveis = [responsavel];
         this.pacientesDoResponsavel = pacientes;
@@ -91,8 +88,7 @@ export class FormAtendimentoComponent implements OnInit {
   }
 
   onResponsavelChange(responsavelId: number): void {
-    this.responsavelIdSelecionado = responsavelId;
-    this.pacienteIdSelecionado = undefined;
+    this.registro.pacienteId = undefined;
     this.pacientesDoResponsavel = [];
 
     if (responsavelId) {
@@ -102,31 +98,28 @@ export class FormAtendimentoComponent implements OnInit {
     }
   }
 
-  // ✅ CORRIGIDO E MAIS ROBUSTO:
-  // A função agora valida os dados e monta o objeto final apenas no momento de salvar.
+  // ✅ CORRIGIDO: A função save agora é muito mais simples e segura.
   save(): void {
-    // 1. Validação: Verifica se todos os IDs necessários foram selecionados
-    if (!this.responsavelIdSelecionado || !this.pacienteIdSelecionado || !this.profissionalIdSelecionado) {
-      alert('Por favor, selecione o responsável, o paciente e o profissional.');
-      return; // Interrompe a execução se algo estiver faltando
+    const responsavelSelecionado = this.responsaveis.find(r => r.id === this.registro.responsavelId);
+    const pacienteSelecionado = this.pacientesDoResponsavel.find(p => p.id === this.registro.pacienteId);
+    const profissionalSelecionado = this.profissionais.find(p => p.id === this.registro.profissionalId);
+
+    if (!responsavelSelecionado || !pacienteSelecionado || !profissionalSelecionado) {
+      alert('Dados incompletos. Verifique o formulário.');
+      return;
     }
 
-    // 2. Busca os objetos completos com base nos IDs
-    const responsavelSelecionado = this.responsaveis.find(r => r.id === this.responsavelIdSelecionado);
-    const pacienteSelecionado = this.pacientesDoResponsavel.find(p => p.id === this.pacienteIdSelecionado);
-    const profissionalSelecionado = this.profissionais.find(p => p.id === this.profissionalIdSelecionado);
-
-    // 3. Monta o objeto 'Atendimento' completo
-    const atendimentoCompleto: Atendimento = {
-      ...this.registroParcial,
+    const atendimentoFinal: Atendimento = {
+      dataHoraAtendimento: this.registro.dataHoraAtendimento,
+      tipoDeAtendimento: this.registro.tipoDeAtendimento,
+      observacao: this.registro.observacao,
       status: 'AGENDADO',
-      responsavel: responsavelSelecionado,
       paciente: pacienteSelecionado,
-      profissional: profissionalSelecionado!
+      responsavel: responsavelSelecionado,
+      profissional: profissionalSelecionado
     };
 
-    // 4. Envia o objeto completo para o serviço
-    this.servico.save(atendimentoCompleto).subscribe({
+    this.servico.save(atendimentoFinal).subscribe({
       complete: () => {
         alert('Atendimento salvo com sucesso!');
         this.router.navigate(['/list-cliente']);

@@ -2,13 +2,13 @@ import { Paciente } from "./paciente";
 import { Profissional } from "./profissional";
 import { Responsavel } from "./responsavel";
 
-export type Atendimento = {
+export interface Atendimento {
   id?: number;
-  dataHoraAtendimento: string; // Corrigido para corresponder ao backend
+  dataHoraAtendimento: string;
   status: string;
   tipoDeAtendimento: string;
   paciente?: Paciente;
   responsavel?: Responsavel;
   profissional: Profissional;
-  observacao: string;  
+  observacao: string;
 }
