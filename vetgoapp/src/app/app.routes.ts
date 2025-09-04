@@ -7,15 +7,16 @@ import { ListClienteComponent } from './components/list-cliente/list-cliente';
 import { FormAtendimentoComponent } from './components/form-atendimento/form-atendimento';
 import { AnimaisCliente} from './components/animais-cliente/animais-cliente';
 
+// Importa o guarda de rota
+import { authGuard } from './guards/auth.guard'; 
 
 export const routes: Routes = [
     { path: '', redirectTo: 'agendamento', pathMatch: 'full' },
     { path: 'agendamento', component: AgendamentoComponent },
-    { path: 'form-cliente', component: FormClienteComponent },
-    { path: 'form-pet', component: FormPetComponent },
     { path: 'login', component: LoginComponent },
-    { path: 'list-cliente', component: ListClienteComponent },
-    // Rota atualizada para o formulário de atendimento
-    { path: 'form-atendimento', component: FormAtendimentoComponent },
-    { path: 'animais-cliente/:id', component: AnimaisCliente } 
+    { path: 'list-cliente', component: ListClienteComponent, canActivate: [authGuard] },
+    { path: 'form-cliente', component: FormClienteComponent, canActivate: [authGuard] },
+    { path: 'form-pet', component: FormPetComponent, canActivate: [authGuard] },
+    { path: 'form-atendimento', component: FormAtendimentoComponent, canActivate: [authGuard] },
+    { path: 'animais-cliente/:id', component: AnimaisCliente, canActivate: [authGuard] } 
 ];
