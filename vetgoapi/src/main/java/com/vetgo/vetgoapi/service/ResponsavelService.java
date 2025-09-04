@@ -34,11 +34,17 @@ public class ResponsavelService implements ICrudService<Responsavel> {
                 .orElseThrow(() -> new ResourceNotFoundException("Responsável não encontrado com o ID: " + id));
     }
 
+    // LÓGICA CORRIGIDA E MAIS SEGURA
     public Optional<Responsavel> getByUsuarioId(Long usuarioId) {
+        // Primeiro, buscamos o usuário.
         Optional<Usuario> usuario = usuarioRepository.findById(usuarioId);
-        if (usuario.isPresent()) {
-            return responsavelRepository.findByUsuario(usuario.get());
+        
+        // Se o usuário existir e tiver o papel de Responsável, buscamos o perfil correspondente.
+        if (usuario.isPresent() && usuario.get().getPapel().toString().equals("ROLE_RESPONSAVEL")) {
+             return responsavelRepository.findByUsuario(usuario.get());
         }
+        
+        // Caso contrário, retornamos um Optional vazio.
         return Optional.empty();
     }
     
@@ -75,7 +81,6 @@ public class ResponsavelService implements ICrudService<Responsavel> {
         responsavelRepository.deleteById(id);
     }
     
-    // MÉTODO CORRIGIDO: Agora usa o nome de método findByUsuario_Telefone
     public Optional<Responsavel> getByTelefone(String telefone) {
         return responsavelRepository.findByUsuario_Telefone(telefone);
     }
