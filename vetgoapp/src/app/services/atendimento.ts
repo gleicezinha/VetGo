@@ -20,26 +20,28 @@ export class AtendimentoService {
     return this.http.get<Atendimento[]>(`${this.apiUrl}/por-paciente/${id}`);
   }
 
-  // ✅ CORRIGIDO PARA SEMPRE ENVIAR O DTO CORRETO PARA AGENDAMENTO
+  // ✅ Agora também envia responsavelId e observacao
   save(objeto: Atendimento): Observable<Atendimento> {
     if (objeto.id) {
-        // Lógica para ATUALIZAR um atendimento (se necessário no futuro)
-        return this.http.put<Atendimento>(`${this.apiUrl}/${objeto.id}`, objeto);
+      // Lógica para ATUALIZAR um atendimento (se necessário no futuro)
+      return this.http.put<Atendimento>(`${this.apiUrl}/${objeto.id}`, objeto);
     } else {
-        // Lógica para CRIAR um novo atendimento (agendamento)
-        if (!objeto.paciente?.id || !objeto.profissional?.id) {
-            throw new Error('IDs do paciente e do profissional são obrigatórios para agendar.');
-        }
+      // Lógica para CRIAR um novo atendimento (agendamento)
+      if (!objeto.paciente?.id || !objeto.profissional?.id) {
+        throw new Error('IDs do paciente e do profissional são obrigatórios para agendar.');
+      }
 
-        const agendamentoRequest = {
-          pacienteId: objeto.paciente.id,
-          profissionalId: objeto.profissional.id,
-          dataHoraAtendimento: objeto.dataHoraAtendimento,
-          tipoDeAtendimento: objeto.tipoDeAtendimento
-        };
+      const agendamentoRequest = {
+        pacienteId: objeto.paciente.id,
+        profissionalId: objeto.profissional.id,
+        responsavelId: objeto.responsavel?.id,
+        dataHoraAtendimento: objeto.dataHoraAtendimento,
+        tipoDeAtendimento: objeto.tipoDeAtendimento,
+        observacao: objeto.observacao
+      };
 
-        // Envia para o endpoint correto: /api/atendimentos/agendar
-        return this.http.post<Atendimento>(`${this.apiUrl}/agendar`, agendamentoRequest);
+      // Envia para o endpoint correto: /api/atendimentos/agendar
+      return this.http.post<Atendimento>(`${this.apiUrl}/agendar`, agendamentoRequest);
     }
   }
 

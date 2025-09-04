@@ -103,7 +103,10 @@ export class FormAtendimentoComponent implements OnInit {
     const responsavelSelecionado = this.responsaveis.find(r => r.id === this.registro.responsavelId);
     const pacienteSelecionado = this.pacientesDoResponsavel.find(p => p.id === this.registro.pacienteId);
     const profissionalSelecionado = this.profissionais.find(p => p.id === this.registro.profissionalId);
-
+    console.log('Registro:', this.registro);
+    console.log('Responsável selecionado:', responsavelSelecionado);
+    console.log('Paciente selecionado:', pacienteSelecionado);
+    console.log('Profissional selecionado:', profissionalSelecionado);
     if (!responsavelSelecionado || !pacienteSelecionado || !profissionalSelecionado) {
       alert('Dados incompletos. Verifique o formulário.');
       return;

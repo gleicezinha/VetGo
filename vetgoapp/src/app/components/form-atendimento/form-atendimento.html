@@ -11,7 +11,7 @@
               [disabled]="!!route.snapshot.queryParamMap.get('responsavelId')"
               required>
         <option [ngValue]="undefined">Selecione um responsável</option>
-        <option *ngFor="let resp of responsaveis" [value]="resp.id">
+        <option *ngFor="let resp of responsaveis" [ngValue]="resp.id">
           {{ resp.usuario?.nomeUsuario }}
         </option>
       </select>
@@ -25,7 +25,7 @@
               [disabled]="!!route.snapshot.queryParamMap.get('pacienteId')"
               required>
         <option [ngValue]="undefined">Selecione um pet</option>
-        <option *ngFor="let pet of pacientesDoResponsavel" [value]="pet.id">
+        <option *ngFor="let pet of pacientesDoResponsavel" [ngValue]="pet.id">
           {{ pet.nome }}
         </option>
       </select>
@@ -36,13 +36,15 @@
         <label for="profissional">Profissional</label>
         <select id="profissional" name="profissional" [(ngModel)]="registro.profissionalId" required>
           <option [ngValue]="undefined">Selecione um profissional</option>
-          <option *ngFor="let prof of profissionais" [value]="prof.id">{{ prof.usuario?.nomeUsuario }}</option>
+          <option *ngFor="let prof of profissionais" [ngValue]="prof.id">
+            {{ prof.usuario?.nomeUsuario }}
+          </option>
         </select>
       </div>
       <div class="form-group">
         <label for="tipo">Tipo de Atendimento</label>
         <select id="tipo" name="tipo" [(ngModel)]="registro.tipoDeAtendimento" required>
-          <option *ngFor="let tipo of tiposDeAtendimento" [value]="tipo">{{ tipo }}</option>
+          <option *ngFor="let tipo of tiposDeAtendimento" [ngValue]="tipo">{{ tipo }}</option>
         </select>
       </div>
     </div>
