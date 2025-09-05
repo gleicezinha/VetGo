@@ -1,7 +1,6 @@
 package com.vetgo.vetgoapi.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,26 +26,27 @@ public class UsuarioService implements ICrudService<Usuario> {
         return registro;
     }
 
-    // Este método é o que o novo LoginController usará.
-    public Optional<Usuario> getByTelefone(String telefone) {
-        return repo.findByTelefone(telefone);
-    }
-
     @Override
     public Usuario save(Usuario objeto) {
-        Optional<Usuario> usuarioExistente = repo.findById(objeto.getId());
-        if (usuarioExistente.isPresent()) {
-            Usuario usuarioAtualizado = usuarioExistente.get();
-            usuarioAtualizado.setNomeUsuario(objeto.getNomeUsuario());
-            usuarioAtualizado.setTelefone(objeto.getTelefone());
-            return repo.save(usuarioAtualizado);
-        } else {
-            return repo.save(objeto);
+      if (objeto.getId() != null) {
+            Usuario existente = repo.findById(objeto.getId()).orElse(null);
+            if (existente != null) {
+                existente.setNomeUsuario(objeto.getNomeUsuario());
+                existente.setTelefone(objeto.getTelefone());
+                existente.setPapel(objeto.getPapel());
+                return repo.save(existente);
+            }
         }
+        return repo.save(objeto);
+
     }
 
     @Override
     public void delete(Long id) {
         repo.deleteById(id);
+    }
+    public Usuario buscaPorTelefone(String telefone) {
+        Usuario registro = repo.buscaPorTelefone(telefone);
+        return registro;
     }
 }

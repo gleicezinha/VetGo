@@ -1,38 +1,132 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { HttpClient, HttpRequest } from '@angular/common/http';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { Login } from '../models/login.model';
 import { environment } from '../../environments/environment';
+import { Router } from '@angular/router';
 import { Usuario } from '../models/usuario';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoginService {
-  private apiUrl = environment.API_URL + '/api/login/contato';
-
-  constructor(private http: HttpClient) { }
-
-  loginComContato(telefone: string): Observable<Usuario> {
-    const usuario: Partial<Usuario> = { telefone };
-    return this.http.post<Usuario>(this.apiUrl, usuario)
-      .pipe(
-        catchError(this.handleError)
-      );
-  }
-
-  private handleError(error: HttpErrorResponse) {
-    let errorMessage = 'Ocorreu um erro desconhecido!';
-    if (error.error instanceof ErrorEvent) {
-      errorMessage = `Erro do lado do cliente: ${error.error.message}`;
-    } else {
-      if (error.status === 404) {
-        errorMessage = 'Contato não cadastrado.';
-      } else {
-        errorMessage = `Erro do servidor: Código ${error.status}, mensagem: ${error.message}`;
-      }
+  constructor(
+    private http: HttpClient,
+    private router: Router
+  ){
+    const dadosUsuario = sessionStorage.getItem('usuario') || '{}';
+    const usuario = JSON.parse(dadosUsuario);
+    if (this.estaLogado()) {
+      this.agendarRenovacaoToken();
     }
-    console.error(errorMessage);
-    return throwError(() => new Error(errorMessage));
   }
+  usuario$ = new BehaviorSubject<Usuario | null>(null);
+  usuarioAutenticado: BehaviorSubject<Usuario> = new BehaviorSubject<Usuario>(<Usuario>{});
+  private temRequisicaoRecente: boolean = false;
+  private intervaloRenovacaoToken: any;
+
+  private agendarRenovacaoToken(): void {
+    const intervalo = 60000;
+    this.intervaloRenovacaoToken = setInterval(() => {
+      if (this.temRequisicaoRecente) {
+        this.renovarToken();
+        this.temRequisicaoRecente = false;
+      }
+    }, intervalo);
+  }
+
+  private renovarToken(): void {
+    const url = environment.API_URL + 'renovar';
+    this.http.get(url, {responseType: 'text'}).subscribe({
+      next: (token: string) => {
+        this.iniciarSessaoUsuario(token);
+      }
+    })
+  }
+
+  private iniciarSessaoUsuario(token: string): void {
+    const dados = token.split('.')[1];
+    const dadosDecodificados = atob(dados);
+    const conteudoToken = JSON.parse(dadosDecodificados);
+    const expiracao = conteudoToken.exp * 1000;
+    
+    const usuario = <Usuario>{};
+    usuario.telefone = conteudoToken.sub;
+    usuario.nomeUsuario = conteudoToken.nomeCompleto;
+    usuario.papel = conteudoToken.papel;
+
+    sessionStorage.setItem('token', token);
+    sessionStorage.setItem('usuario', JSON.stringify(usuario));
+    sessionStorage.setItem('expiracao', expiracao.toString());
+
+    this.usuarioAutenticado.next(usuario);
+  }
+
+  login(usuario: Usuario): void {
+    const url = environment.API_URL + '/autenticacao';
+    this.http.post(url, usuario, {responseType: 'text'}).subscribe({
+      next: (token: string) => {
+        this.iniciarSessaoUsuario(token);
+        const dados = token.split('.')[1];
+        const dadosDecodificados = atob(dados);
+        const conteudoToken = JSON.parse(dadosDecodificados);
+        sessionStorage.setItem('nomeUsuario', conteudoToken.nomeCompleto);
+        sessionStorage.setItem('papelUsuario', conteudoToken.papel);
+        const usuarioLogado: Usuario = {
+          id: 0, 
+          nomeUsuario: conteudoToken.nomeCompleto,
+          cpf: '',
+          email: '',
+          telefone: '',
+          papel: conteudoToken.papel,
+          ativo: true
+        };
+        this.usuario$.next(usuarioLogado); 
+      },
+      complete: () => {
+        this.router.navigate(['atendimento'])
+      }
+    })
+  }
+
+  logout(): void {
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('usuario');
+    sessionStorage.removeItem('expiracao');
+    document.cookie = 'XSRF-TOKEN=; Max-Age=0; path=/';
+    clearInterval(this.intervaloRenovacaoToken);
+    this.router.navigate(['/login']);
+  }
+
+  estaLogado(): boolean {
+    const token = sessionStorage.getItem('token');
+    if (token == null){
+      return false;
+    }
+
+    const expiracao = sessionStorage.getItem('expiracao');
+    const dataExpiracao = new Date(Number(expiracao));
+    const agora = new Date();
+    const estaExpirado = agora > dataExpiracao;
+    if (estaExpirado){
+      this.logout();
+    }
+
+    return !estaExpirado;
+
+  }
+
+  getCabecalho(requisicao: HttpRequest<any>): HttpRequest<any> {
+    const token = sessionStorage.getItem('token');
+    if (token) {
+      this.temRequisicaoRecente = true;
+      return requisicao.clone({
+        withCredentials: true,
+        headers: requisicao.headers.set('Authorization', 'Bearer ' + token)
+      });
+    }
+    return requisicao;
+  }
+
+
 }

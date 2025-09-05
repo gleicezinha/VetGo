@@ -1,69 +1,59 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { Router } from '@angular/router';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatCard } from '@angular/material/card';
 import { LoginService } from '../../services/login';
 import { Usuario } from '../../models/usuario';
-import { switchMap } from 'rxjs/operators';
-import { of } from 'rxjs';
 
-import { ResponsavelService } from '../../services/responsavel';
-import { AuthService } from '../../services/AuthService';
 
 @Component({
-  standalone: true,
   selector: 'app-login',
+  standalone: true,
+  templateUrl: './login.component.html',
   imports: [
-    ReactiveFormsModule, FormsModule, CommonModule, HttpClientModule
+    ReactiveFormsModule,
+    MatCheckboxModule,
+    MatInputModule,
+    MatButtonModule,
+    MatSelectModule,
+    MatCard
   ],
-  templateUrl: './login.html',
-  styleUrl: './login.scss'
+  styleUrls: ['./login.component.scss']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
 
-  telefone: string = '';
+  formularioLogin: FormGroup;
+  erro: string | null = null;
 
   constructor(
-    private loginService: LoginService, 
-    private router: Router,
-    private authService: AuthService,
-    private responsavelService: ResponsavelService
-  ) { }
+    private fb: FormBuilder,
+    private loginService: LoginService,
+    private router: Router
+  ) {
+    this.formularioLogin = this.fb.group({
+      telefone: ['', [Validators.required]]
+    });
+  }
 
-  ngOnInit(): void { }
+  fazerLogin(): void {
+    if (this.formularioLogin.invalid) {
+      this.erro = 'Preencha todos os campos';
+      return;
+    }
 
-  logar(): void {
-    if (this.telefone) {
-      this.loginService.loginComContato(this.telefone).pipe(
-        switchMap((usuario: Usuario) => {
-          this.authService.login(usuario);
-          if (usuario.papel === 'ROLE_RESPONSAVEL') {
-            return this.responsavelService.getByUsuarioId(usuario.id);
-          } else {
-            return of({ id: usuario.id });
-          }
-        })
-      ).subscribe({
-        next: (response: any) => {
-          const userRole = this.authService.currentUser.value?.papel;
-          if (userRole === 'ROLE_RESPONSAVEL') {
-            this.router.navigate(['/animais-cliente', response.id]);
-          } else {
-            this.router.navigate(['/list-cliente']);
-          }
-        },
-        error: (error) => {
-          if (error.message.includes('Contato não cadastrado')) {
-            alert('Contato não cadastrado. Redirecionando para o formulário de cadastro.');
-            this.router.navigate(['/form-cliente']);
-          } else {
-            alert(error.message);
-          }
-        }
-      });
-    } else {
-      alert('Por favor, digite seu número de telefone.');
+    const usuario = <Usuario>{}
+    usuario.telefone = this.formularioLogin.value.telefone;
+
+    try {
+      this.loginService.login(usuario);
+    } catch (e) {
+      this.erro = 'Erro ao realizar login';
+      console.error(e);
     }
   }
+
 }

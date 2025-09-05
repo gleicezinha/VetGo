@@ -21,13 +21,14 @@ public class Responsavel implements Serializable {
     @Column(name = "id_tutor")
     private Long id;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id_usuario", referencedColumnName = "id", unique = true)
-    private Usuario usuario;
-
-    // Construtor vazio para o Jackson
+    @OneToOne
+    @JoinColumn(name = "usuario_id") // A coluna que fará a ligação no banco de dados
+    private Usuario usuario;    // Construtor vazio para o Jackson
     public Responsavel() {
     }
+    private String nomeCompleto;
+
+    private String telefone;
 
     // Getters e Setters
     public Long getId() {
@@ -45,4 +46,20 @@ public class Responsavel implements Serializable {
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
+    public String getTelefone() {
+        return telefone;
+    }
+
+    public void setTelefone(String telefone) {
+        this.telefone = telefone;
+    }
+
+    public String getNomeCompleto() {
+        return nomeCompleto;
+    }
+
+    public void setNomeCompleto(String nomeCompleto) {
+        this.nomeCompleto = nomeCompleto;
+    }
+
 }

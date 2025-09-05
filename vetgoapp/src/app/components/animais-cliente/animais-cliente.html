@@ -3,10 +3,9 @@
         <h3>{{ paciente.nome }}</h3>
         <p>Espécie: {{ paciente.especie }}</p>
         <p>Sexo: {{ paciente.sexo }}</p>
-        <p *ngIf="usuarioLogado?.papel === 'ROLE_ADMIN' || usuarioLogado?.papel === 'ROLE_PROFISSIONAL'">Situação: {{ paciente.situacao }}</p>
+        <p >Situação: {{ paciente.situacao }}</p>
         <div class="actions">
             <button
-                *ngIf="usuarioLogado?.papel === 'ROLE_ADMIN' || usuarioLogado?.papel === 'ROLE_PROFISSIONAL'"
                 class="delete-button"
                 (click)="excluirPaciente(paciente.id)"
             >

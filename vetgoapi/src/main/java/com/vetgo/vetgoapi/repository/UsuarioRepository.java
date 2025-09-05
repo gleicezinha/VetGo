@@ -12,15 +12,12 @@ import com.vetgo.vetgoapi.model.Usuario;
 
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
-
-    @Query("SELECT u FROM Usuario u WHERE u.nomeUsuario LIKE %:termoBusca% OR u.telefone LIKE %:termoBusca% OR u.cpf LIKE %:termoBusca%")
-    List<Usuario> busca(@Param("termoBusca") String termoBusca);
-
+    @Query("""
+            SELECT u from Usuario u
+            WHERE (:termoBusca IS NULL OR u.nomeUsuario LIKE %:termoBusca%)
+            """)
+    List<Usuario> busca(String termoBusca);
     @Query("SELECT u FROM Usuario u WHERE u.telefone = :telefone")
     Usuario buscaPorTelefone(@Param("telefone") String telefone);
 
-    Optional<Usuario> findByEmail(String email);
-    Optional<Usuario> findByCpf(String cpf);
-
-    Optional<Usuario> findByTelefone(String telefone);
 }

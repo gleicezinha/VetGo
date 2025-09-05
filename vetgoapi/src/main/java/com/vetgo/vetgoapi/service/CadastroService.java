@@ -28,7 +28,6 @@ public class CadastroService {
 
     @Transactional
     public Responsavel cadastrarTutor(Usuario usuario) {
-        validarNovoUsuario(usuario);
         
         Usuario novoUsuario = usuarioRepository.save(usuario);
 
@@ -41,18 +40,9 @@ public class CadastroService {
     @Transactional
     public Profissional cadastrarProfissional(Profissional profissional) {
         Usuario usuario = profissional.getUsuario();
-        validarNovoUsuario(usuario);
+  
         
         usuarioRepository.save(usuario);
         return profissionalRepository.save(profissional);
-    }
-    
-    private void validarNovoUsuario(Usuario usuario) {
-        usuarioRepository.findByEmail(usuario.getEmail()).ifPresent(u -> {
-            throw new BusinessRuleException("O e-mail informado já está em uso.");
-        });
-        usuarioRepository.findByCpf(usuario.getCpf()).ifPresent(u -> {
-            throw new BusinessRuleException("O CPF informado já está em uso.");
-        });
     }
 }
