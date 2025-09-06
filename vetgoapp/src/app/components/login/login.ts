@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -8,23 +8,23 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatCard } from '@angular/material/card';
 import { LoginService } from '../../services/login';
 import { Usuario } from '../../models/usuario';
+import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 
 
 @Component({
-  selector: 'app-login',
   standalone: true,
-  templateUrl: './login.component.html',
+  selector: 'app-login',
   imports: [
-    ReactiveFormsModule,
-    MatCheckboxModule,
-    MatInputModule,
-    MatButtonModule,
-    MatSelectModule,
-    MatCard
+    ReactiveFormsModule, FormsModule, CommonModule, HttpClientModule
   ],
-  styleUrls: ['./login.component.scss']
+  templateUrl: './login.html',
+  styleUrl: './login.scss'
 })
-export class LoginComponent {
+export class LoginComponent{
+
+  telefone: string = '';
+
 
   formularioLogin: FormGroup;
   erro: string | null = null;

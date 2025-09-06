@@ -29,9 +29,9 @@ export class AgendamentoComponent implements OnInit {
 
   ngOnInit(): void {
     // Assina o estado de login para verificar a autenticação
-    this.authService.isLoggedIn.subscribe(status => {
-      this.isLoggedIn = status;
-    });
+    // this.authService.isLoggedIn.subscribe(status => {
+    //   this.isLoggedIn = status;
+    // });
   }
 
   selecionarData(event: Event): void {
