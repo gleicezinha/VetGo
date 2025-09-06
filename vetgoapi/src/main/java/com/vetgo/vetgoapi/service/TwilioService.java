@@ -1,9 +1,12 @@
 package com.vetgo.vetgoapi.service;
+
 import com.twilio.Twilio;
 import com.twilio.rest.verify.v2.service.Verification;
 import com.twilio.rest.verify.v2.service.VerificationCheck;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
 
 @Service
 public class TwilioService {
@@ -17,24 +20,33 @@ public class TwilioService {
     @Value("${twilio.verifyServiceSid}")
     private String verifyServiceSid;
 
-    public void init() {
-        Twilio.init(accountSid, authToken);
+    private boolean initialized = false;
+
+    private void init() {
+        if (!initialized) {
+            Twilio.init(accountSid, authToken);
+            initialized = true;
+        }
     }
 
-    public Verification sendCode(String phone) {
+    // Enviar código via WhatsApp
+    public String sendCode(String phone) {
         init();
-        return Verification.creator(
+        Verification verification = Verification.creator(
                 verifyServiceSid,
                 "whatsapp:" + phone,
                 "whatsapp"
         ).create();
+        return verification.getStatus(); // "pending"
     }
 
-    public VerificationCheck verifyCode(String phone, String code) {
+    // Validar código
+    public String verifyCode(String phone, String code) {
         init();
-        return VerificationCheck.creator(verifyServiceSid)
+        VerificationCheck check = VerificationCheck.creator(verifyServiceSid)
                 .setTo("whatsapp:" + phone)
                 .setCode(code)
                 .create();
+        return check.getStatus(); // "approved" se válido
     }
 }
