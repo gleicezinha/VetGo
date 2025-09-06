@@ -3,6 +3,8 @@ package com.vetgo.vetgoapi.model;
 import java.io.Serializable;
 import java.time.LocalDateTime; // IMPORT ATUALIZADO
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -28,6 +30,7 @@ public class Atendimento implements Serializable {
     private Long id;
 
     // NOVO CAMPO UNIFICADO
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     @Column(name = "data_hora_atendimento", nullable = false)
     private LocalDateTime dataHoraAtendimento;
 
