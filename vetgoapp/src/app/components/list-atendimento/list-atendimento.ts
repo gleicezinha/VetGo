@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core'; // 1. Importar ChangeDetectorRef
 import { CommonModule, DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { AtendimentoService } from '../../services/atendimento';
@@ -17,7 +17,8 @@ export class ListAtendimentoComponent implements OnInit {
 
     constructor(
         private atendimentoService: AtendimentoService,
-        private router: Router
+        private router: Router,
+        private cdr: ChangeDetectorRef // 2. Injetar o ChangeDetectorRef
     ) { }
 
     ngOnInit(): void {
@@ -28,6 +29,7 @@ export class ListAtendimentoComponent implements OnInit {
         this.atendimentoService.getAll().subscribe({
             next: (dados) => {
                 this.atendimentos = dados;
+                this.cdr.detectChanges(); // 3. Forçar a detecção de mudanças
             },
             error: (err) => {
                 console.error('Erro ao carregar atendimentos:', err);

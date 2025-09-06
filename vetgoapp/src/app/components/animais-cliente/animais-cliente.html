@@ -7,8 +7,8 @@
             </div>
         </div>
 
-        <div *ngIf="pacientes.length > 0; else noPets">
-            <div *ngFor="let paciente of pacientes" class="paciente-card-container">
+        <div *ngIf="pacientesComAtendimentos.length > 0; else noPets">
+            <div *ngFor="let paciente of pacientesComAtendimentos" class="paciente-card-container">
                 <div class="paciente-card">
                     <div class="paciente-header">
                         <h3>{{ paciente.nome }}</h3>
@@ -20,8 +20,8 @@
                         <p><strong>Nascimento:</strong> {{ paciente.dataNascimento | date:'dd/MM/yyyy' }}</p>
                     </div>
                     <div class="action-buttons-header">
-                        <button class="action-button atestado" (click)="cadastrarAtendimento(paciente)">Novo
-                            Atendimento</button>
+                        <button *ngIf="usuarioLogado?.papel !== 'ROLE_RESPONSAVEL'" class="action-button atestado"
+                            (click)="cadastrarAtendimento(paciente)">Novo Atendimento</button>
                     </div>
                 </div>
                 <div class="status-and-actions">
@@ -46,12 +46,12 @@
 
     <div class="right-panel">
         <h3>Próximos Atendimentos</h3>
-        <div *ngIf="pacientes.length > 0; else noAtendimentos">
-            <div *ngFor="let paciente of pacientes">
-                <div *ngIf="getAtendimentosDePaciente(paciente.id).length > 0">
+        <div *ngIf="pacientesComAtendimentos.length > 0; else noAtendimentos">
+            <div *ngFor="let paciente of pacientesComAtendimentos">
+                <div *ngIf="paciente.atendimentos.length > 0">
                     <h4>{{ paciente.nome }}</h4>
                     <ul>
-                        <li *ngFor="let atendimento of getAtendimentosDePaciente(paciente.id)" class="atendimento-item">
+                        <li *ngFor="let atendimento of paciente.atendimentos" class="atendimento-item">
                             {{ atendimento.dataHoraAtendimento | date:'dd/MM/yyyy HH:mm' }} - {{
                             atendimento.tipoDeAtendimento }}
                         </li>

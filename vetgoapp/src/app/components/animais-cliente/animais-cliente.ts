@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core'; // REMOVER ChangeDetectorRef
 import { CommonModule, DatePipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -17,6 +17,11 @@ import { PacienteService } from '../../services/paciente';
 import { AtendimentoService } from '../../services/atendimento';
 import { AuthService } from '../../services/AuthService';
 
+// NOVA INTERFACE PARA FACILITAR A RENDERIZAÇÃO
+interface PacienteComAtendimentos extends Paciente {
+  atendimentos: Atendimento[];
+}
+
 @Component({
   standalone: true,
   selector: 'app-animais-cliente',
@@ -26,8 +31,8 @@ import { AuthService } from '../../services/AuthService';
 })
 export class AnimaisCliente implements OnInit {
   responsavel: Responsavel = {} as Responsavel;
-  pacientes: Paciente[] = [];
-  atendimentosPorPaciente: { [key: number]: Atendimento[] } = {};
+  // VAMOS USAR UMA NOVA ESTRUTURA DE DADOS
+  pacientesComAtendimentos: PacienteComAtendimentos[] = [];
   usuarioLogado: Usuario | null = null;
 
   constructor(
@@ -37,6 +42,7 @@ export class AnimaisCliente implements OnInit {
     private pacienteService: PacienteService,
     private atendimentoService: AtendimentoService,
     private authService: AuthService
+    // NÃO PRECISA MAIS DO ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
@@ -48,7 +54,6 @@ export class AnimaisCliente implements OnInit {
       this.usuarioLogado = user;
 
       let responsavel$: Observable<Responsavel>;
-
       if (this.usuarioLogado?.papel === 'ROLE_RESPONSAVEL') {
         responsavel$ = this.responsavelService.getByUsuarioId(id);
       } else {
@@ -64,28 +69,30 @@ export class AnimaisCliente implements OnInit {
           return this.pacienteService.getByResponsavelId(responsavel.id);
         }),
         switchMap((pacientes: Paciente[]) => {
-          this.pacientes = pacientes;
           if (pacientes.length === 0) {
             return of([]);
           }
-          const atendimentos$: Observable<Atendimento[]>[] = pacientes.map(p =>
-            p.id ? this.atendimentoService.getByPacienteId(p.id) : of([])
+          const todosOsObservables = pacientes.map(paciente =>
+            this.atendimentoService.getByPacienteId(paciente.id).pipe(
+              switchMap(atendimentos => {
+                // Combina o paciente com seus atendimentos
+                return of({ ...paciente, atendimentos: atendimentos });
+              })
+            )
           );
-          return forkJoin(atendimentos$);
+          return forkJoin(todosOsObservables);
         })
       ).subscribe({
-        next: (listasAtendimentos) => {
-          listasAtendimentos.forEach((atendimentos, index) => {
-            const pacienteId = this.pacientes[index]?.id;
-            if (pacienteId) {
-              this.atendimentosPorPaciente[pacienteId] = atendimentos;
-            }
-          });
+        next: (pacientesComAtendimentos) => {
+          // O resultado final já é o array combinado que precisamos
+          this.pacientesComAtendimentos = pacientesComAtendimentos;
         },
         error: (erro) => console.error('Erro ao carregar dados da página de animais:', erro)
       });
     });
   }
+
+  // ... O restante dos métodos permanece igual ...
 
   cadastrarAtendimento(paciente: Paciente): void {
     this.router.navigate(['/form-atendimento'], {
@@ -94,10 +101,6 @@ export class AnimaisCliente implements OnInit {
         pacienteId: paciente.id
       }
     });
-  }
-
-  getAtendimentosDePaciente(pacienteId: number): Atendimento[] {
-    return this.atendimentosPorPaciente[pacienteId] || [];
   }
 
   editarPaciente(pacienteId: number): void {
@@ -114,7 +117,6 @@ export class AnimaisCliente implements OnInit {
 
   toggleSituacao(paciente: Paciente): void {
     const novaSituacao = paciente.situacao === 'VIVO' ? 'MORTO' : 'VIVO';
-    // CORREÇÃO: Garante que a propriedade 'situacao' tenha o tipo correto
     const pacienteAtualizado = { ...paciente, situacao: novaSituacao as 'VIVO' | 'MORTO' };
 
     this.pacienteService.save(pacienteAtualizado).subscribe({
@@ -130,14 +132,14 @@ export class AnimaisCliente implements OnInit {
   }
 
   excluirPaciente(pacienteId: number): void {
-    const paciente = this.pacientes.find(p => p.id === pacienteId);
+    const paciente = this.pacientesComAtendimentos.find(p => p.id === pacienteId);
     if (!paciente) return;
 
     if (this.podeExcluir(paciente)) {
       if (confirm(`Tem certeza que deseja excluir o paciente ${paciente.nome}?`)) {
         this.pacienteService.delete(paciente.id).subscribe({
           next: () => {
-            this.pacientes = this.pacientes.filter(p => p.id !== paciente.id);
+            this.pacientesComAtendimentos = this.pacientesComAtendimentos.filter(p => p.id !== paciente.id);
           },
           error: (erro) => console.error('Erro ao excluir o paciente:', erro)
         });

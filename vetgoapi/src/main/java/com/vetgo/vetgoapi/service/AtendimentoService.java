@@ -1,6 +1,8 @@
 package com.vetgo.vetgoapi.service;
 
+import java.time.LocalDate; // Importar LocalDate
 import java.time.LocalDateTime;
+import java.time.LocalTime; // Importar LocalTime
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,6 +32,19 @@ public class AtendimentoService {
         this.atendimentoRepository = aRepo;
         this.pacienteRepository = pRepo;
         this.profissionalRepository = profRepo;
+    }
+
+    // NOVO MÉTODO PARA BUSCAR HORÁRIOS OCUPADOS
+    public List<String> getHorariosOcupados(Long profissionalId, LocalDate data) {
+        LocalDateTime inicioDoDia = data.atStartOfDay();
+        LocalDateTime fimDoDia = data.atTime(LocalTime.MAX);
+        
+        List<Atendimento> atendimentosDoDia = atendimentoRepository.findByProfissionalIdAndDataHoraAtendimentoBetween(
+            profissionalId, inicioDoDia, fimDoDia);
+
+        return atendimentosDoDia.stream()
+            .map(atendimento -> atendimento.getDataHoraAtendimento().toLocalTime().toString())
+            .collect(Collectors.toList());
     }
 
     @Transactional

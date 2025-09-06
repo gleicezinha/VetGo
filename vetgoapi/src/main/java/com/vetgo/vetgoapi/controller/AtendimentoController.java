@@ -1,7 +1,9 @@
 package com.vetgo.vetgoapi.controller;
 
+import java.time.LocalDate; // IMPORTAR
 import java.util.List;
 
+import org.springframework.format.annotation.DateTimeFormat; // IMPORTAR
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam; // IMPORTAR
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vetgo.vetgoapi.controller.dto.AgendamentoRequestDTO;
@@ -30,7 +33,14 @@ public class AtendimentoController {
         this.atendimentoRepository = atendimentoRepository;
     }
 
-    // NOVO ENDPOINT ADICIONADO PARA CORRIGIR O ERRO 404
+    // NOVO ENDPOINT PARA CONSULTAR HORÁRIOS
+    @GetMapping("/horarios-ocupados")
+    public ResponseEntity<List<String>> getHorariosOcupados(
+            @RequestParam Long profissionalId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data) {
+        return ResponseEntity.ok(atendimentoService.getHorariosOcupados(profissionalId, data));
+    }
+
     @GetMapping("/por-paciente/{pacienteId}")
     public ResponseEntity<List<Atendimento>> listarPorPaciente(@PathVariable Long pacienteId) {
         List<Atendimento> atendimentos = atendimentoRepository.findByPacienteId(pacienteId);
