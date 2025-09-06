@@ -2,11 +2,13 @@ package com.vetgo.vetgoapi.controller.dto;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.vetgo.vetgoapi.model.Atendimento;
 
 public class AtendimentoResponseDTO {
 
     private Long id;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime dataHoraAtendimento;
     private String status;
     private String tipoDeAtendimento;
