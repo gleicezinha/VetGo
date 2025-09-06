@@ -1,12 +1,13 @@
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box; 
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
   padding-top: 74px;
 }
+
 .form-container {
   max-width: 800px;
   margin: 2rem auto;
@@ -98,6 +99,7 @@ body {
     background-color: #a04d0e;
     color: white;
   }
+
   .btn-cancelar {
     background-color: #dc3545;
     color: white;
@@ -114,18 +116,23 @@ body {
 .app-wrapper {
   display: flex;
   flex-direction: column;
-  min-height: calc(100vh - 64px); /* Altura da tela menos a altura do header */
+  min-height: calc(100vh - 64px);
+  /* Altura da tela menos a altura do header */
 }
 
 .app-content {
-  flex: 1; /* Faz o conteúdo principal ocupar todo o espaço disponível */
-  width: 100%; /* Garante que o conteúdo ocupe toda a largura */
+  flex: 1;
+  /* Faz o conteúdo principal ocupar todo o espaço disponível */
+  width: 100%;
+  /* Garante que o conteúdo ocupe toda a largura */
 }
 
 /* Estilo do Rodapé */
 .app-footer {
-  background-color: #005ed9; /* Alterado para o azul do seu header */
-  color: #ffffff; /* Cor do texto (branco) */
+  background-color: #1962f5;
+  /* Alterado para o azul do seu header */
+  color: #ffffff;
+  /* Cor do texto (branco) */
   padding: 1.5rem 2rem;
   width: 100%;
 }
@@ -136,7 +143,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap; 
+  flex-wrap: wrap;
   gap: 1rem;
 }
 
