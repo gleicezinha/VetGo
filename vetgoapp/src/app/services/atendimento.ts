@@ -3,17 +3,23 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Atendimento } from '../models/atendimento';
 import { Observable } from 'rxjs';
+import { AtendimentoResponseDTO } from '../models/atendimento-response.dto';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AtendimentoService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   apiUrl: string = environment.API_URL + '/api/atendimentos';
 
   getById(id: number): Observable<Atendimento> {
     return this.http.get<Atendimento>(`${this.apiUrl}/${id}`);
+  }
+
+  // NOVO MÉTODO
+  getAll(): Observable<AtendimentoResponseDTO[]> {
+    return this.http.get<AtendimentoResponseDTO[]>(`${this.apiUrl}/todos`);
   }
 
   getByPacienteId(id: number): Observable<Atendimento[]> {

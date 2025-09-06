@@ -1,0 +1,43 @@
+<div class="page-container">
+    <header class="page-header">
+        <h1 class="page-title">Histórico de Atendimentos</h1>
+    </header>
+
+    <div class="content-card">
+        <div class="toolbar">
+            <button class="back-button" (click)="voltar()">
+                Voltar
+            </button>
+        </div>
+
+        <table class="appointments-table">
+            <thead>
+                <tr>
+                    <th>Data e Hora</th>
+                    <th>Status</th>
+                    <th>Tipo</th>
+                    <th>Paciente</th>
+                    <th>Responsável</th>
+                    <th>Profissional</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let atendimento of atendimentos">
+                    <td>{{ atendimento.dataHoraAtendimento | date:'dd/MM/yyyy HH:mm' }}</td>
+                    <td>
+                        <span class="status" [ngClass]="'status-' + atendimento.status.toLowerCase()">
+                            {{ atendimento.status }}
+                        </span>
+                    </td>
+                    <td>{{ atendimento.tipoDeAtendimento }}</td>
+                    <td>{{ atendimento.nomePaciente }}</td>
+                    <td>{{ atendimento.nomeResponsavel }}</td>
+                    <td>{{ atendimento.nomeProfissional }}</td>
+                </tr>
+                <tr *ngIf="atendimentos.length === 0">
+                    <td colspan="6" class="no-results">Nenhum atendimento encontrado.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

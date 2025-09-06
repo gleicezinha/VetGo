@@ -1,11 +1,14 @@
 package com.vetgo.vetgoapi.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.vetgo.vetgoapi.controller.dto.AgendamentoRequestDTO;
+import com.vetgo.vetgoapi.controller.dto.AtendimentoResponseDTO;
 import com.vetgo.vetgoapi.model.Atendimento;
 import com.vetgo.vetgoapi.model.EStatus;
 import com.vetgo.vetgoapi.model.Paciente;
@@ -70,5 +73,17 @@ public class AtendimentoService {
         
         atendimento.setStatus(EStatus.CANCELADO);
         return atendimentoRepository.save(atendimento);
+    }
+
+    public List<AtendimentoResponseDTO> getAllAtendimentos() {
+        return atendimentoRepository.findAll().stream()
+                .map(AtendimentoResponseDTO::new)
+                .collect(Collectors.toList());
+    }
+
+    public AtendimentoResponseDTO getAtendimentoById(Long id) {
+        Atendimento atendimento = atendimentoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Atendimento não encontrado com o ID: " + id));
+        return new AtendimentoResponseDTO(atendimento);
     }
 }

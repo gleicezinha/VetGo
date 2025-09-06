@@ -1,0 +1,128 @@
+/* Variáveis de Cor e Estilo */
+:host {
+    --primary-color: #0055ff;
+    --success-color: #087853;
+    --success-bg-color: #ecfdf5;
+    --danger-color: #dc3545;
+    --danger-bg-color: #fef2f2;
+    --agendado-color: #3b82f6;
+    --agendado-bg-color: #eff6ff;
+    --encerrado-color: #6b7280;
+    --encerrado-bg-color: #f3f4f6;
+    --border-color: #e5e7eb;
+    --text-color-dark: #1f2937;
+    --text-color-light: #6b7280;
+    --background-color: #f9fafb;
+}
+
+/* Container Principal da Página */
+.page-container {
+    padding: 2rem;
+    background-color: var(--background-color);
+}
+
+.page-header {
+    margin-bottom: 1.5rem;
+}
+
+.page-title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--text-color-dark);
+}
+
+/* Card Branco do Conteúdo */
+.content-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+}
+
+/* Barra de Ferramentas */
+.toolbar {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 1.5rem;
+}
+
+.back-button {
+    background-color: #6c757d;
+    color: white;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    padding: 0.6rem 1.2rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+        background-color: #5a6268;
+    }
+}
+
+/* Tabela de Atendimentos */
+.appointments-table {
+    width: 100%;
+    border-collapse: collapse;
+
+    th,
+    td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    thead th {
+        color: var(--text-color-light);
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    tbody td {
+        color: var(--text-color-dark);
+        font-weight: 500;
+    }
+
+    tbody tr:last-child td {
+        border-bottom: none;
+    }
+}
+
+/* Mensagem de "Nenhum resultado" */
+.no-results {
+    text-align: center;
+    color: var(--text-color-light);
+    padding: 2rem;
+}
+
+/* Badges de Status */
+.status {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: capitalize;
+}
+
+.status-agendado {
+    color: var(--agendado-color);
+    background-color: var(--agendado-bg-color);
+}
+
+.status-confirmado {
+    color: var(--success-color);
+    background-color: var(--success-bg-color);
+}
+
+.status-cancelado {
+    color: var(--danger-color);
+    background-color: var(--danger-bg-color);
+}
+
+.status-encerrado {
+    color: var(--encerrado-color);
+    background-color: var(--encerrado-bg-color);
+}

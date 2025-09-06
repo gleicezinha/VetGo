@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vetgo.vetgoapi.controller.dto.AgendamentoRequestDTO;
+import com.vetgo.vetgoapi.controller.dto.AtendimentoResponseDTO;
 import com.vetgo.vetgoapi.model.Atendimento;
 import com.vetgo.vetgoapi.repository.AtendimentoRepository;
 import com.vetgo.vetgoapi.service.AtendimentoService;
@@ -48,8 +49,13 @@ public class AtendimentoController {
         return ResponseEntity.ok(atendimentoCancelado);
     }
 
-    @GetMapping
-    public ResponseEntity<List<Atendimento>> listarTodos() {
-        return ResponseEntity.ok(atendimentoRepository.findAll());
+    @GetMapping("/todos")
+    public ResponseEntity<List<AtendimentoResponseDTO>> listarTodos() {
+        return ResponseEntity.ok(atendimentoService.getAllAtendimentos());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<AtendimentoResponseDTO> getAtendimentoById(@PathVariable Long id) {
+        return ResponseEntity.ok(atendimentoService.getAtendimentoById(id));
     }
 }

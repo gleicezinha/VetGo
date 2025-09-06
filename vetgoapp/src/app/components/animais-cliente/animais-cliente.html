@@ -1,23 +1,66 @@
-<div class="card" *ngFor="let paciente of pacientes">
-    <div class="paciente-info">
-        <h3>{{ paciente.nome }}</h3>
-        <p>Espécie: {{ paciente.especie }}</p>
-        <p>Sexo: {{ paciente.sexo }}</p>
-        <p *ngIf="usuarioLogado?.papel === 'ROLE_ADMIN' || usuarioLogado?.papel === 'ROLE_PROFISSIONAL'">Situação: {{ paciente.situacao }}</p>
-        <div class="actions">
-            <button
-                *ngIf="usuarioLogado?.papel === 'ROLE_ADMIN' || usuarioLogado?.papel === 'ROLE_PROFISSIONAL'"
-                class="delete-button"
-                (click)="excluirPaciente(paciente.id)"
-            >
-                <img src="assets/imagens/delete.svg" alt="Excluir">
-            </button>
-            <button
-                class="edit-button"
-                (click)="editarPaciente(paciente.id)"
-            >
-                <img src="assets/imagens/edit.svg" alt="Editar">
-            </button>
+<div class="main-layout">
+    <div class="left-panel">
+        <div class="header-with-buttons">
+            <h2>Animais de {{ responsavel.usuario?.nomeUsuario }}</h2>
+            <div class="action-buttons-header">
+                <button class="action-button add-pet-button" (click)="cadastrarPet()">Adicionar Pet</button>
+            </div>
         </div>
+
+        <div *ngIf="pacientes.length > 0; else noPets">
+            <div *ngFor="let paciente of pacientes" class="paciente-card-container">
+                <div class="paciente-card">
+                    <div class="paciente-header">
+                        <h3>{{ paciente.nome }}</h3>
+                    </div>
+                    <div class="paciente-details">
+                        <p><strong>Espécie:</strong> {{ paciente.especie }}</p>
+                        <p><strong>Raça:</strong> {{ paciente.raca || 'Não informada' }}</p>
+                        <p><strong>Sexo:</strong> {{ paciente.sexo === 'M' ? 'Macho' : 'Fêmea' }}</p>
+                        <p><strong>Nascimento:</strong> {{ paciente.dataNascimento | date:'dd/MM/yyyy' }}</p>
+                    </div>
+                    <div class="action-buttons-header">
+                        <button class="action-button atestado" (click)="cadastrarAtendimento(paciente)">Novo
+                            Atendimento</button>
+                    </div>
+                </div>
+                <div class="status-and-actions">
+                    <button class="status-button" [ngClass]="paciente.situacao === 'VIVO' ? 'vivo' : 'morto'"
+                        (click)="toggleSituacao(paciente)">
+                        {{ situacaoPaciente(paciente) }}
+                    </button>
+                    <button class="edit-button" (click)="editarPaciente(paciente.id)">
+                        <img src="assets/imagens/edit.svg" alt="Editar" class="menu-icon">
+                    </button>
+                    <button class="delete-button" (click)="excluirPaciente(paciente.id)"
+                        [disabled]="!podeExcluir(paciente)">
+                        <img src="assets/imagens/delete.svg" alt="Excluir" class="menu-icon">
+                    </button>
+                </div>
+            </div>
+        </div>
+        <ng-template #noPets>
+            <p class="info-message">Nenhum pet cadastrado para este responsável.</p>
+        </ng-template>
+    </div>
+
+    <div class="right-panel">
+        <h3>Próximos Atendimentos</h3>
+        <div *ngIf="pacientes.length > 0; else noAtendimentos">
+            <div *ngFor="let paciente of pacientes">
+                <div *ngIf="getAtendimentosDePaciente(paciente.id).length > 0">
+                    <h4>{{ paciente.nome }}</h4>
+                    <ul>
+                        <li *ngFor="let atendimento of getAtendimentosDePaciente(paciente.id)" class="atendimento-item">
+                            {{ atendimento.dataHoraAtendimento | date:'dd/MM/yyyy HH:mm' }} - {{
+                            atendimento.tipoDeAtendimento }}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <ng-template #noAtendimentos>
+            <p class="no-results-message">Nenhum atendimento agendado.</p>
+        </ng-template>
     </div>
 </div>

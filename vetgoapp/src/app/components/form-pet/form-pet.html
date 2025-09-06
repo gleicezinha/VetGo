@@ -45,7 +45,8 @@
 
   <div class="form-buttons">
     <button type="submit" [disabled]="formPet.invalid" class="btn-salvar" (click)="save()">Salvar</button>
-    <button type="button" class="btn-atendimento" (click)="cadastrarAtendimento()">Cadastrar Atendimento</button>
-  
+    <button *ngIf="usuarioLogado?.papel !== 'ROLE_RESPONSAVEL'" type="button" class="btn-atendimento"
+      (click)="cadastrarAtendimento()">Cadastrar Atendimento</button>
+
   </div>
 </form>

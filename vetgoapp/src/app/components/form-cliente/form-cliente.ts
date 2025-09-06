@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router, RouterLink, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Responsavel } from '../../models/responsavel';
 import { CommonModule } from '@angular/common';
 import { ResponsavelService } from '../../services/responsavel';
@@ -14,6 +14,7 @@ import { Endereco } from '../../models/endereco.model';
   templateUrl: './form-cliente.html',
   styleUrls: ['./form-cliente.scss']
 })
+// A CORREÇÃO ESTÁ AQUI: O nome da classe deve ser FormClienteComponent
 export class FormClienteComponent implements OnInit {
 
   registro: Responsavel = {
@@ -72,7 +73,7 @@ export class FormClienteComponent implements OnInit {
     private servico: ResponsavelService,
     private route: ActivatedRoute,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     const id = this.route.snapshot.queryParamMap.get('id');
