@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/AuthService';
-import { AtendimentoService } from '../../services/atendimento'; // IMPORTAR
+import { AtendimentoService } from '../../services/atendimento';
 
 @Component({
   standalone: true,
@@ -22,16 +22,17 @@ export class AgendamentoComponent implements OnInit {
     "14:00", "15:00", "16:00", "17:00", "18:00"
   ];
   horarios: string[] = [];
-  profissionalIdParaAgendamento = 1; // ID da Dra. Rayssa (conforme data.sql)
+  profissionalIdParaAgendamento = 1;
 
   constructor(
     private router: Router,
     private authService: AuthService,
-    private atendimentoService: AtendimentoService // INJETAR
+    private atendimentoService: AtendimentoService
   ) { }
 
   ngOnInit(): void {
-    this.authService.isLoggedIn.subscribe(status => {
+    // Agora o subscribe funciona corretamente
+    this.authService.isLoggedIn.subscribe((status: boolean) => {
       this.isLoggedIn = status;
     });
   }
@@ -49,17 +50,15 @@ export class AgendamentoComponent implements OnInit {
       return;
     }
 
-    // LÓGICA ATUALIZADA PARA USAR O BACK-END
     this.atendimentoService.getHorariosOcupados(this.profissionalIdParaAgendamento, this.dataSelecionada)
       .subscribe({
         next: (horariosOcupados) => {
-          // Extrai apenas a parte da hora (HH:mm)
           const horariosOcupadosFormatados = horariosOcupados.map(h => h.substring(0, 5));
           this.horarios = this.horariosDisponiveis.filter(h => !horariosOcupadosFormatados.includes(h));
         },
         error: (err) => {
           console.error('Erro ao buscar horários:', err);
-          this.horarios = this.horariosDisponiveis; // Em caso de erro, mostra todos
+          this.horarios = this.horariosDisponiveis;
         }
       });
   }
@@ -80,7 +79,6 @@ export class AgendamentoComponent implements OnInit {
       return;
     }
 
-    // Formata a data e hora no padrão ISO que o backend espera
     const dataHora = `${this.dataSelecionada}T${this.horarioSelecionado}:00`;
 
     this.router.navigate(['/form-atendimento'], {

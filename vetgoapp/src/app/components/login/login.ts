@@ -4,66 +4,57 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { LoginService } from '../../services/login';
-import { Usuario } from '../../models/usuario';
-import { switchMap } from 'rxjs/operators';
-import { of } from 'rxjs';
-
-import { ResponsavelService } from '../../services/responsavel';
 import { AuthService } from '../../services/AuthService';
+import { catchError, switchMap } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { Usuario } from '../../models/usuario';
 
 @Component({
-  standalone: true,
-  selector: 'app-login',
-  imports: [
-    ReactiveFormsModule, FormsModule, CommonModule, HttpClientModule
-  ],
-  templateUrl: './login.html',
-  styleUrl: './login.scss'
+  standalone: true,
+  selector: 'app-login',
+  imports: [
+    ReactiveFormsModule, FormsModule, CommonModule, HttpClientModule
+  ],
+  templateUrl: './login.html',
+  styleUrl: './login.scss'
 })
 export class LoginComponent implements OnInit {
 
-  telefone: string = '';
+  telefone: string = '';
+  loginError: string = '';
 
-  constructor(
-    private loginService: LoginService, 
-    private router: Router,
-    private authService: AuthService,
-    private responsavelService: ResponsavelService
-  ) { }
+  constructor(
+    private loginService: LoginService,
+    private router: Router,
+    private authService: AuthService
+  ) { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void { }
 
-  logar(): void {
-    if (this.telefone) {
-      this.loginService.loginComContato(this.telefone).pipe(
-        switchMap((usuario: Usuario) => {
-          this.authService.login(usuario);
-          if (usuario.papel === 'ROLE_RESPONSAVEL') {
-            return this.responsavelService.getByUsuarioId(usuario.id);
-          } else {
-            return of({ id: usuario.id });
-          }
-        })
-      ).subscribe({
-        next: (response: any) => {
-          const userRole = this.authService.currentUser.value?.papel;
-          if (userRole === 'ROLE_RESPONSAVEL') {
-            this.router.navigate(['/animais-cliente', response.id]);
-          } else {
-            this.router.navigate(['/list-cliente']);
-          }
-        },
-        error: (error) => {
-          if (error.message.includes('Contato não cadastrado')) {
-            alert('Contato não cadastrado. Redirecionando para o formulário de cadastro.');
-            this.router.navigate(['/form-cliente']);
-          } else {
-            alert(error.message);
-          }
-        }
-      });
-    } else {
-      alert('Por favor, digite seu número de telefone.');
-    }
-  }
+  logar(): void {
+    if (!this.telefone) {
+      this.loginError = 'Por favor, digite seu número de telefone.';
+      return;
+    }
+    this.loginError = '';
+    
+    this.loginService.loginComContato(this.telefone).pipe(
+      switchMap((usuario: Usuario) => {
+        return this.authService.sendVerificationCode(this.telefone);
+      }),
+      catchError(error => {
+        if (error.status === 404) {
+          alert('Contato não cadastrado. Redirecionando para o formulário de cadastro.');
+          this.router.navigate(['/form-responsavel']);
+        } else {
+          this.loginError = 'Erro no login: ' + error.message;
+        }
+        return of(null);
+      })
+    ).subscribe((response) => {
+      if (response) {
+        this.router.navigate(['/verify', this.telefone]);
+      }
+    });
+  }
 }
