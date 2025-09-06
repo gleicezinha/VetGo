@@ -1,0 +1,17 @@
+<div class="container">
+  <h2>Verificação via WhatsApp</h2>
+
+  <div *ngIf="step === 1">
+    <label>Telefone (com DDI, ex: +556892020638)</label>
+    <input [(ngModel)]="phone" placeholder="+55..." />
+    <button (click)="sendCode()">Enviar Código</button>
+  </div>
+
+  <div *ngIf="step === 2">
+    <label>Digite o código recebido no WhatsApp</label>
+    <input [(ngModel)]="code" placeholder="123456" />
+    <button (click)="verifyCode()">Verificar</button>
+  </div>
+
+  <p>{{ message }}</p>
+</div>
