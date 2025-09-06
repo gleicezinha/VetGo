@@ -1,56 +1,84 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VetGo - Agendamento</title>
 </head>
-<body>
-    <div class="container">
-        <main class="main-content">
-            <section class="vet-profile">
-                <div class="vet-card">
-                    <div class="vet-photo">
-                        <img src="assets/imagens/rayssa.png" alt="Dra. Rayssa Gabriela">
-                    </div>
-                    <h2 class="vet-name">Dra. Rayssa Gabriela</h2>
-                    <p class="vet-credentials">CRMV/AC 00424</p>
-                </div>
-                <div class="services-grid">
-                    <div class="service-card">
-                        <img src="assets/imagens/casa.png" alt="Consultas" class="service-icon">
-                        <div class="service-title">Consultas no conforto do lar</div>
-                    </div>
-                    <div class="service-card">
-                         <img src="assets/imagens/vacina.png" alt="Vacinação" class="service-icon">
-                        <div class="service-title">Vacinação cães e gatos</div>
-                    </div>
-                    <div class="service-card">
-                         <img src="assets/imagens/coletaexame.png" alt="Exames" class="service-icon">
-                        <div class="service-title">Coleta de exames</div>
-                    </div>
-                    <div class="service-card">
-                         <img src="assets/imagens/atestado.png" alt="Atestado" class="service-icon">
-                        <div class="service-title">Atestado para viagem</div>
-                    </div>
-                </div>
-            </section>
 
-            <section class="booking-section">
-                <h2 class="booking-title">Agende uma consulta</h2>
-                <div class="date-picker">
-                    <input type="date" class="date-input" (change)="selecionarData($event)">
+<body>
+    <!-- O container agora é nosso grid principal, controlando todo o layout -->
+    <div class="container">
+        <!-- Item 1 do Grid: A frase de apresentação -->
+        <section class="hero">
+            <h1 class="hero-title">Cuidado veterinário de confiança no conforto da sua casa.</h1>
+            <p class="hero-subtitle">Agende consultas, vacinas e exames com facilidade e segurança para o seu pet.</p>
+            <br>
+        </section>
+
+        <!-- Item 2 do Grid: O perfil da veterinária -->
+        <section class="vet-profile">
+            <div class="vet-card">
+                <div class="vet-photo">
+                    <img src="assets/imagens/rayssa.png" alt="Dra. Rayssa Gabriela - Veterinária Especialista">
                 </div>
-                <div class="time-slots" *ngIf="dataSelecionada">
-                    <div class="time-slot" *ngFor="let hora of horarios" (click)="selecionarHorario(hora)" [class.selected]="hora === horarioSelecionado">
-                        {{ hora }}
-                    </div>
+                <h2 class="vet-name">Dra. Rayssa Gabriela</h2>
+                <p class="vet-credentials">CRMV/AC 00424</p>
+            </div>
+        </section>
+
+        <!-- Item 3 do Grid: A seção de agendamento -->
+        <section class="booking-section">
+            <h2 class="booking-title">Agende uma consulta</h2>
+            <div class="date-picker">
+                <input type="date" class="date-input" (change)="selecionarData($event)">
+            </div>
+
+            <p class="horario-info" *ngIf="!dataSelecionada && horarios.length === 0">
+                Selecione uma data para ver os horários disponíveis.
+            </p>
+            <br>
+
+            <div class="time-slots" *ngIf="dataSelecionada">
+                <!-- A lógica de loop e clique continua sendo do Angular -->
+                <div class="time-slot" *ngFor="let hora of horarios" (click)="selecionarHorario(hora)"
+                    [class.selected]="hora === horarioSelecionado">
+                    {{ hora }}
                 </div>
-                 <button class="book-button" [disabled]="!horarioSelecionado" (click)="confirmarAgendamento()">
-                    Confirmar Agendamento
-                </button>
-            </section>
-        </main>
+                <div *ngIf="horarios.length === 0" class="horario-info">
+                    Nenhum horário disponível para esta data.
+                </div>
+            </div>
+            <button class="book-button" [disabled]="!horarioSelecionado" (click)="confirmarAgendamento()">
+                Confirmar Agendamento
+            </button>
+        </section>
+
+        <!-- Item 4 do Grid: Os serviços oferecidos -->
+        <section class="services-section">
+            <br>
+            <div class="services-grid">
+                <div class="service-card">
+                    <img src="assets/imagens/casa.png" alt="Consultas" class="service-icon">
+                    <div class="service-title">Consultas no conforto do lar</div>
+                </div>
+                <div class="service-card">
+                    <img src="assets/imagens/vacina.png" alt="Vacinação" class="service-icon">
+                    <div class="service-title">Vacinação cães e gatos</div>
+                </div>
+                <div class="service-card">
+                    <img src="assets/imagens/coletaexame.png" alt="Exames" class="service-icon">
+                    <div class="service-title">Coleta de exames</div>
+                </div>
+                <div class="service-card">
+                    <img src="assets/imagens/atestado.png" alt="Atestado" class="service-icon">
+                    <div class="service-title">Atestado para viagem</div>
+                </div>
+                <br>
+            </div>
+        </section>
     </div>
 </body>
+
 </html>

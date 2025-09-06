@@ -2,6 +2,8 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  // Adicione a nova fonte aqui
+  font-family: 'Inter', sans-serif;
 }
 
 body {
@@ -69,7 +71,13 @@ body {
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease-in-out; // Adicione uma transição suave
+
+    &:hover:not(:disabled) {
+      // Aplica o efeito apenas se o botão não estiver desabilitado
+      transform: translateY(-2px); // Move o botão 2px para cima
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); // Adiciona uma sombra para dar profundidade
+    }
   }
 
   .btn-salvar {
