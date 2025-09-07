@@ -9,7 +9,7 @@ INSERT INTO endereco (id_endereco, logradouro, numero, complemento, bairro, cida
 -- CORREÇÃO: nomeUsuario alterado para nome_usuario
 INSERT INTO usuario (id, nome_usuario, email, telefone, cpf, ativo, papel, endereco_id_fk) VALUES
 (1, 'rayssa silva',  'joao.silva@vetgo.com', '5568992020638', '11122233344', true, 'ROLE_PROFISSIONAL', 1),
-(2, 'maria oliveira', 'maria.o@email.com', '21988887777', '55566677788', true, 'ROLE_RESPONSAVEL', 2),
+(2, 'maria oliveira', 'maria.o@email.com', '556899392476', '55566677788', true, 'ROLE_RESPONSAVEL', 2),
 (3, 'pedro admin', 'pedro.admin@email.com', '31977776666', '99988877766', true, 'ROLE_ADMIN', 3),
 (4, 'gleice mourao', 'mourao.gleice@vetgo.com', '68999991111', '44455566677', true, 'ROLE_RESPONSAVEL', 4),
 (5, 'carlos santos',  'carlos.santos@email.com', '68988882222', '12345678901', true, 'ROLE_RESPONSAVEL', 5);
