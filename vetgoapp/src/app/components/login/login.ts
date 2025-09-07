@@ -1,46 +1,36 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { FormsModule, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
-import { LoginService } from '../../services/login';
 import { AuthService } from '../../services/AuthService';
-import { catchError, switchMap } from 'rxjs/operators';
-import { of } from 'rxjs';
-import { Usuario } from '../../models/usuario';
-
-
+import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-login',
-  imports: [FormsModule, CommonModule, HttpClientModule],
-  standalone: true,
+  imports: [CommonModule, FormsModule],
   templateUrl: './login.html',
   styleUrls: ['./login.scss']
 })
 export class LoginComponent {
   telefone: string = '';
-  mensagem: string = '';
+  message: string = '';
 
   constructor(private authService: AuthService, private router: Router) {}
 
-    logar() {
+  logar(form: NgForm) {
+    if (!form.valid) return;
+
     this.authService.sendVerificationCode(this.telefone).subscribe({
-      next: res => {
-        console.log('Código enviado:', res);
-        // Redireciona para a página de verificação
+      next: () => {
+        // Redireciona para a página de verificação, passando o telefone
         this.router.navigate(['/verify', this.telefone]);
       },
-      error: err => {
+      error: (err) => {
         if (err.status === 404) {
-          // Telefone não cadastrado → redireciona para cadastro
-          this.router.navigate(['/cadastro', this.telefone]);
-        } else if (err.status === 500) {
-          this.mensagem = 'Erro interno ao enviar o código. Tente novamente.';
+          this.message = 'Telefone não cadastrado.';
         } else {
-          this.mensagem = 'Erro inesperado.';
+          this.message = 'Erro ao enviar código. Tente novamente.';
         }
         console.error('Erro do servidor:', err);
       }
     });
-    }
+  }
 }

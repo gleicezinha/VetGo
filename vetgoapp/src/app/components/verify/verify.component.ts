@@ -1,11 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../services/AuthService';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
-  standalone: true,
   selector: 'app-verify',
   imports: [CommonModule, FormsModule],
   templateUrl: './verify.component.html',
@@ -23,11 +22,12 @@ export class VerifyComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    // Obtém o telefone da URL
     this.route.paramMap.subscribe(params => {
       const phoneParam = params.get('phone');
       if (phoneParam) {
         this.phone = phoneParam;
-        this.message = 'Código enviado para ' + this.phone;
+        this.message = `Um código de verificação foi enviado para o número: ${this.phone}`;
       } else {
         this.message = 'Número de telefone não fornecido.';
       }
@@ -36,14 +36,19 @@ export class VerifyComponent implements OnInit {
 
   verifyCode() {
     this.authService.verifyCode(this.phone, this.code).subscribe({
-      next: res => {
-        console.log('Código verificado:', res);
-        // redireciona para home ou dashboard
+      next: (res: any) => {
+        // Autentica o usuário no AuthService
+        this.authService.login(res);
+        // Redireciona para o agendamento
         this.router.navigate(['/agendamento']);
       },
-      error: err => {
+      error: (err) => {
+        if (err.status === 400) {
+          this.message = 'Código de verificação inválido.';
+        } else {
+          this.message = 'Erro ao verificar código. Tente novamente.';
+        }
         console.error('Erro do servidor:', err);
-        this.message = err.error || 'Código inválido ou expirado.';
       }
     });
   }
