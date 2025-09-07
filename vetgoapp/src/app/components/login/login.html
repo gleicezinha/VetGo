@@ -5,7 +5,7 @@
       Acesse o sistema inserindo seu telefone para realizar agendamentos, acompanhar o histórico do seu pet e muito mais.
     </p>
 
-    <form #formLogin="ngForm" (ngSubmit)="logar()">
+    <form #formLogin="ngForm" (ngSubmit)="logar(formLogin)">
       <div class="form-group">
         <label for="telefone">Telefone</label>
         <input
@@ -22,5 +22,7 @@
         Entrar
       </button>
     </form>
+
+    <p *ngIf="message" class="error">{{ message }}</p>
   </div>
 </div>

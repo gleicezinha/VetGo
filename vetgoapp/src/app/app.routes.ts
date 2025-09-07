@@ -8,16 +8,18 @@ import { FormAtendimentoComponent } from './components/form-atendimento/form-ate
 import { AnimaisCliente } from './components/animais-cliente/animais-cliente';
 import { ListAtendimentoComponent } from './components/list-atendimento/list-atendimento';
 import { CalendarioComponent } from './components/calendario/calendario';
+import { VerifyComponent } from './components/verify/verify.component'; // Importe o componente de verificação
 
-// Importa o guarda de rota
 import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'agendamento', pathMatch: 'full' },
-    { path: 'agendamento', component: AgendamentoComponent },
+    { path: 'agendamento', component: AgendamentoComponent, canActivate: [authGuard] },
     { path: 'login', component: LoginComponent },
+    // Adicione esta rota para a tela de verificação
+    { path: 'verify/:phone', component: VerifyComponent },
     { path: 'list-cliente', component: ListClienteComponent, canActivate: [authGuard] },
-    { path: 'list-atendimento', component: ListAtendimentoComponent, canActivate: [authGuard] }, // ROTA ADICIONADA
+    { path: 'list-atendimento', component: ListAtendimentoComponent, canActivate: [authGuard] },
     { path: 'form-cliente', component: FormClienteComponent, canActivate: [authGuard] },
     { path: 'form-pet', component: FormPetComponent, canActivate: [authGuard] },
     { path: 'form-atendimento', component: FormAtendimentoComponent, canActivate: [authGuard] },

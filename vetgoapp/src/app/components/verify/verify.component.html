@@ -1,0 +1,20 @@
+<div class="verify-container">
+  <div class="verify-card">
+    <h2>Verificação via WhatsApp</h2>
+    <p>{{ message }}</p>
+
+    <div class="form-group">
+      <label for="code">Digite o código recebido</label>
+      <input
+        type="text"
+        id="code"
+        [(ngModel)]="code"
+        placeholder="Código"
+      />
+    </div>
+
+    <button (click)="verifyCode()" [disabled]="!code">
+      Verificar
+    </button>
+  </div>
+</div>
