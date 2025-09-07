@@ -7,6 +7,7 @@ import { ListClienteComponent } from './components/list-cliente/list-cliente';
 import { FormAtendimentoComponent } from './components/form-atendimento/form-atendimento';
 import { AnimaisCliente } from './components/animais-cliente/animais-cliente';
 import { ListAtendimentoComponent } from './components/list-atendimento/list-atendimento';
+import { CalendarioComponent } from './components/calendario/calendario';
 
 // Importa o guarda de rota
 import { authGuard } from './guards/auth.guard';
@@ -20,5 +21,6 @@ export const routes: Routes = [
     { path: 'form-cliente', component: FormClienteComponent, canActivate: [authGuard] },
     { path: 'form-pet', component: FormPetComponent, canActivate: [authGuard] },
     { path: 'form-atendimento', component: FormAtendimentoComponent, canActivate: [authGuard] },
-    { path: 'animais-cliente/:id', component: AnimaisCliente, canActivate: [authGuard] }
+    { path: 'animais-cliente/:id', component: AnimaisCliente, canActivate: [authGuard] },
+    { path: 'calendario', component: CalendarioComponent, canActivate: [authGuard] }
 ];
