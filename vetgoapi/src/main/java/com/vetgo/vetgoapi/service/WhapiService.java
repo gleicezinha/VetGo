@@ -17,15 +17,23 @@ public class WhapiService {
     private final RestTemplate restTemplate = new RestTemplate();
     private final Map<String, String> codes = new ConcurrentHashMap<>();
 
-    private String normalizePhone(String phone) {
-        return phone.replaceAll("\\D", ""); // remove tudo que não for número
+    // Normaliza o telefone e adiciona o código do Brasil se necessário
+    public String normalizePhone(String phone) {
+        String numbersOnly = phone.replaceAll("\\D", ""); // remove tudo que não for número
+
+        // Se não começar com 55, adiciona o código do Brasil
+        if (!numbersOnly.startsWith("55")) {
+            numbersOnly = "55" + numbersOnly;
+        }
+
+        return numbersOnly;
     }
 
-    // Envia o código
+    // Envia o código de verificação
     public String sendCode(String phone) {
         String normalizedPhone = normalizePhone(phone);
 
-        String code = String.valueOf(new Random().nextInt(900000) + 100000);
+        String code = String.valueOf(new Random().nextInt(900000) + 100000); // código 6 dígitos
         codes.put(normalizedPhone, code);
 
         String url = "https://gate.whapi.cloud/messages/text";
@@ -53,7 +61,7 @@ public class WhapiService {
         }
     }
 
-    // Valida o código
+    // Valida o código de verificação
     public String verifyCode(String phone, String code) {
         String normalizedPhone = normalizePhone(phone);
         String storedCode = codes.get(normalizedPhone);

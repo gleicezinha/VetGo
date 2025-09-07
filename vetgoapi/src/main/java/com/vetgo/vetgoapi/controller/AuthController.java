@@ -53,8 +53,8 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/verify-code")
-    public ResponseEntity<?> verifyCode(@RequestBody VerifyRequest request) {
+   @PostMapping("/verify-code")
+public ResponseEntity<?> verifyCode(@RequestBody VerifyRequest request) {
     // Normaliza telefone
     String telefone = request.getPhone().replaceAll("\\D", "");
     String whapiStatus = whapiService.verifyCode(telefone, request.getCode());
@@ -63,20 +63,26 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Código de verificação inválido.");
     }
 
-    // Se o código foi aprovado, busca ou cria o usuário
+    // Busca ou cria o usuário
     Optional<Usuario> usuarioOpt = usuarioService.getByTelefone(telefone);
 
+    Usuario usuario;
     if (usuarioOpt.isEmpty()) {
-        Usuario novo = new Usuario();
-        novo.setTelefone(telefone);
-        novo.setPapel(EPapel.ROLE_RESPONSAVEL);
-        Usuario usuarioCriado = usuarioService.save(novo);
-        return ResponseEntity.ok(usuarioCriado); // Retorna o usuário recém-criado
+        usuario = new Usuario();
+        usuario.setTelefone(telefone);
+        usuario.setPapel(EPapel.ROLE_RESPONSAVEL); // Por padrão, novos usuários são responsáveis
+        usuario = usuarioService.save(usuario);
+    } else {
+        usuario = usuarioOpt.get();
+
+        // Se o papel estiver nulo, defina com base em alguma lógica ou padrão
+        if (usuario.getPapel() == null) {
+            // Aqui você pode escolher o padrão, por exemplo RESPONSAVEL
+            usuario.setPapel(EPapel.ROLE_RESPONSAVEL);
+        }
     }
 
-    Usuario usuario = usuarioOpt.get();
-
-    // Busca o perfil relacionado e retorna a resposta
+    // Retorna perfil completo baseado no papel
     if (usuario.getPapel() == EPapel.ROLE_RESPONSAVEL) {
         return responsavelRepository.findByUsuario(usuario)
                 .<ResponseEntity<?>>map(ResponseEntity::ok)
@@ -87,6 +93,7 @@ public class AuthController {
                 .orElse(ResponseEntity.ok(usuario));
     }
 
-    return ResponseEntity.ok(usuario); // Retorna o usuário base
+    return ResponseEntity.ok(usuario);
 }
+
 }
