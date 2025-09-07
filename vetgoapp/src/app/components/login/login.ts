@@ -9,52 +9,38 @@ import { catchError, switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { Usuario } from '../../models/usuario';
 
+
 @Component({
-  standalone: true,
-  selector: 'app-login',
-  imports: [
-    ReactiveFormsModule, FormsModule, CommonModule, HttpClientModule
-  ],
-  templateUrl: './login.html',
-  styleUrl: './login.scss'
+  selector: 'app-login',
+  imports: [FormsModule, CommonModule, HttpClientModule],
+  standalone: true,
+  templateUrl: './login.html',
+  styleUrls: ['./login.scss']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
+  telefone: string = '';
+  mensagem: string = '';
 
-  telefone: string = '';
-  loginError: string = '';
+  constructor(private authService: AuthService, private router: Router) {}
 
-  constructor(
-    private loginService: LoginService,
-    private router: Router,
-    private authService: AuthService
-  ) { }
-
-  ngOnInit(): void { }
-
-  logar(): void {
-    if (!this.telefone) {
-      this.loginError = 'Por favor, digite seu número de telefone.';
-      return;
-    }
-    this.loginError = '';
-    
-    this.loginService.loginComContato(this.telefone).pipe(
-      switchMap((usuario: Usuario) => {
-        return this.authService.sendVerificationCode(this.telefone);
-      }),
-      catchError(error => {
-        if (error.status === 404) {
-          alert('Contato não cadastrado. Redirecionando para o formulário de cadastro.');
-          this.router.navigate(['/form-responsavel']);
-        } else {
-          this.loginError = 'Erro no login: ' + error.message;
-        }
-        return of(null);
-      })
-    ).subscribe((response) => {
-      if (response) {
-        this.router.navigate(['/verify', this.telefone]);
-      }
-    });
-  }
+    logar() {
+    this.authService.sendVerificationCode(this.telefone).subscribe({
+      next: res => {
+        console.log('Código enviado:', res);
+        // Redireciona para a página de verificação
+        this.router.navigate(['/verify', this.telefone]);
+      },
+      error: err => {
+        if (err.status === 404) {
+          // Telefone não cadastrado → redireciona para cadastro
+          this.router.navigate(['/cadastro', this.telefone]);
+        } else if (err.status === 500) {
+          this.mensagem = 'Erro interno ao enviar o código. Tente novamente.';
+        } else {
+          this.mensagem = 'Erro inesperado.';
+        }
+        console.error('Erro do servidor:', err);
+      }
+    });
+    }
 }
