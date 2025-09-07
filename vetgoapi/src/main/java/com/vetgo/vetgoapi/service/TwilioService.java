@@ -32,11 +32,11 @@ public class TwilioService {
     // Enviar código via WhatsApp
     public String sendCode(String phone) {
         init();
-        Verification verification = Verification.creator(
-                verifyServiceSid,
-                "whatsapp:" + phone,
-                "whatsapp"
-        ).create();
+            Verification verification = Verification.creator(
+                    verifyServiceSid,
+                    "whatsapp:+55" + phone,  // aqui você usa o parâmetro phone
+                    "whatsapp"
+            ).create();
         return verification.getStatus(); // "pending"
     }
 
