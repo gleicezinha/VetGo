@@ -36,45 +36,64 @@ public class AuthController {
         this.profissionalRepository = profissionalRepository;
     }
 
-@PostMapping("/send-code")
-public ResponseEntity<?> sendCode(@RequestBody PhoneRequest request) {
-    String status = whapiService.sendCode(request.getPhone());
-    // Retorne um objeto JSON para que o front-end possa interpretar a resposta
-    Map<String, String> response = new HashMap<>();
-    response.put("status", status);
-    return ResponseEntity.ok(response);
-}
-    @PostMapping("/verify-code")
-    public ResponseEntity<?> verifyCode(@RequestBody VerifyRequest request) {
-        // Normaliza telefone
-        String telefone = request.getPhone().replaceAll("\\D", "");
-
-        String whapiStatus = whapiService.verifyCode(telefone, request.getCode());
-
-        if (!"approved".equals(whapiStatus)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Código de verificação inválido.");
+    @PostMapping("/send-code")
+    public ResponseEntity<?> sendCode(@RequestBody PhoneRequest request) {
+        try {
+            usuarioService.getByTelefone(request.getPhone())
+                    .orElseThrow(() -> new ResourceNotFoundException("Telefone não cadastrado."));
+            
+            String status = whapiService.sendCode(request.getPhone());
+            Map<String, String> response = new HashMap<>();
+            response.put("status", status);
+            return ResponseEntity.ok(response);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "Erro interno ao enviar o código."));
         }
-
-        // Se o código foi aprovado, busca ou cria o usuário
-        Usuario usuario = usuarioService.getByTelefone(telefone)
-                .orElseGet(() -> {
-                    Usuario novo = new Usuario();
-                    novo.setTelefone(telefone);
-                    novo.setPapel(EPapel.ROLE_RESPONSAVEL); // ajuste conforme regra do sistema
-                    return usuarioService.save(novo);
-                });
-
-        // Busca o perfil relacionado
-        if (usuario.getPapel() == EPapel.ROLE_RESPONSAVEL) {
-            return responsavelRepository.findByUsuario(usuario)
-                    .<ResponseEntity<?>>map(ResponseEntity::ok)
-                    .orElse(ResponseEntity.ok(usuario)); // retorna apenas o usuário se perfil não existir
-        } else if (usuario.getPapel() == EPapel.ROLE_PROFISSIONAL) {
-            return profissionalRepository.findByUsuario(usuario)
-                    .<ResponseEntity<?>>map(ResponseEntity::ok)
-                    .orElse(ResponseEntity.ok(usuario));
-        }
-
-        return ResponseEntity.ok(usuario);
     }
+
+   @PostMapping("/verify-code")
+public ResponseEntity<?> verifyCode(@RequestBody VerifyRequest request) {
+    // Normaliza telefone
+    String telefone = request.getPhone().replaceAll("\\D", "");
+    String whapiStatus = whapiService.verifyCode(telefone, request.getCode());
+
+    if (!"approved".equals(whapiStatus)) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Código de verificação inválido.");
+    }
+
+    // Busca ou cria o usuário
+    Optional<Usuario> usuarioOpt = usuarioService.getByTelefone(telefone);
+
+    Usuario usuario;
+    if (usuarioOpt.isEmpty()) {
+        usuario = new Usuario();
+        usuario.setTelefone(telefone);
+        usuario.setPapel(EPapel.ROLE_RESPONSAVEL); // Por padrão, novos usuários são responsáveis
+        usuario = usuarioService.save(usuario);
+    } else {
+        usuario = usuarioOpt.get();
+
+        // Se o papel estiver nulo, defina com base em alguma lógica ou padrão
+        if (usuario.getPapel() == null) {
+            // Aqui você pode escolher o padrão, por exemplo RESPONSAVEL
+            usuario.setPapel(EPapel.ROLE_RESPONSAVEL);
+        }
+    }
+
+    // Retorna perfil completo baseado no papel
+    if (usuario.getPapel() == EPapel.ROLE_RESPONSAVEL) {
+        return responsavelRepository.findByUsuario(usuario)
+                .<ResponseEntity<?>>map(ResponseEntity::ok)
+                .orElse(ResponseEntity.ok(usuario));
+    } else if (usuario.getPapel() == EPapel.ROLE_PROFISSIONAL) {
+        return profissionalRepository.findByUsuario(usuario)
+                .<ResponseEntity<?>>map(ResponseEntity::ok)
+                .orElse(ResponseEntity.ok(usuario));
+    }
+
+    return ResponseEntity.ok(usuario);
+}
+
 }

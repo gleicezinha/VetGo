@@ -12,7 +12,9 @@ import { VerifyComponent } from './components/verify/verify.component'; // Impor
 import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
+    // Rota padrão, redireciona para a tela de agendamento
     { path: '', redirectTo: 'agendamento', pathMatch: 'full' },
+    // Rotas protegidas (só acessíveis com login)
     { path: 'agendamento', component: AgendamentoComponent, canActivate: [authGuard] },
     { path: 'login', component: LoginComponent },
     // Adicione esta rota para a tela de verificação
@@ -23,5 +25,9 @@ export const routes: Routes = [
     { path: 'form-pet', component: FormPetComponent, canActivate: [authGuard] },
     { path: 'form-atendimento', component: FormAtendimentoComponent, canActivate: [authGuard] },
     { path: 'animais-cliente/:id', component: AnimaisCliente, canActivate: [authGuard] },
-    { path: 'calendario', component: CalendarioComponent, canActivate: [authGuard] }
+    { path: 'calendario', component: CalendarioComponent, canActivate: [authGuard] },
+    // Rotas de autenticação (acessíveis sem login)
+    { path: 'login', component: LoginComponent },
+    // Rota para a tela de verificação, que recebe o telefone como parâmetro
+    { path: 'verify/:phone', component: VerifyComponent },
 ];

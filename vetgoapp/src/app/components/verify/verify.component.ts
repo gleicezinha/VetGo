@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 @Component({
+  standalone: true,
   selector: 'app-verify',
   imports: [CommonModule, FormsModule],
   templateUrl: './verify.component.html',
@@ -22,7 +23,6 @@ export class VerifyComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Obtém o telefone da URL
     this.route.paramMap.subscribe(params => {
       const phoneParam = params.get('phone');
       if (phoneParam) {
@@ -37,10 +37,20 @@ export class VerifyComponent implements OnInit {
   verifyCode() {
     this.authService.verifyCode(this.phone, this.code).subscribe({
       next: (res: any) => {
-        // Autentica o usuário no AuthService
-        this.authService.login(res);
-        // Redireciona para o agendamento
-        this.router.navigate(['/agendamento']);
+        // Verifica se a resposta contém os dados do usuário
+        if (res && res.usuario) {
+          // Autentica o usuário no AuthService
+          this.authService.login(res.usuario);
+          // Redireciona para o agendamento
+          this.router.navigate(['/agendamento']);
+        } else if (res && res.status === 'approved') {
+          // Se o back-end retorna apenas o status, você precisa buscar o usuário
+          // Esta é uma lógica alternativa, caso o back-end não retorne o objeto completo
+          this.message = 'Verificação concluída, mas sem dados do usuário. Faça login novamente.';
+          this.router.navigate(['/login']);
+        } else {
+          this.message = '❌ Código inválido.';
+        }
       },
       error: (err) => {
         if (err.status === 400) {

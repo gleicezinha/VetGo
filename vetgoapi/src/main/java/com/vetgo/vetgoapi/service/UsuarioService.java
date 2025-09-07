@@ -1,13 +1,13 @@
 package com.vetgo.vetgoapi.service;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Optional; // Importe esta classe
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.vetgo.vetgoapi.model.Usuario;
 import com.vetgo.vetgoapi.repository.UsuarioRepository;
+import com.vetgo.vetgoapi.service.exception.ResourceNotFoundException;
 
 @Service
 public class UsuarioService implements ICrudService<Usuario> {
@@ -23,23 +23,22 @@ public class UsuarioService implements ICrudService<Usuario> {
 
     @Override
     public Usuario get(Long id) {
-        Usuario registro = repo.findById(id).orElse(null);
-        return registro;
+        return repo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado."));
     }
 
-    // Este método é o que o novo LoginController usará.
     public Optional<Usuario> getByTelefone(String telefone) {
         return repo.findByTelefone(telefone);
     }
 
     @Override
     public Usuario save(Usuario objeto) {
-        Optional<Usuario> usuarioExistente = repo.findById(objeto.getId());
-        if (usuarioExistente.isPresent()) {
-            Usuario usuarioAtualizado = usuarioExistente.get();
-            usuarioAtualizado.setNomeUsuario(objeto.getNomeUsuario());
-            usuarioAtualizado.setTelefone(objeto.getTelefone());
-            return repo.save(usuarioAtualizado);
+        // Lógica de atualização ou inserção
+        if (objeto.getId() != null) {
+            Usuario usuarioExistente = this.get(objeto.getId());
+            usuarioExistente.setNomeUsuario(objeto.getNomeUsuario());
+            usuarioExistente.setTelefone(objeto.getTelefone());
+            // ... adicione outros campos a serem atualizados
+            return repo.save(usuarioExistente);
         } else {
             return repo.save(objeto);
         }
@@ -47,6 +46,9 @@ public class UsuarioService implements ICrudService<Usuario> {
 
     @Override
     public void delete(Long id) {
+        if (!repo.existsById(id)) {
+            throw new ResourceNotFoundException("Usuário não encontrado com o ID: " + id);
+        }
         repo.deleteById(id);
     }
 }

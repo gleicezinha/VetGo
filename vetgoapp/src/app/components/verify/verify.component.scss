@@ -1,0 +1,112 @@
+/* Estilos para o componente de Verificação (verify.component.scss) */
+
+:host {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    width: 100%;
+    background: linear-gradient(to bottom, #d6dbe6, #f0f2f5); // Degradê suave no fundo
+}
+
+.verify-container {
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+    width: 320px;
+    text-align: center;
+    box-sizing: border-box;
+
+    h2 {
+        margin-bottom: 24px;
+        font-size: 24px;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .form-group {
+        text-align: left;
+        margin-bottom: 20px;
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px 12px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            outline: none;
+            box-sizing: border-box;
+
+            &:focus {
+                border-color: #3f51b5;
+                box-shadow: 0 0 0 2px rgba(63, 81, 181, 0.2);
+            }
+        }
+    }
+
+    .btn-verify {
+        width: 100%;
+        padding: 10px 0;
+        background-color: #3f51b5;
+        border: none;
+        border-radius: 8px;
+        color: white;
+        font-weight: 600;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background 0.3s ease;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+        &:hover {
+            background-color: #303f9f;
+        }
+
+        &:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+    }
+
+    .message {
+        margin-top: 20px;
+        min-height: 20px;
+        font-size: 14px;
+    }
+}
+.message {
+  margin-top: 20px;
+  font-size: 0.95em;
+  color: #555;
+  min-height: 20px; // Garante espaço para a mensagem
+}
+
+.error-message {
+  color: #d9534f; // Vermelho para erros
+  font-weight: 500;
+}
+
+.success-message {
+  color: #5cb85c; // Verde para sucesso
+  font-weight: 500;
+}
+
+// Responsividade básica para telas muito pequenas
+@media (max-width: 480px) {
+  .verify-container {
+    padding: 30px 20px;
+    margin: 20px;
+  }
+
+  h2 {
+    font-size: 1.5em;
+  }
+}
