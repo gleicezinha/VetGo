@@ -37,20 +37,9 @@ export class VerifyComponent implements OnInit {
   verifyCode() {
     this.authService.verifyCode(this.phone, this.code).subscribe({
       next: (res: any) => {
-        // Verifica se a resposta contém os dados do usuário
-        if (res && res.usuario) {
-          // Autentica o usuário no AuthService
-          this.authService.login(res.usuario);
-          // Redireciona para o agendamento
-          this.router.navigate(['/agendamento']);
-        } else if (res && res.status === 'approved') {
-          // Se o back-end retorna apenas o status, você precisa buscar o usuário
-          // Esta é uma lógica alternativa, caso o back-end não retorne o objeto completo
-          this.message = 'Verificação concluída, mas sem dados do usuário. Faça login novamente.';
-          this.router.navigate(['/login']);
-        } else {
-          this.message = '❌ Código inválido.';
-        }
+        // Passa a resposta completa para o serviço, que irá extrair o usuário
+        this.authService.login(res);
+        this.router.navigate(['/agendamento']);
       },
       error: (err) => {
         if (err.status === 400) {

@@ -10,27 +10,50 @@ import { environment } from '../../environments/environment';
 export class AuthService {
   private apiUrl = `${environment.API_URL}/auth`;
   
-  // Adiciona um BehaviorSubject para gerenciar o estado de login
-  private isLoggedInSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  public isLoggedIn: Observable<boolean> = this.isLoggedInSubject.asObservable();
+  private isLoggedInSubject: BehaviorSubject<boolean>;
+  public isLoggedIn: Observable<boolean>;
 
-  private currentUserSubject: BehaviorSubject<Usuario | null> = new BehaviorSubject<Usuario | null>(null);
-  public currentUser: Observable<Usuario | null> = this.currentUserSubject.asObservable();
+  private currentUserSubject: BehaviorSubject<Usuario | null>;
+  public currentUser: Observable<Usuario | null>;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    const savedUser = localStorage.getItem('currentUser');
+    const user = savedUser ? JSON.parse(savedUser) : null;
+    
+    this.currentUserSubject = new BehaviorSubject<Usuario | null>(user);
+    this.isLoggedInSubject = new BehaviorSubject<boolean>(!!user);
+    
+    this.isLoggedIn = this.isLoggedInSubject.asObservable();
+    this.currentUser = this.currentUserSubject.asObservable();
+  }
 
   public get currentUserValue(): Usuario | null {
     return this.currentUserSubject.value;
   }
 
-  login(usuario: Usuario): void {
-    this.currentUserSubject.next(usuario);
-    this.isLoggedInSubject.next(true); // Atualiza o estado de login para true
+  // Corrigido para lidar com diferentes estruturas de resposta
+  login(response: any): void {
+    let user: Usuario | null = null;
+    if (response && response.usuario) {
+      user = response.usuario;
+    } else if (response) {
+      user = response;
+    }
+
+    if (user) {
+      localStorage.setItem('currentUser', JSON.stringify(user));
+      this.currentUserSubject.next(user);
+      this.isLoggedInSubject.next(true);
+    } else {
+      console.error('Dados de usuário inválidos recebidos no login.');
+      this.logout();
+    }
   }
 
   logout(): void {
+    localStorage.removeItem('currentUser');
     this.currentUserSubject.next(null);
-    this.isLoggedInSubject.next(false); // Atualiza o estado de login para false
+    this.isLoggedInSubject.next(false);
   }
 
   sendVerificationCode(phone: string): Observable<any> {
