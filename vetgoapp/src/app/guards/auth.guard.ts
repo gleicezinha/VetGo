@@ -11,6 +11,16 @@ export const authGuard: CanActivateFn = (route, state) => {
   return authService.isLoggedIn.pipe(
     map((isLoggedIn: boolean) => {
       if (isLoggedIn) {
+        const user = authService.currentUserValue;
+        const userRole = user?.papel;
+        const isResponsavel = userRole === 'ROLE_RESPONSAVEL';
+        const isClientRoute = route.url.some(segment => ['list-cliente', 'form-cliente'].includes(segment.path));
+        
+        if (isResponsavel && isClientRoute) {
+          router.navigate(['/agendamento']);
+          return false;
+        }
+
         return true;
       } else {
         router.navigate(['/login']);

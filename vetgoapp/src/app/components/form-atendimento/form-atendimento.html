@@ -8,7 +8,7 @@
               name="responsavel"
               [(ngModel)]="registro.responsavelId"
               (ngModelChange)="onResponsavelChange($event)"
-              [disabled]="!!route.snapshot.queryParamMap.get('responsavelId')"
+              [disabled]="isResponsavel || !!route.snapshot.queryParamMap.get('responsavelId')"
               required>
         <option [ngValue]="undefined">Selecione um responsável</option>
         <option *ngFor="let resp of responsaveis" [ngValue]="resp.id">

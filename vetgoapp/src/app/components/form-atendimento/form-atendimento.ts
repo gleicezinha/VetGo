@@ -11,7 +11,9 @@ import { Paciente } from '../../models/paciente';
 import { Responsavel } from '../../models/responsavel';
 import { Profissional } from '../../models/profissional';
 import { EAtendimento } from '../../models/eatendimento.model';
-import { forkJoin } from 'rxjs';
+import { forkJoin, of } from 'rxjs';
+import { AuthService } from '../../services/AuthService';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-form-atendimento',
@@ -22,7 +24,6 @@ import { forkJoin } from 'rxjs';
 })
 export class FormAtendimentoComponent implements OnInit {
 
-  // ✅ CORRIGIDO: Todos os campos do formulário agora vivem em um único objeto.
   registro = {
     responsavelId: undefined as number | undefined,
     pacienteId: undefined as number | undefined,
@@ -32,47 +33,66 @@ export class FormAtendimentoComponent implements OnInit {
     observacao: ''
   };
 
-  // Listas de dados para os selects
   tiposDeAtendimento = Object.values(EAtendimento);
   responsaveis: Responsavel[] = [];
   pacientesDoResponsavel: Paciente[] = [];
   profissionais: Profissional[] = [];
+  isResponsavel = false;
 
   constructor(
     private servico: AtendimentoService,
     private responsavelService: ResponsavelService,
     private pacienteService: PacienteService,
     private profissionalService: ProfissionalService,
+    private authService: AuthService,
     private router: Router,
     public route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
+    const dataHoraParam = this.route.snapshot.queryParamMap.get('dataHora');
     const responsavelIdParam = this.route.snapshot.queryParamMap.get('responsavelId');
     const pacienteIdParam = this.route.snapshot.queryParamMap.get('pacienteId');
-    const dataHoraParam = this.route.snapshot.queryParamMap.get('dataHora');
 
     if (dataHoraParam) {
       this.registro.dataHoraAtendimento = dataHoraParam;
     }
 
+    this.authService.currentUser.subscribe(user => {
+      if (user && user.papel === 'ROLE_RESPONSAVEL' && user.id !== null) {
+        this.isResponsavel = true;
+        this.responsavelService.getByUsuarioId(user.id).pipe(
+          switchMap((responsavel: Responsavel) => {
+            this.responsaveis = [responsavel];
+            this.registro.responsavelId = responsavel.id;
+            return this.pacienteService.getByResponsavelId(responsavel.id);
+          })
+        ).subscribe(pacientes => {
+          this.pacientesDoResponsavel = pacientes;
+          if (pacienteIdParam) {
+            this.registro.pacienteId = +pacienteIdParam;
+          }
+        });
+      } else {
+        if (responsavelIdParam && pacienteIdParam) {
+          this.registro.responsavelId = +responsavelIdParam;
+          const tempPacienteId = +pacienteIdParam;
+
+          forkJoin({
+            responsavel: this.responsavelService.getById(this.registro.responsavelId),
+            pacientes: this.pacienteService.getByResponsavelId(this.registro.responsavelId)
+          }).subscribe(({responsavel, pacientes}) => {
+            this.responsaveis = [responsavel];
+            this.pacientesDoResponsavel = pacientes;
+            this.registro.pacienteId = tempPacienteId;
+          });
+        } else {
+          this.carregarResponsaveis();
+        }
+      }
+    });
+
     this.carregarProfissionais();
-
-    if (responsavelIdParam && pacienteIdParam) {
-      this.registro.responsavelId = +responsavelIdParam;
-      this.registro.pacienteId = +pacienteIdParam;
-
-      forkJoin({
-        responsavel: this.responsavelService.getById(this.registro.responsavelId),
-        pacientes: this.pacienteService.getByResponsavelId(this.registro.responsavelId)
-      }).subscribe(({responsavel, pacientes}) => {
-        this.responsaveis = [responsavel];
-        this.pacientesDoResponsavel = pacientes;
-      });
-
-    } else {
-      this.carregarResponsaveis();
-    }
   }
 
   carregarResponsaveis(): void {
@@ -98,7 +118,6 @@ export class FormAtendimentoComponent implements OnInit {
     }
   }
 
-  // ✅ CORRIGIDO: A função save agora é muito mais simples e segura.
   save(): void {
     const responsavelSelecionado = this.responsaveis.find(r => r.id === this.registro.responsavelId);
     const pacienteSelecionado = this.pacientesDoResponsavel.find(p => p.id === this.registro.pacienteId);

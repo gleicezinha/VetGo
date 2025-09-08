@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core'; // REMOVER ChangeDetectorRef
+import { Component, OnInit } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -17,7 +17,6 @@ import { PacienteService } from '../../services/paciente';
 import { AtendimentoService } from '../../services/atendimento';
 import { AuthService } from '../../services/AuthService';
 
-// NOVA INTERFACE PARA FACILITAR A RENDERIZAÇÃO
 interface PacienteComAtendimentos extends Paciente {
   atendimentos: Atendimento[];
 }
@@ -31,7 +30,6 @@ interface PacienteComAtendimentos extends Paciente {
 })
 export class AnimaisCliente implements OnInit {
   responsavel: Responsavel = {} as Responsavel;
-  // VAMOS USAR UMA NOVA ESTRUTURA DE DADOS
   pacientesComAtendimentos: PacienteComAtendimentos[] = [];
   usuarioLogado: Usuario | null = null;
 
@@ -42,16 +40,16 @@ export class AnimaisCliente implements OnInit {
     private pacienteService: PacienteService,
     private atendimentoService: AtendimentoService,
     private authService: AuthService
-    // NÃO PRECISA MAIS DO ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
-    const idParam = this.route.snapshot.paramMap.get('id');
-    if (!idParam) return;
-    const id = +idParam;
-
     this.authService.currentUser.subscribe(user => {
       this.usuarioLogado = user;
+
+      const idParam = this.route.snapshot.paramMap.get('id');
+      const id = this.usuarioLogado?.papel === 'ROLE_RESPONSAVEL' ? this.usuarioLogado.id : (idParam ? +idParam : null);
+      
+      if (!id) return;
 
       let responsavel$: Observable<Responsavel>;
       if (this.usuarioLogado?.papel === 'ROLE_RESPONSAVEL') {
@@ -75,7 +73,6 @@ export class AnimaisCliente implements OnInit {
           const todosOsObservables = pacientes.map(paciente =>
             this.atendimentoService.getByPacienteId(paciente.id).pipe(
               switchMap(atendimentos => {
-                // Combina o paciente com seus atendimentos
                 return of({ ...paciente, atendimentos: atendimentos });
               })
             )
@@ -84,15 +81,12 @@ export class AnimaisCliente implements OnInit {
         })
       ).subscribe({
         next: (pacientesComAtendimentos) => {
-          // O resultado final já é o array combinado que precisamos
           this.pacientesComAtendimentos = pacientesComAtendimentos;
         },
         error: (erro) => console.error('Erro ao carregar dados da página de animais:', erro)
       });
     });
   }
-
-  // ... O restante dos métodos permanece igual ...
 
   cadastrarAtendimento(paciente: Paciente): void {
     this.router.navigate(['/form-atendimento'], {

@@ -20,11 +20,11 @@
                         <p><strong>Nascimento:</strong> {{ paciente.dataNascimento | date:'dd/MM/yyyy' }}</p>
                     </div>
                     <div class="action-buttons-header">
-                        <button *ngIf="usuarioLogado?.papel !== 'ROLE_RESPONSAVEL'" class="action-button atestado"
+                        <button class="action-button atestado"
                             (click)="cadastrarAtendimento(paciente)">Novo Atendimento</button>
                     </div>
                 </div>
-                <div class="status-and-actions">
+                <div class="status-and-actions" *ngIf="usuarioLogado?.papel !== 'ROLE_RESPONSAVEL'">
                     <button class="status-button" [ngClass]="paciente.situacao === 'VIVO' ? 'vivo' : 'morto'"
                         (click)="toggleSituacao(paciente)">
                         {{ situacaoPaciente(paciente) }}
