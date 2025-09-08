@@ -1,0 +1,38 @@
+.calendar-container {
+    // Adiciona um limite de largura para o calendário não ocupar a tela toda
+    max-width: 900px;
+    margin: 2rem auto; // Centraliza o contêiner na página
+    padding: 2rem;
+    background-color: #f9fafb;
+}
+
+.calendar-header {
+    margin-bottom: 1.5rem;
+    text-align: center;
+
+    h1 {
+        // Diminuímos o tamanho da fonte do título
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: #1f2937;
+    }
+}
+
+// Estilos para o FullCalendar
+:host ::ng-deep {
+    .fc {
+        // ... estilos existentes ...
+    }
+
+    // ✅ NOVOS ESTILOS ABAIXO ✅
+
+    // Estilo para o dia totalmente livre
+    .dia-livre {
+        background-color: rgba(74, 222, 128, 0.2); // Verde claro
+    }
+
+    // Estilo para o dia totalmente ocupado
+    .dia-ocupado {
+        background-color: rgba(248, 113, 113, 0.3); // Vermelho claro
+    }
+}
