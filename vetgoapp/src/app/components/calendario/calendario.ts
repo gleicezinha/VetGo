@@ -1,10 +1,14 @@
-import { Component, OnInit } from '@angular/core'; // 1. Importe o OnInit
+import { Component, OnInit } from '@angular/core';
 import { FullCalendarModule } from '@fullcalendar/angular';
-import { CalendarOptions, EventInput } from '@fullcalendar/core'; // 2. Importe EventInput
+import { CalendarOptions, EventInput } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import ptBrLocale from '@fullcalendar/core/locales/pt-br';
-import { AtendimentoService } from '../../services/atendimento'; // 3. Importe o serviço
+import { AtendimentoService } from '../../services/atendimento';
+import { AuthService } from '../../services/AuthService';
+import { PacienteService } from '../../services/paciente';
+import { ResponsavelService } from '../../services/responsavel';
+import { forkJoin, of, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-calendario',
@@ -13,14 +17,11 @@ import { AtendimentoService } from '../../services/atendimento'; // 3. Importe o
   templateUrl: './calendario.html',
   styleUrls: ['./calendario.scss']
 })
-export class CalendarioComponent implements OnInit { // 4. Implemente OnInit
+export class CalendarioComponent implements OnInit {
 
-  // Propriedade para guardar os eventos do calendário
   eventos: EventInput[] = [];
 
-  // Mapa para contar atendimentos por dia
   atendimentosPorDia = new Map<string, number>();
-  // Defina o total de horários disponíveis por dia
   totalHorariosDisponiveis = 10;
 
   calendarOptions: CalendarOptions = {
@@ -43,53 +44,88 @@ export class CalendarioComponent implements OnInit { // 4. Implemente OnInit
     selectable: true,
     selectMirror: true,
     dayMaxEvents: true,
-    events: [], // Inicialmente vazio, será preenchido
-    dayCellDidMount: this.handleDayCellMount.bind(this) // Callback para estilizar os dias
+    events: [],
+    dayCellDidMount: this.handleDayCellMount.bind(this)
   };
 
-  // 5. Injete o serviço no construtor
-  constructor(private atendimentoService: AtendimentoService) { }
+  constructor(
+    private atendimentoService: AtendimentoService,
+    private authService: AuthService,
+    private pacienteService: PacienteService,
+    private responsavelService: ResponsavelService
+  ) {}
 
-  // 6. Crie o método ngOnInit para carregar os dados
   ngOnInit(): void {
     this.carregarEventos();
   }
 
   carregarEventos(): void {
-    this.atendimentoService.getAll().subscribe(atendimentos => {
+    const user = this.authService.currentUserValue;
 
-      // Limpa o mapa de contagem antes de recalcular
-      this.atendimentosPorDia.clear();
-
-      // Mapeia os atendimentos para o formato que o FullCalendar entende
-      this.eventos = atendimentos.map(atd => {
-        const dia = atd.dataHoraAtendimento.split('T')[0]; // Pega a data no formato YYYY-MM-DD
-
-        // Conta quantos atendimentos existem para cada dia
-        const contagemAtual = this.atendimentosPorDia.get(dia) || 0;
-        this.atendimentosPorDia.set(dia, contagemAtual + 1);
-
-        return {
+    if (user && user.papel === 'ROLE_RESPONSAVEL') {
+      this.responsavelService.getByUsuarioId(user.id).pipe(
+        switchMap(responsavel => {
+          if (!responsavel || !responsavel.id) {
+            return of([]);
+          }
+          return this.pacienteService.getByResponsavelId(responsavel.id);
+        }),
+        switchMap(pacientes => {
+          if (!pacientes || pacientes.length === 0) {
+            return of([]);
+          }
+          const atendimentoCalls = pacientes.map(paciente =>
+            this.atendimentoService.getByPacienteId(paciente.id)
+          );
+          return forkJoin(atendimentoCalls);
+        })
+      ).subscribe({
+        next: (atendimentosPorPaciente) => {
+          this.eventos = atendimentosPorPaciente.flat().map(atd => ({
+            title: `${atd.paciente?.nome || 'Pet'} (${atd.tipoDeAtendimento})`,
+            start: atd.dataHoraAtendimento,
+          }));
+          this.calendarOptions.events = this.eventos;
+          this.recalcularAtendimentosPorDia();
+        },
+        error: (err) => {
+          console.error('Erro ao carregar atendimentos do responsável:', err);
+        }
+      });
+    } else {
+      this.atendimentoService.getAll().subscribe(atendimentos => {
+        this.eventos = atendimentos.map(atd => ({
           title: `${atd.nomePaciente} (${atd.tipoDeAtendimento})`,
           start: atd.dataHoraAtendimento,
-          // Você pode adicionar mais propriedades aqui, como cores por tipo de evento
-        };
+        }));
+        this.calendarOptions.events = this.eventos;
+        this.recalcularAtendimentosPorDia();
       });
-
-      // Atualiza as opções do calendário com os novos eventos
-      this.calendarOptions.events = this.eventos;
+    }
+  }
+  
+  recalcularAtendimentosPorDia(): void {
+    this.atendimentosPorDia.clear();
+    this.eventos.forEach(evento => {
+      const data = (evento.start as string).split('T')[0];
+      const contagemAtual = this.atendimentosPorDia.get(data) || 0;
+      this.atendimentosPorDia.set(data, contagemAtual + 1);
     });
   }
 
-  // 7. Crie o método para estilizar as células dos dias
   handleDayCellMount(info: any) {
-    const data = info.date.toISOString().split('T')[0]; // Formata a data da célula
+    const data = info.date.toISOString().split('T')[0];
     const contagem = this.atendimentosPorDia.get(data) || 0;
+    const user = this.authService.currentUserValue;
 
     if (contagem === 0) {
       info.el.classList.add('dia-livre');
     } else if (contagem >= this.totalHorariosDisponiveis) {
-      info.el.classList.add('dia-ocupado');
+      if (user && user.papel === 'ROLE_RESPONSAVEL') {
+        info.el.classList.add('dia-responsavel-ocupado');
+      } else {
+        info.el.classList.add('dia-ocupado');
+      }
     }
   }
 }

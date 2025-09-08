@@ -6,85 +6,88 @@ import { AuthService } from '../../services/AuthService';
 import { AtendimentoService } from '../../services/atendimento';
 
 @Component({
-  standalone: true,
-  selector: 'app-agendamento',
-  imports: [CommonModule, FormsModule],
-  templateUrl: './agendamento.html',
-  styleUrls: ['./agendamento.scss']
+  standalone: true,
+  selector: 'app-agendamento',
+  imports: [CommonModule, FormsModule],
+  templateUrl: './agendamento.html',
+  styleUrls: ['./agendamento.scss']
 })
 export class AgendamentoComponent implements OnInit {
 
-  dataSelecionada: string = '';
-  horarioSelecionado: string | null = null;
-  isLoggedIn: boolean = false;
-  horariosDisponiveis: string[] = [
-    "08:00", "09:00", "10:00", "11:00", "12:00",
-    "14:00", "15:00", "16:00", "17:00", "18:00"
-  ];
-  horarios: string[] = [];
-  profissionalIdParaAgendamento = 1;
+  dataSelecionada: string = '';
+  horarioSelecionado: string | null = null;
+  isLoggedIn: boolean = false;
+  horariosDisponiveis: string[] = [
+    "08:00", "09:00", "10:00", "11:00", "12:00",
+    "14:00", "15:00", "16:00", "17:00", "18:00"
+  ];
+  horarios: string[] = [];
+  profissionalIdParaAgendamento = 1;
+  isDiaCheio: boolean = false; // Variável para controlar se o dia está cheio
 
-  constructor(
-    private router: Router,
-    private authService: AuthService,
-    private atendimentoService: AtendimentoService
-  ) { }
+  constructor(
+    private router: Router,
+    private authService: AuthService,
+    private atendimentoService: AtendimentoService
+  ) { }
 
-  ngOnInit(): void {
-    // Agora o subscribe funciona corretamente
-    this.authService.isLoggedIn.subscribe((status: boolean) => {
-      this.isLoggedIn = status;
-    });
-  }
+  ngOnInit(): void {
+    this.authService.isLoggedIn.subscribe((status: boolean) => {
+      this.isLoggedIn = status;
+    });
+  }
 
-  selecionarData(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    this.dataSelecionada = input.value;
-    this.carregarHorarios();
-    this.horarioSelecionado = null;
-  }
+  selecionarData(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.dataSelecionada = input.value;
+    this.carregarHorarios();
+    this.horarioSelecionado = null;
+  }
 
-  carregarHorarios(): void {
-    if (!this.dataSelecionada) {
-      this.horarios = [];
-      return;
-    }
+  carregarHorarios(): void {
+    if (!this.dataSelecionada) {
+      this.horarios = [];
+      this.isDiaCheio = false; // Reseta o estado
+      return;
+    }
 
-    this.atendimentoService.getHorariosOcupados(this.profissionalIdParaAgendamento, this.dataSelecionada)
-      .subscribe({
-        next: (horariosOcupados) => {
-          const horariosOcupadosFormatados = horariosOcupados.map(h => h.substring(0, 5));
-          this.horarios = this.horariosDisponiveis.filter(h => !horariosOcupadosFormatados.includes(h));
-        },
-        error: (err) => {
-          console.error('Erro ao buscar horários:', err);
-          this.horarios = this.horariosDisponiveis;
-        }
-      });
-  }
+    this.atendimentoService.getHorariosOcupados(this.profissionalIdParaAgendamento, this.dataSelecionada)
+      .subscribe({
+        next: (horariosOcupados) => {
+          const horariosOcupadosFormatados = horariosOcupados.map(h => h.substring(0, 5));
+          this.horarios = this.horariosDisponiveis.filter(h => !horariosOcupadosFormatados.includes(h));
+          this.isDiaCheio = this.horarios.length === 0; // Se não houver horários, o dia está cheio
+        },
+        error: (err) => {
+          console.error('Erro ao buscar horários:', err);
+          this.horarios = this.horariosDisponiveis;
+          this.isDiaCheio = false; // Em caso de erro, assume que não está cheio
+        }
+      });
+  }
 
-  selecionarHorario(horario: string): void {
-    this.horarioSelecionado = horario;
-  }
+  selecionarHorario(horario: string): void {
+    this.horarioSelecionado = horario;
+  }
 
-  confirmarAgendamento(): void {
-    if (!this.isLoggedIn) {
-      alert('Você precisa estar logado para agendar um atendimento.');
-      this.router.navigate(['/login']);
-      return;
-    }
+  confirmarAgendamento(): void {
+    if (!this.isLoggedIn) {
+      alert('Você precisa estar logado para agendar um atendimento.');
+      this.router.navigate(['/login']);
+      return;
+    }
 
-    if (!this.dataSelecionada || !this.horarioSelecionado) {
-      alert('Selecione a data e o horário antes de confirmar.');
-      return;
-    }
+    if (!this.dataSelecionada || !this.horarioSelecionado) {
+      alert('Selecione a data e o horário antes de confirmar.');
+      return;
+    }
 
-    const dataHora = `${this.dataSelecionada}T${this.horarioSelecionado}:00`;
+    const dataHora = `${this.dataSelecionada}T${this.horarioSelecionado}:00`;
 
-    this.router.navigate(['/form-atendimento'], {
-      queryParams: {
-        dataHora: dataHora
-      }
-    });
-  }
+    this.router.navigate(['/form-atendimento'], {
+      queryParams: {
+        dataHora: dataHora
+      }
+    });
+  }
 }
