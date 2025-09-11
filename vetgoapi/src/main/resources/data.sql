@@ -60,8 +60,12 @@ INSERT INTO atendimento (id, data_hora_atendimento, profissional_id, paciente_id
 (5, '2025-09-05 15:00:00', 2, 6, 'AGENDADO', 'VACINACAO', NULL),
 (6, '2025-09-08 11:30:00', 2, 7, 'AGENDADO', 'CONSULTA', NULL),
 (7, '2025-09-10 10:00:00', 1, 8, 'AGENDADO', 'CONSULTA', NULL),
-(8, '2025-09-12 16:00:00', 2, 9, 'AGENDADO', 'EXAME', NULL);
-
+(8, '2025-09-12 16:00:00', 2, 9, 'AGENDADO', 'EXAME', NULL),
+(9, '2025-09-15 11:00:00', 1, 3, 'AGENDADO', 'CONSULTA', NULL),
+(10, '2025-09-20 14:00:00', 2, 4, 'AGENDADO', 'VACINACAO', NULL),
+(11, '2025-09-25 10:30:00', 1, 7, 'AGENDADO', 'RETORNO', 6),
+(12, '2025-10-01 16:00:00', 2, 1, 'AGENDADO', 'CIRURGIA', NULL),
+(13, '2025-10-05 09:00:00', 1, 9, 'SOLICITADO', 'ATESTADO', NULL);
 -- Inserts para a tabela 'historico_clinico'
 INSERT INTO historico_clinico (id_historico, id_pet, data, descricao, observacoes) VALUES
 (1, 1, '2025-08-15', 'Exame de rotina anual. Animal saudável.', 'Nenhuma observação relevante.'),
