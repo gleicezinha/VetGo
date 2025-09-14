@@ -19,6 +19,8 @@
                     <th>Paciente</th>
                     <th>Responsável</th>
                     <th>Profissional</th>
+                    <th *ngIf="userRole === 'ROLE_PROFISSIONAL' || userRole === 'ROLE_ADMIN'" class="actions-cell">Ações
+                    </th>
                 </tr>
             </thead>
             <tbody>
@@ -33,9 +35,25 @@
                     <td>{{ atendimento.nomePaciente }}</td>
                     <td>{{ atendimento.nomeResponsavel }}</td>
                     <td>{{ atendimento.nomeProfissional }}</td>
+                    <td *ngIf="userRole === 'ROLE_PROFISSIONAL' || userRole === 'ROLE_ADMIN'" class="actions-cell">
+                        <button class="action-button" [matMenuTriggerFor]="menu">
+                            <img src="assets/imagens/list_alt.svg" alt="Ações">
+                        </button>
+                        <mat-menu #menu="matMenu">
+                            <button mat-menu-item (click)="editar(atendimento.id)">
+                                <img src="assets/imagens/edit.svg" alt="Editar" class="menu-icon">
+                                <span>Editar</span>
+                            </button>
+                            <button mat-menu-item (click)="excluir(atendimento.id)">
+                                <img src="assets/imagens/delete.svg" alt="Excluir" class="menu-excluir">
+                                <span>Excluir</span>
+                            </button>
+                        </mat-menu>
+                    </td>
                 </tr>
                 <tr *ngIf="atendimentos.length === 0">
-                    <td colspan="6" class="no-results">Nenhum atendimento encontrado.</td>
+                    <td [attr.colspan]="userRole === 'ROLE_PROFISSIONAL' || userRole === 'ROLE_ADMIN' ? 7 : 6"
+                        class="no-results">Nenhum atendimento encontrado.</td>
                 </tr>
             </tbody>
         </table>

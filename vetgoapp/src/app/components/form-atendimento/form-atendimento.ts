@@ -1,3 +1,4 @@
+// app/components/form-atendimento/form-atendimento.ts
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -11,7 +12,7 @@ import { Paciente } from '../../models/paciente';
 import { Responsavel } from '../../models/responsavel';
 import { Profissional } from '../../models/profissional';
 import { EAtendimento } from '../../models/eatendimento.model';
-import { forkJoin, of } from 'rxjs';
+import { forkJoin, of, Observable } from 'rxjs';
 import { AuthService } from '../../services/AuthService';
 import { switchMap } from 'rxjs/operators';
 
@@ -25,12 +26,14 @@ import { switchMap } from 'rxjs/operators';
 export class FormAtendimentoComponent implements OnInit {
 
   registro = {
+    id: undefined as number | undefined,
     responsavelId: undefined as number | undefined,
     pacienteId: undefined as number | undefined,
     profissionalId: undefined as number | undefined,
     dataHoraAtendimento: '',
     tipoDeAtendimento: EAtendimento.CONSULTA,
-    observacao: ''
+    observacao: '',
+    status: undefined as string | undefined
   };
 
   tiposDeAtendimento = Object.values(EAtendimento);
@@ -38,6 +41,8 @@ export class FormAtendimentoComponent implements OnInit {
   pacientesDoResponsavel: Paciente[] = [];
   profissionais: Profissional[] = [];
   isResponsavel = false;
+  statusAtendimento = ['AGENDADO', 'CONFIRMADO', 'CHEGADA', 'ATENDIMENTO', 'ENCERRADO', 'CANCELADO'];
+  userRole: string | null = null;
 
   constructor(
     private servico: AtendimentoService,
@@ -47,52 +52,79 @@ export class FormAtendimentoComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     public route: ActivatedRoute
-  ) {}
+  ) { }
 
   ngOnInit(): void {
+    this.carregarResponsaveis();
+    this.carregarProfissionais();
+
     const dataHoraParam = this.route.snapshot.queryParamMap.get('dataHora');
     const responsavelIdParam = this.route.snapshot.queryParamMap.get('responsavelId');
     const pacienteIdParam = this.route.snapshot.queryParamMap.get('pacienteId');
-
-    if (dataHoraParam) {
-      this.registro.dataHoraAtendimento = dataHoraParam;
-    }
+    const atendimentoIdParam = this.route.snapshot.queryParamMap.get('id');
 
     this.authService.currentUser.subscribe(user => {
-      if (user && user.papel === 'ROLE_RESPONSAVEL' && user.id !== null) {
-        this.isResponsavel = true;
-        this.responsavelService.getByUsuarioId(user.id).pipe(
-          switchMap((responsavel: Responsavel) => {
-            this.responsaveis = [responsavel];
-            this.registro.responsavelId = responsavel.id;
-            return this.pacienteService.getByResponsavelId(responsavel.id);
-          })
-        ).subscribe(pacientes => {
-          this.pacientesDoResponsavel = pacientes;
-          if (pacienteIdParam) {
-            this.registro.pacienteId = +pacienteIdParam;
+      this.userRole = user?.papel ?? null;
+      if (atendimentoIdParam) {
+        // Fluxo de edição
+        const atendimentoId = +atendimentoIdParam;
+        this.servico.getById(atendimentoId).subscribe(atendimento => {
+          if (atendimento) {
+            this.registro.id = atendimento.id;
+            this.registro.dataHoraAtendimento = atendimento.dataHoraAtendimento;
+            this.registro.tipoDeAtendimento = atendimento.tipoDeAtendimento as EAtendimento;
+            this.registro.observacao = atendimento.observacao;
+            this.registro.pacienteId = atendimento.paciente?.id;
+            this.registro.profissionalId = atendimento.profissional.id;
+            this.registro.status = atendimento.status;
+
+            if (atendimento.paciente?.responsavel?.id) {
+              this.registro.responsavelId = atendimento.paciente.responsavel.id;
+              this.onResponsavelChange(this.registro.responsavelId);
+            }
           }
         });
       } else {
-        if (responsavelIdParam && pacienteIdParam) {
-          this.registro.responsavelId = +responsavelIdParam;
-          const tempPacienteId = +pacienteIdParam;
+        // Fluxo de criação
+        if (dataHoraParam) {
+          this.registro.dataHoraAtendimento = dataHoraParam;
+        }
 
-          forkJoin({
-            responsavel: this.responsavelService.getById(this.registro.responsavelId),
-            pacientes: this.pacienteService.getByResponsavelId(this.registro.responsavelId)
-          }).subscribe(({responsavel, pacientes}) => {
-            this.responsaveis = [responsavel];
+        // APROVAÇÃO: Nova verificação de usuário mais segura
+        if (user && user.papel === 'ROLE_RESPONSAVEL') {
+          this.isResponsavel = true;
+          this.responsavelService.getByUsuarioId(user.id).pipe(
+            switchMap((responsavel: Responsavel) => {
+              this.responsaveis = [responsavel];
+              this.registro.responsavelId = responsavel.id;
+              return this.pacienteService.getByResponsavelId(responsavel.id);
+            })
+          ).subscribe(pacientes => {
             this.pacientesDoResponsavel = pacientes;
-            this.registro.pacienteId = tempPacienteId;
+            if (pacienteIdParam) {
+              this.registro.pacienteId = +pacienteIdParam;
+            }
           });
         } else {
-          this.carregarResponsaveis();
+          if (responsavelIdParam && pacienteIdParam) {
+            this.registro.responsavelId = +responsavelIdParam;
+            const tempPacienteId = +pacienteIdParam;
+
+            forkJoin({
+              responsavel: this.responsavelService.getById(this.registro.responsavelId),
+              pacientes: this.pacienteService.getByResponsavelId(this.registro.responsavelId)
+            }).subscribe(({ responsavel, pacientes }) => {
+              this.responsaveis = [responsavel];
+              this.pacientesDoResponsavel = pacientes;
+              this.registro.pacienteId = tempPacienteId;
+            });
+          } else {
+            this.carregarResponsaveis();
+          }
         }
       }
     });
 
-    this.carregarProfissionais();
   }
 
   carregarResponsaveis(): void {
@@ -122,29 +154,31 @@ export class FormAtendimentoComponent implements OnInit {
     const responsavelSelecionado = this.responsaveis.find(r => r.id === this.registro.responsavelId);
     const pacienteSelecionado = this.pacientesDoResponsavel.find(p => p.id === this.registro.pacienteId);
     const profissionalSelecionado = this.profissionais.find(p => p.id === this.registro.profissionalId);
-    console.log('Registro:', this.registro);
-    console.log('Responsável selecionado:', responsavelSelecionado);
-    console.log('Paciente selecionado:', pacienteSelecionado);
-    console.log('Profissional selecionado:', profissionalSelecionado);
     if (!responsavelSelecionado || !pacienteSelecionado || !profissionalSelecionado) {
       alert('Dados incompletos. Verifique o formulário.');
       return;
     }
 
-    const atendimentoFinal: Atendimento = {
+    let atendimentoFinal: Atendimento = {
+      id: this.registro.id,
       dataHoraAtendimento: this.registro.dataHoraAtendimento,
       tipoDeAtendimento: this.registro.tipoDeAtendimento,
       observacao: this.registro.observacao,
-      status: 'AGENDADO',
       paciente: pacienteSelecionado,
       responsavel: responsavelSelecionado,
       profissional: profissionalSelecionado
     };
 
+    if (!this.registro.id) {
+      atendimentoFinal.status = 'AGENDADO';
+    } else if (this.registro.status) {
+      atendimentoFinal.status = this.registro.status;
+    }
+
     this.servico.save(atendimentoFinal).subscribe({
       complete: () => {
         alert('Atendimento salvo com sucesso!');
-        this.router.navigate(['/list-cliente']);
+        this.router.navigate(['/list-atendimento']);
       },
       error: (err) => {
         console.error('Erro ao salvar o atendimento:', err);

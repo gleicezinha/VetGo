@@ -8,7 +8,7 @@ import { FormAtendimentoComponent } from './components/form-atendimento/form-ate
 import { AnimaisCliente } from './components/animais-cliente/animais-cliente';
 import { ListAtendimentoComponent } from './components/list-atendimento/list-atendimento';
 import { CalendarioComponent } from './components/calendario/calendario';
-import { VerifyComponent } from './components/verify/verify.component'; // Importe o componente de verificação
+import { VerifyComponent } from './components/verify/verify.component'; // Importe o git componente de verificação
 import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [

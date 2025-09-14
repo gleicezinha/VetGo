@@ -5,7 +5,7 @@ import { Responsavel } from "./responsavel";
 export interface Atendimento {
   id?: number;
   dataHoraAtendimento: string;
-  status: string;
+  status?: string;
   tipoDeAtendimento: string;
   paciente?: Paciente;
   responsavel?: Responsavel;

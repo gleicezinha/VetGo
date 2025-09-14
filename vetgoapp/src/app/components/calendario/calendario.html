@@ -4,3 +4,24 @@
     </div>
     <full-calendar [options]="calendarOptions"></full-calendar>
 </div>
+
+<div class="modal" [class.show]="showModal" *ngIf="detalheAtendimento">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title">Detalhes do Atendimento</h2>
+            <button class="close-button" (click)="closeModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p><strong>Paciente:</strong> {{ detalheAtendimento.nomePaciente }}</p>
+            <p><strong>Responsável:</strong> {{ detalheAtendimento.nomeResponsavel }}</p>
+            <p><strong>Profissional:</strong> {{ detalheAtendimento.nomeProfissional }}</p>
+            <p><strong>Data e Hora:</strong> {{ detalheAtendimento.dataHoraAtendimento | date:'dd/MM/yyyy HH:mm' }}</p>
+            <p><strong>Tipo:</strong> {{ detalheAtendimento.tipoDeAtendimento }}</p>
+            <p><strong>Status:</strong>
+                <span class="status" [ngClass]="'status-' + detalheAtendimento.status.toLowerCase()">
+                    {{ detalheAtendimento.status }}
+                </span>
+            </p>
+        </div>
+    </div>
+</div>

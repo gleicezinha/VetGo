@@ -1,8 +1,10 @@
+// src/main/java/com/vetgo/vetgoapi/service/AtendimentoService.java
+
 package com.vetgo.vetgoapi.service;
 
-import java.time.LocalDate; // Importar LocalDate
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime; // Importar LocalTime
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,7 +36,6 @@ public class AtendimentoService {
         this.profissionalRepository = profRepo;
     }
 
-    // NOVO MÉTODO PARA BUSCAR HORÁRIOS OCUPADOS
     public List<String> getHorariosOcupados(Long profissionalId, LocalDate data) {
         LocalDateTime inicioDoDia = data.atStartOfDay();
         LocalDateTime fimDoDia = data.atTime(LocalTime.MAX);
@@ -88,6 +89,18 @@ public class AtendimentoService {
         
         atendimento.setStatus(EStatus.CANCELADO);
         return atendimentoRepository.save(atendimento);
+    }
+
+    // Método para salvar e atualizar um atendimento
+    @Transactional
+    public Atendimento save(Atendimento objeto) {
+        return atendimentoRepository.save(objeto);
+    }
+
+    // Método para excluir um atendimento por ID
+    @Transactional
+    public void delete(Long id) {
+        atendimentoRepository.deleteById(id);
     }
 
     public List<AtendimentoResponseDTO> getAllAtendimentos() {

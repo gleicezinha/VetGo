@@ -126,3 +126,42 @@
     color: var(--encerrado-color);
     background-color: var(--encerrado-bg-color);
 }
+
+// app/components/list-atendimento/list-atendimento.scss
+/* Adicione estes estilos no final do arquivo */
+
+.actions-cell {
+    text-align: right;
+}
+
+.action-button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+
+    img {
+        width: 20px;
+        height: 20px;
+        display: block;
+    }
+
+    &:hover {
+        background-color: #f3f4f6;
+    }
+}
+
+.menu-icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 8px;
+    opacity: 0.7;
+}
+
+.menu-excluir {
+    width: 16px;
+    height: 16px;
+    margin-right: 8px;
+    opacity: 0.7;
+}
