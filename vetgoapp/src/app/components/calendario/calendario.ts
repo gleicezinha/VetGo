@@ -2,23 +2,25 @@
 
 import { Component, OnInit } from '@angular/core';
 import { FullCalendarModule } from '@fullcalendar/angular';
-import { CalendarOptions, EventInput, EventClickArg } from '@fullcalendar/core'; // Adicione EventClickArg
+import { CalendarOptions, EventInput, EventClickArg } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
+import timeGridPlugin from '@fullcalendar/timegrid'; // APROVAÇÃO: Importa o plugin de visualização por tempo
 import ptBrLocale from '@fullcalendar/core/locales/pt-br';
 import { AtendimentoService } from '../../services/atendimento';
 import { AuthService } from '../../services/AuthService';
 import { PacienteService } from '../../services/paciente';
 import { ResponsavelService } from '../../services/responsavel';
 import { forkJoin, of, switchMap } from 'rxjs';
-import { AtendimentoResponseDTO } from '../../models/atendimento-response.dto'; // Adicione este import
-import { CommonModule, DatePipe } from '@angular/common'; // Adicione CommonModule, DatePipe
-import { MatButtonModule } from '@angular/material/button'; // Adicione MatButtonModule
+import { AtendimentoResponseDTO } from '../../models/atendimento-response.dto';
+import { CommonModule, DatePipe } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-calendario',
   standalone: true,
-  imports: [FullCalendarModule, CommonModule, DatePipe, MatButtonModule], // Atualize os imports
+  imports: [FullCalendarModule, CommonModule, DatePipe, MatButtonModule],
   templateUrl: './calendario.html',
   styleUrls: ['./calendario.scss']
 })
@@ -29,17 +31,18 @@ export class CalendarioComponent implements OnInit {
   atendimentosPorDia = new Map<string, number>();
   totalHorariosDisponiveis = 10;
 
-  // ADICIONE ESTAS DUAS NOVAS PROPRIEDADES
   detalheAtendimento: AtendimentoResponseDTO | null = null;
   showModal = false;
 
   calendarOptions: CalendarOptions = {
     initialView: 'dayGridMonth',
-    plugins: [dayGridPlugin, interactionPlugin],
+    // APROVAÇÃO: Adiciona o plugin timeGrid para visualizações de agenda
+    plugins: [dayGridPlugin, interactionPlugin, timeGridPlugin],
     headerToolbar: {
       left: 'prev,next today',
       center: 'title',
-      right: 'dayGridMonth,dayGridWeek'
+      // APROVAÇÃO: Adiciona as visualizações de agenda (semana e dia)
+      right: 'dayGridMonth,timeGridWeek,timeGridDay'
     },
     locale: ptBrLocale,
     buttonText: {
@@ -54,16 +57,10 @@ export class CalendarioComponent implements OnInit {
     dayMaxEvents: true,
     events: [],
     dayCellDidMount: this.handleDayCellMount.bind(this),
-
-    // ADICIONE O MANIPULADOR DE CLIQUE
     eventClick: this.handleEventClick.bind(this),
-
-    // ADICIONE O MANIPULADOR DE MONTAGEM DO EVENTO (PARA O HOVER)
     eventDidMount: (info) => {
-      // Cria a string do tooltip
       const detalhes = info.event.extendedProps;
       const tooltipText = `Paciente: ${detalhes['nomePaciente']}\nTipo: ${detalhes['tipoDeAtendimento']}\nStatus: ${detalhes['status']}\nProfissional: ${detalhes['nomeProfissional'] || 'N/A'}`;
-      // Adiciona a string como o atributo 'title' do elemento, criando a dica de ferramenta.
       info.el.setAttribute('title', tooltipText);
     }
   };
@@ -72,7 +69,8 @@ export class CalendarioComponent implements OnInit {
     private atendimentoService: AtendimentoService,
     private authService: AuthService,
     private pacienteService: PacienteService,
-    private responsavelService: ResponsavelService
+    private responsavelService: ResponsavelService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -159,7 +157,6 @@ export class CalendarioComponent implements OnInit {
     this.detalheAtendimento = null;
   }
 
-  // O restante do código do componente continua aqui...
   recalcularAtendimentosPorDia(): void {
     this.atendimentosPorDia.clear();
     this.eventos.forEach(evento => {

@@ -1,4 +1,3 @@
-// app/components/form-atendimento/form-atendimento.ts
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -43,6 +42,7 @@ export class FormAtendimentoComponent implements OnInit {
   isResponsavel = false;
   statusAtendimento = ['AGENDADO', 'CONFIRMADO', 'CHEGADA', 'ATENDIMENTO', 'ENCERRADO', 'CANCELADO'];
   userRole: string | null = null;
+  isEditMode = false;
 
   constructor(
     private servico: AtendimentoService,
@@ -55,42 +55,55 @@ export class FormAtendimentoComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.carregarResponsaveis();
-    this.carregarProfissionais();
-
-    const dataHoraParam = this.route.snapshot.queryParamMap.get('dataHora');
-    const responsavelIdParam = this.route.snapshot.queryParamMap.get('responsavelId');
-    const pacienteIdParam = this.route.snapshot.queryParamMap.get('pacienteId');
     const atendimentoIdParam = this.route.snapshot.queryParamMap.get('id');
+    this.isEditMode = !!atendimentoIdParam;
 
     this.authService.currentUser.subscribe(user => {
       this.userRole = user?.papel ?? null;
-      if (atendimentoIdParam) {
-        // Fluxo de edição
-        const atendimentoId = +atendimentoIdParam;
-        this.servico.getById(atendimentoId).subscribe(atendimento => {
+    });
+
+    // APROVAÇÃO: Inicia o carregamento de todas as listas estáticas primeiro.
+    forkJoin({
+      responsaveis: this.responsavelService.get(),
+      profissionais: this.profissionalService.get(),
+    }).subscribe(data => {
+      this.responsaveis = data.responsaveis;
+      this.profissionais = data.profissionais;
+
+      if (this.isEditMode && atendimentoIdParam) {
+        // APROVAÇÃO: Lógica de edição completa
+        this.servico.getById(+atendimentoIdParam).subscribe(atendimento => {
           if (atendimento) {
             this.registro.id = atendimento.id;
             this.registro.dataHoraAtendimento = atendimento.dataHoraAtendimento;
             this.registro.tipoDeAtendimento = atendimento.tipoDeAtendimento as EAtendimento;
-            this.registro.observacao = atendimento.observacao;
-            this.registro.pacienteId = atendimento.paciente?.id;
-            this.registro.profissionalId = atendimento.profissional.id;
+            this.registro.observacao = atendimento.observacao ?? '';
             this.registro.status = atendimento.status;
+            this.registro.profissionalId = atendimento.profissional?.id;
 
-            if (atendimento.paciente?.responsavel?.id) {
-              this.registro.responsavelId = atendimento.paciente.responsavel.id;
-              this.onResponsavelChange(this.registro.responsavelId);
+            const responsavelId = atendimento.paciente?.responsavel?.id;
+            const pacienteId = atendimento.paciente?.id;
+
+            if (responsavelId) {
+              // APROVAÇÃO: Chame onResponsavelChange para carregar a lista de pets,
+              // e somente então preencha os IDs
+              this.onResponsavelChange(responsavelId);
+              this.registro.responsavelId = responsavelId;
+              this.registro.pacienteId = pacienteId;
             }
           }
         });
       } else {
-        // Fluxo de criação
+        // APROVAÇÃO: Lógica para modo de criação
+        const dataHoraParam = this.route.snapshot.queryParamMap.get('dataHora');
+        const responsavelIdParam = this.route.snapshot.queryParamMap.get('responsavelId');
+        const pacienteIdParam = this.route.snapshot.queryParamMap.get('pacienteId');
+
         if (dataHoraParam) {
           this.registro.dataHoraAtendimento = dataHoraParam;
         }
 
-        // APROVAÇÃO: Nova verificação de usuário mais segura
+        const user = this.authService.currentUserValue;
         if (user && user.papel === 'ROLE_RESPONSAVEL') {
           this.isResponsavel = true;
           this.responsavelService.getByUsuarioId(user.id).pipe(
@@ -109,33 +122,11 @@ export class FormAtendimentoComponent implements OnInit {
           if (responsavelIdParam && pacienteIdParam) {
             this.registro.responsavelId = +responsavelIdParam;
             const tempPacienteId = +pacienteIdParam;
-
-            forkJoin({
-              responsavel: this.responsavelService.getById(this.registro.responsavelId),
-              pacientes: this.pacienteService.getByResponsavelId(this.registro.responsavelId)
-            }).subscribe(({ responsavel, pacientes }) => {
-              this.responsaveis = [responsavel];
-              this.pacientesDoResponsavel = pacientes;
-              this.registro.pacienteId = tempPacienteId;
-            });
-          } else {
-            this.carregarResponsaveis();
+            this.onResponsavelChange(this.registro.responsavelId);
+            this.registro.pacienteId = tempPacienteId;
           }
         }
       }
-    });
-
-  }
-
-  carregarResponsaveis(): void {
-    this.responsavelService.get().subscribe(data => {
-      this.responsaveis = data;
-    });
-  }
-
-  carregarProfissionais(): void {
-    this.profissionalService.get().subscribe(data => {
-      this.profissionais = data;
     });
   }
 
@@ -184,6 +175,18 @@ export class FormAtendimentoComponent implements OnInit {
         console.error('Erro ao salvar o atendimento:', err);
         alert('Erro ao salvar o atendimento. Verifique o console para mais detalhes.');
       }
+    });
+  }
+
+  carregarResponsaveis(): void {
+    this.responsavelService.get().subscribe(data => {
+      this.responsaveis = data;
+    });
+  }
+
+  carregarProfissionais(): void {
+    this.profissionalService.get().subscribe(data => {
+      this.profissionais = data;
     });
   }
 }

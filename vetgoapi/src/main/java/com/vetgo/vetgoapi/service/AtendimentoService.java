@@ -1,5 +1,3 @@
-// src/main/java/com/vetgo/vetgoapi/service/AtendimentoService.java
-
 package com.vetgo.vetgoapi.service;
 
 import java.time.LocalDate;
@@ -36,6 +34,7 @@ public class AtendimentoService {
         this.profissionalRepository = profRepo;
     }
 
+    // NOVO MÉTODO PARA BUSCAR HORÁRIOS OCUPADOS
     public List<String> getHorariosOcupados(Long profissionalId, LocalDate data) {
         LocalDateTime inicioDoDia = data.atStartOfDay();
         LocalDateTime fimDoDia = data.atTime(LocalTime.MAX);
@@ -108,10 +107,10 @@ public class AtendimentoService {
                 .map(AtendimentoResponseDTO::new)
                 .collect(Collectors.toList());
     }
-
-    public AtendimentoResponseDTO getAtendimentoById(Long id) {
-        Atendimento atendimento = atendimentoRepository.findById(id)
+    
+    // APROVAÇÃO: O método agora chama a nova consulta do repositório
+    public Atendimento getAtendimentoCompleto(Long id) {
+        return atendimentoRepository.findByIdWithDetails(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Atendimento não encontrado com o ID: " + id));
-        return new AtendimentoResponseDTO(atendimento);
     }
 }

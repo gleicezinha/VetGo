@@ -1,15 +1,13 @@
 <div class="form-container">
-  <h2>Agende seu atendimento</h2>
+  <h2 *ngIf="!isEditMode">Agende seu atendimento</h2>
+  <h2 *ngIf="isEditMode">Editar atendimento</h2>
   <form #formAtendimento="ngForm" (ngSubmit)="save()">
 
     <div class="form-group">
       <label for="responsavel">Responsável</label>
-      <select id="responsavel"
-              name="responsavel"
-              [(ngModel)]="registro.responsavelId"
-              (ngModelChange)="onResponsavelChange($event)"
-              [disabled]="isResponsavel || !!route.snapshot.queryParamMap.get('responsavelId')"
-              required>
+      <select id="responsavel" name="responsavel" [(ngModel)]="registro.responsavelId"
+        (ngModelChange)="onResponsavelChange($event)"
+        [disabled]="isResponsavel || !!route.snapshot.queryParamMap.get('responsavelId')" required>
         <option [ngValue]="undefined">Selecione um responsável</option>
         <option *ngFor="let resp of responsaveis" [ngValue]="resp.id">
           {{ resp.usuario?.nomeUsuario }}
@@ -19,11 +17,8 @@
 
     <div class="form-group" *ngIf="pacientesDoResponsavel.length > 0">
       <label for="paciente">Paciente (Pet)</label>
-      <select id="paciente"
-              name="paciente"
-              [(ngModel)]="registro.pacienteId"
-              [disabled]="!!route.snapshot.queryParamMap.get('pacienteId')"
-              required>
+      <select id="paciente" name="paciente" [(ngModel)]="registro.pacienteId"
+        [disabled]="!!route.snapshot.queryParamMap.get('pacienteId')" required>
         <option [ngValue]="undefined">Selecione um pet</option>
         <option *ngFor="let pet of pacientesDoResponsavel" [ngValue]="pet.id">
           {{ pet.nome }}
@@ -45,6 +40,15 @@
         <label for="tipo">Tipo de Atendimento</label>
         <select id="tipo" name="tipo" [(ngModel)]="registro.tipoDeAtendimento" required>
           <option *ngFor="let tipo of tiposDeAtendimento" [ngValue]="tipo">{{ tipo }}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-row" *ngIf="registro.id && (userRole === 'ROLE_PROFISSIONAL' || userRole === 'ROLE_ADMIN')">
+      <div class="form-group">
+        <label for="status">Status do Atendimento</label>
+        <select id="status" name="status" [(ngModel)]="registro.status" required>
+          <option *ngFor="let status of statusAtendimento" [ngValue]="status">{{ status }}</option>
         </select>
       </div>
     </div>

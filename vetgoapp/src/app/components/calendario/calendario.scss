@@ -131,3 +131,7 @@
     color: var(--encerrado-color);
     background-color: var(--encerrado-bg-color);
 }
+
+.hours-list-container {
+    display: none; // Esconde o contêiner extra que não é mais necessário
+}

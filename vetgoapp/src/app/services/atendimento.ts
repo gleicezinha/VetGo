@@ -1,4 +1,5 @@
-// app/services/atendimento.ts
+// src/app/services/atendimento.ts
+
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../environments/environment';
@@ -21,12 +22,11 @@ export class AtendimentoService {
     return this.http.get<string[]>(`${this.apiUrl}/horarios-ocupados`, { params });
   }
 
-  // MÉTODO ORIGINAL, PODE SER REMOVIDO SE NÃO FOR MAIS USADO
+  // APROVAÇÃO: Este método agora busca a entidade completa
   getById(id: number): Observable<Atendimento> {
     return this.http.get<Atendimento>(`${this.apiUrl}/${id}`);
   }
 
-  // NOVO MÉTODO PARA PEGAR OS DETALHES DE UM ATENDIMENTO ESPECÍFICO
   getAtendimentoById(id: number): Observable<AtendimentoResponseDTO> {
     return this.http.get<AtendimentoResponseDTO>(`${this.apiUrl}/${id}`);
   }

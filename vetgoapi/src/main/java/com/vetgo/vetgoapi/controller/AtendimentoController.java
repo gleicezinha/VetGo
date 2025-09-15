@@ -1,9 +1,11 @@
+// src/main/java/com/vetgo/vetgoapi/controller/AtendimentoController.java
+
 package com.vetgo.vetgoapi.controller;
 
-import java.time.LocalDate; // IMPORTAR
+import java.time.LocalDate;
 import java.util.List;
 
-import org.springframework.format.annotation.DateTimeFormat; // IMPORTAR
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,7 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam; // IMPORTAR
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vetgo.vetgoapi.controller.dto.AgendamentoRequestDTO;
@@ -66,18 +68,13 @@ public class AtendimentoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AtendimentoResponseDTO> getAtendimentoById(@PathVariable Long id) {
-        return ResponseEntity.ok(atendimentoService.getAtendimentoById(id));
+    public ResponseEntity<Atendimento> getAtendimentoById(@PathVariable Long id) {
+        // APROVAÇÃO: Retorne a entidade completa para edição
+        return ResponseEntity.ok(atendimentoService.getAtendimentoCompleto(id));
     }
-      @PutMapping("/{id}") // NOVO ENDPOINT DE EDIÇÃO
-    public ResponseEntity<Atendimento> update(@PathVariable Long id, @RequestBody Atendimento objeto) {
-        Atendimento registro = atendimentoService.save(objeto);
-        return ResponseEntity.ok(registro);
-    }
-
-    @DeleteMapping("/{id}") // NOVO ENDPOINT DE EXCLUSÃO
-    public ResponseEntity<?> delete(@PathVariable Long id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteAtendimento(@PathVariable Long id) {
         atendimentoService.delete(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build(); // Retorna 204 No Content
     }
 }
