@@ -6,7 +6,8 @@ import { CommonModule } from '@angular/common';
 import { ResponsavelService } from '../../services/responsavel';
 import { Usuario } from '../../models/usuario';
 import { Endereco } from '../../models/endereco.model';
-import { AuthService } from '../../services/AuthService'; // Importação necessária
+import { AuthService } from '../../services/AuthService';
+
 
 @Component({
   standalone: true,
@@ -73,7 +74,7 @@ export class FormClienteComponent implements OnInit {
     private servico: ResponsavelService,
     private route: ActivatedRoute,
     private router: Router,
-    private authService: AuthService // Injeção do serviço de autenticação
+    private authService: AuthService
   ) { }
 
   ngOnInit(): void {
@@ -101,26 +102,32 @@ export class FormClienteComponent implements OnInit {
     this.servico.save(this.registro).subscribe({
       next: (responsavelSalvo: Responsavel) => {
         alert('Responsável cadastrado com sucesso!');
-        // Envia o código de verificação após o cadastro
-        const telefone = responsavelSalvo.usuario?.telefone;
-        if (telefone) {
-          this.authService.sendVerificationCode(telefone).subscribe({
-            next: () => {
-              // Redireciona para a tela de verificação
-              this.router.navigate(['/verify', telefone]);
-            },
-            error: (err) => {
-              console.error('Erro ao enviar o código de verificação:', err);
-              // Redireciona mesmo se o envio do código falhar
-              this.router.navigate(['/verify', telefone]);
-            }
-          });
+        const usuarioLogado = this.authService.currentUserValue;
+
+        if (usuarioLogado && usuarioLogado.papel && usuarioLogado.papel !== 'ROLE_RESPONSAVEL') {
+          this.router.navigate(['/list-cliente']);
         } else {
-          console.error('Telefone do usuário não está disponível.');
+          // Adicionada a verificação para garantir que o objeto e a propriedade existam
+          if (responsavelSalvo && responsavelSalvo.usuario && responsavelSalvo.usuario.telefone) {
+            this.authService.sendVerificationCode(responsavelSalvo.usuario.telefone).subscribe({
+              next: () => {
+                this.router.navigate(['/verify', responsavelSalvo.usuario?.telefone ?? '']);
+              },
+              error: (err) => {
+                console.error('Erro ao enviar o código de verificação:', err);
+                this.router.navigate(['/verify', responsavelSalvo.usuario?.telefone ?? '']);
+              }
+            });
+          } else {
+            console.error('Dados do responsável incompletos. Não foi possível enviar o código de verificação.');
+            // Opcional: Redirecionar para uma página de erro ou login
+            this.router.navigate(['/login']);
+          }
         }
       },
       error: (err) => {
         console.error('Erro ao salvar o responsável:', err);
+        alert(`Erro ao salvar o responsável: ${err.message || 'Erro desconhecido'}`);
       }
     });
   }
