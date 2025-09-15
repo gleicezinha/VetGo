@@ -24,16 +24,15 @@ public class Usuario implements Serializable {
     @Column(nullable = false)
     private String nomeUsuario;
 
-    // O campo de senha foi removido.
-    // private String senha;
-
-    @Column(nullable = false, unique = true)
+    // Removido 'nullable = false' para tornar o email opcional
+    @Column(unique = true)
     private String email;
 
     @Column(nullable = false)
     private String telefone;
 
-    @Column(nullable = false, unique = true)
+    // Removido 'nullable = false' para tornar o cpf opcional
+    @Column(unique = true)
     private String cpf;
 
     @Column(nullable = false)
@@ -67,15 +66,6 @@ public class Usuario implements Serializable {
     public void setNomeUsuario(String nomeUsuario) {
         this.nomeUsuario = nomeUsuario;
     }
-
-    // Os métodos getSenha e setSenha foram removidos.
-    // public String getSenha() {
-    //     return senha;
-    // }
-
-    // public void setSenha(String senha) {
-    //     this.senha = senha;
-    // }
 
     public String getEmail() {
         return email;
