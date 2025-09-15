@@ -1,3 +1,5 @@
+// src/main/java/com/vetgo/vetgoapi/repository/AtendimentoRepository.java
+
 package com.vetgo.vetgoapi.repository;
 
 import java.time.LocalDateTime;
@@ -19,7 +21,11 @@ public interface AtendimentoRepository extends JpaRepository<Atendimento, Long> 
      * @param pacienteId O ID do paciente.
      * @return Uma lista de atendimentos do paciente.
      */
-    List<Atendimento> findByPacienteId(Long pacienteId);
+    @Query("SELECT a FROM Atendimento a " +
+           "JOIN FETCH a.paciente p " +
+           "JOIN FETCH a.profissional prof " +
+           "WHERE a.paciente.id = :pacienteId")
+    List<Atendimento> findByPacienteIdWithDetails(@Param("pacienteId") Long pacienteId);
 
     /**
      * Encontra todos os atendimentos realizados por um determinado profissional.

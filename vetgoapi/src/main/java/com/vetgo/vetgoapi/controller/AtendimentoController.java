@@ -44,9 +44,10 @@ public class AtendimentoController {
         return ResponseEntity.ok(atendimentoService.getHorariosOcupados(profissionalId, data));
     }
 
+    // APROVAÇÃO: Endpoint que retorna a lista de atendimentos completos
     @GetMapping("/por-paciente/{pacienteId}")
     public ResponseEntity<List<Atendimento>> listarPorPaciente(@PathVariable Long pacienteId) {
-        List<Atendimento> atendimentos = atendimentoRepository.findByPacienteId(pacienteId);
+        List<Atendimento> atendimentos = atendimentoRepository.findByPacienteIdWithDetails(pacienteId);
         return ResponseEntity.ok(atendimentos);
     }
 
@@ -69,12 +70,11 @@ public class AtendimentoController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Atendimento> getAtendimentoById(@PathVariable Long id) {
-        // APROVAÇÃO: Retorne a entidade completa para edição
         return ResponseEntity.ok(atendimentoService.getAtendimentoCompleto(id));
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteAtendimento(@PathVariable Long id) {
         atendimentoService.delete(id);
-        return ResponseEntity.noContent().build(); // Retorna 204 No Content
+        return ResponseEntity.noContent().build();
     }
 }

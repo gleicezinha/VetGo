@@ -1,27 +1,27 @@
-// app/components/list-atendimento/list-atendimento.ts
+// src/app/components/list-atendimento/list-atendimento.ts
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
-import { Router, RouterModule } from '@angular/router'; // Adicione RouterModule
+import { Router, RouterModule } from '@angular/router';
 import { AtendimentoService } from '../../services/atendimento';
 import { AtendimentoResponseDTO } from '../../models/atendimento-response.dto';
 import { AuthService } from '../../services/AuthService';
 import { ResponsavelService } from '../../services/responsavel';
 import { PacienteService } from '../../services/paciente';
 import { forkJoin, of, switchMap } from 'rxjs';
-import { MatMenuModule } from '@angular/material/menu'; // Adicione MatMenuModule
-import { MatButtonModule } from '@angular/material/button'; // Adicione MatButtonModule
+import { MatMenuModule } from '@angular/material/menu';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
     selector: 'app-list-atendimento',
     standalone: true,
-    imports: [CommonModule, DatePipe, RouterModule, MatMenuModule, MatButtonModule], // Atualize os imports
+    imports: [CommonModule, DatePipe, RouterModule, MatMenuModule, MatButtonModule],
     templateUrl: './list-atendimento.html',
     styleUrls: ['./list-atendimento.scss']
 })
 export class ListAtendimentoComponent implements OnInit {
 
     atendimentos: AtendimentoResponseDTO[] = [];
-    userRole: string | null = null; // Nova propriedade para o papel do usuário
+    userRole: string | null = null;
 
     constructor(
         private atendimentoService: AtendimentoService,
@@ -104,7 +104,7 @@ export class ListAtendimentoComponent implements OnInit {
             this.atendimentoService.delete(atendimentoId).subscribe({
                 next: () => {
                     alert('Atendimento excluído com sucesso!');
-                    this.carregarAtendimentos(); // Recarrega a lista
+                    this.carregarAtendimentos();
                 },
                 error: (err) => {
                     console.error('Erro ao excluir atendimento:', err);

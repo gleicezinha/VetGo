@@ -1,11 +1,11 @@
-// app/components/calendario/calendario.ts
+// src/app/components/calendario/calendario.ts
 
 import { Component, OnInit } from '@angular/core';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { CalendarOptions, EventInput, EventClickArg } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import timeGridPlugin from '@fullcalendar/timegrid'; // APROVAÇÃO: Importa o plugin de visualização por tempo
+import timeGridPlugin from '@fullcalendar/timegrid';
 import ptBrLocale from '@fullcalendar/core/locales/pt-br';
 import { AtendimentoService } from '../../services/atendimento';
 import { AuthService } from '../../services/AuthService';
@@ -36,12 +36,10 @@ export class CalendarioComponent implements OnInit {
 
   calendarOptions: CalendarOptions = {
     initialView: 'dayGridMonth',
-    // APROVAÇÃO: Adiciona o plugin timeGrid para visualizações de agenda
     plugins: [dayGridPlugin, interactionPlugin, timeGridPlugin],
     headerToolbar: {
       left: 'prev,next today',
       center: 'title',
-      // APROVAÇÃO: Adiciona as visualizações de agenda (semana e dia)
       right: 'dayGridMonth,timeGridWeek,timeGridDay'
     },
     locale: ptBrLocale,
@@ -111,12 +109,18 @@ export class CalendarioComponent implements OnInit {
           return forkJoin(atendimentoCalls);
         }),
         switchMap(atendimentosPorPaciente => {
-          const idsAtendimentos = atendimentosPorPaciente.flat().map(atd => atd.id).filter(id => id !== undefined);
-          const detailCalls = idsAtendimentos.map(id => this.atendimentoService.getAtendimentoById(id));
-          if (detailCalls.length === 0) {
-            return of([]);
-          }
-          return forkJoin(detailCalls);
+          const todosAtendimentos = atendimentosPorPaciente.flat().map(atendimento => {
+            return {
+              id: atendimento.id,
+              dataHoraAtendimento: atendimento.dataHoraAtendimento,
+              status: atendimento.status,
+              tipoDeAtendimento: atendimento.tipoDeAtendimento,
+              nomePaciente: atendimento.paciente?.nome || 'N/A',
+              nomeResponsavel: atendimento.paciente?.responsavel?.usuario?.nomeUsuario || 'N/A',
+              nomeProfissional: atendimento.profissional?.usuario?.nomeUsuario || 'N/A',
+            } as AtendimentoResponseDTO;
+          });
+          return of(todosAtendimentos);
         })
       ).subscribe({
         next: (atendimentosDetalhados) => {
