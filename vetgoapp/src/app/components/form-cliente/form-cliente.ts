@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { ResponsavelService } from '../../services/responsavel';
 import { Usuario } from '../../models/usuario';
 import { Endereco } from '../../models/endereco.model';
+import { AuthService } from '../../services/AuthService'; // Importação necessária
 
 @Component({
   standalone: true,
@@ -14,7 +15,6 @@ import { Endereco } from '../../models/endereco.model';
   templateUrl: './form-cliente.html',
   styleUrls: ['./form-cliente.scss']
 })
-// A CORREÇÃO ESTÁ AQUI: O nome da classe deve ser FormClienteComponent
 export class FormClienteComponent implements OnInit {
 
   registro: Responsavel = {
@@ -72,7 +72,8 @@ export class FormClienteComponent implements OnInit {
   constructor(
     private servico: ResponsavelService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private authService: AuthService // Injeção do serviço de autenticação
   ) { }
 
   ngOnInit(): void {
@@ -96,21 +97,36 @@ export class FormClienteComponent implements OnInit {
     }
   }
 
-
   save(): void {
     this.servico.save(this.registro).subscribe({
-      complete: () => {
+      next: (responsavelSalvo: Responsavel) => {
         alert('Responsável cadastrado com sucesso!');
-        this.router.navigate(['/list-cliente']);
+        // Envia o código de verificação após o cadastro
+        const telefone = responsavelSalvo.usuario?.telefone;
+        if (telefone) {
+          this.authService.sendVerificationCode(telefone).subscribe({
+            next: () => {
+              // Redireciona para a tela de verificação
+              this.router.navigate(['/verify', telefone]);
+            },
+            error: (err) => {
+              console.error('Erro ao enviar o código de verificação:', err);
+              // Redireciona mesmo se o envio do código falhar
+              this.router.navigate(['/verify', telefone]);
+            }
+          });
+        } else {
+          console.error('Telefone do usuário não está disponível.');
+        }
       },
       error: (err) => {
         console.error('Erro ao salvar o responsável:', err);
       }
     });
   }
+
   cadastrarpet(): void {
     console.log('Dados do responsável antes de salvar:', this.registro);
-
     this.servico.save(this.registro).subscribe({
       next: (responsavelSalvo: Responsavel) => {
         console.log('Responsável salvo com sucesso:', responsavelSalvo);

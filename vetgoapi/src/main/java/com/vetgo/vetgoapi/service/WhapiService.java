@@ -1,12 +1,17 @@
 package com.vetgo.vetgoapi.service;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class WhapiService {
@@ -32,6 +37,7 @@ public class WhapiService {
     // Envia o código de verificação
     public String sendCode(String phone) {
         String normalizedPhone = normalizePhone(phone);
+        System.out.println("Telefone normalizado enviado para a API: " + normalizedPhone); // Linha de log para depuração
 
         String code = String.valueOf(new Random().nextInt(900000) + 100000); // código 6 dígitos
         codes.put(normalizedPhone, code);
