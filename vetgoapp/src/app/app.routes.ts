@@ -21,7 +21,7 @@ export const routes: Routes = [
     { path: 'verify/:phone', component: VerifyComponent },
     { path: 'list-cliente', component: ListClienteComponent, canActivate: [authGuard] },
     { path: 'list-atendimento', component: ListAtendimentoComponent, canActivate: [authGuard] },
-    { path: 'form-cliente', component: FormClienteComponent, canActivate: [authGuard] },
+    { path: 'form-cliente', component: FormClienteComponent},
     { path: 'form-pet', component: FormPetComponent, canActivate: [authGuard] },
     { path: 'form-atendimento', component: FormAtendimentoComponent, canActivate: [authGuard] },
     { path: 'animais-cliente/:id', component: AnimaisCliente, canActivate: [authGuard] },

@@ -23,6 +23,10 @@
       </button>
     </form>
 
-    <p *ngIf="message" class="error">{{ message }}</p>
+    <div *ngIf="showAlert" class="custom-alert">
+      <p class="custom-alert-message">{{ message }}</p>
+      <p *ngIf="countdown > 0" class="countdown-text">Redirecionando em {{ countdown }} segundos...</p>
+    </div>
+
   </div>
 </div>

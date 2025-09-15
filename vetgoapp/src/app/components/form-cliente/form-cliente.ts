@@ -6,6 +6,8 @@ import { CommonModule } from '@angular/common';
 import { ResponsavelService } from '../../services/responsavel';
 import { Usuario } from '../../models/usuario';
 import { Endereco } from '../../models/endereco.model';
+import { AuthService } from '../../services/AuthService';
+
 
 @Component({
   standalone: true,
@@ -14,7 +16,6 @@ import { Endereco } from '../../models/endereco.model';
   templateUrl: './form-cliente.html',
   styleUrls: ['./form-cliente.scss']
 })
-// A CORREÇÃO ESTÁ AQUI: O nome da classe deve ser FormClienteComponent
 export class FormClienteComponent implements OnInit {
 
   registro: Responsavel = {
@@ -72,7 +73,8 @@ export class FormClienteComponent implements OnInit {
   constructor(
     private servico: ResponsavelService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) { }
 
   ngOnInit(): void {
@@ -96,21 +98,42 @@ export class FormClienteComponent implements OnInit {
     }
   }
 
-
   save(): void {
     this.servico.save(this.registro).subscribe({
-      complete: () => {
+      next: (responsavelSalvo: Responsavel) => {
         alert('Responsável cadastrado com sucesso!');
-        this.router.navigate(['/list-cliente']);
+        const usuarioLogado = this.authService.currentUserValue;
+
+        if (usuarioLogado && usuarioLogado.papel && usuarioLogado.papel !== 'ROLE_RESPONSAVEL') {
+          this.router.navigate(['/list-cliente']);
+        } else {
+          // Adicionada a verificação para garantir que o objeto e a propriedade existam
+          if (responsavelSalvo && responsavelSalvo.usuario && responsavelSalvo.usuario.telefone) {
+            this.authService.sendVerificationCode(responsavelSalvo.usuario.telefone).subscribe({
+              next: () => {
+                this.router.navigate(['/verify', responsavelSalvo.usuario?.telefone ?? '']);
+              },
+              error: (err) => {
+                console.error('Erro ao enviar o código de verificação:', err);
+                this.router.navigate(['/verify', responsavelSalvo.usuario?.telefone ?? '']);
+              }
+            });
+          } else {
+            console.error('Dados do responsável incompletos. Não foi possível enviar o código de verificação.');
+            // Opcional: Redirecionar para uma página de erro ou login
+            this.router.navigate(['/login']);
+          }
+        }
       },
       error: (err) => {
         console.error('Erro ao salvar o responsável:', err);
+        alert(`Erro ao salvar o responsável: ${err.message || 'Erro desconhecido'}`);
       }
     });
   }
+
   cadastrarpet(): void {
     console.log('Dados do responsável antes de salvar:', this.registro);
-
     this.servico.save(this.registro).subscribe({
       next: (responsavelSalvo: Responsavel) => {
         console.log('Responsável salvo com sucesso:', responsavelSalvo);
