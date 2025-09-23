@@ -10,6 +10,7 @@ import { ListAtendimentoComponent } from './components/list-atendimento/list-ate
 import { CalendarioComponent } from './components/calendario/calendario';
 import { VerifyComponent } from './components/verify/verify.component'; // Importe o git componente de verificação
 import { authGuard } from './guards/auth.guard';
+import { PagamentoModalComponent } from './components/pagamento-modal/pagamento-modal';
 
 export const routes: Routes = [
     // Rota padrão, redireciona para a tela de agendamento
@@ -28,6 +29,7 @@ export const routes: Routes = [
     { path: 'calendario', component: CalendarioComponent, canActivate: [authGuard] },
     // Rotas de autenticação (acessíveis sem login)
     { path: 'login', component: LoginComponent },
+    { path: 'modal-pagamento', component: PagamentoModalComponent, canActivate: [authGuard] },
     // Rota para a tela de verificação, que recebe o telefone como parâmetro
     { path: 'verify/:phone', component: VerifyComponent },
 ];

@@ -1,0 +1,5 @@
+export enum ESituacao {
+  AGENDADO = 'AGENDADO',
+  CONCLUIDO = 'CONCLUIDO',
+  CANCELADO = 'CANCELADO'
+}

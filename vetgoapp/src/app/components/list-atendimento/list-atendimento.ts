@@ -10,6 +10,7 @@ import { PacienteService } from '../../services/paciente';
 import { forkJoin, of, switchMap } from 'rxjs';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
+import { Atendimento } from '../atendimento/atendimento';
 
 @Component({
     selector: 'app-list-atendimento',
@@ -20,7 +21,9 @@ import { MatButtonModule } from '@angular/material/button';
 })
 export class ListAtendimentoComponent implements OnInit {
 
-    atendimentos: AtendimentoResponseDTO[] = [];
+    atendimentos: Atendimento[] = [];
+    atendimentoSelecionado!: Atendimento;
+    modalAberto = false;
     userRole: string | null = null;
 
     constructor(
@@ -112,5 +115,21 @@ export class ListAtendimentoComponent implements OnInit {
                 }
             });
         }
+    }
+    // Métodos para controle da modal de pagamento
+    abrirModalPagamento(atendimento: Atendimento) {
+        this.atendimentoSelecionado = atendimento;
+        this.modalAberto = true;
+    }
+
+    fecharModalPagamento() {
+        this.modalAberto = false;
+        this.atendimentoSelecionado = undefined as unknown as Atendimento;
+        this.carregarAtendimentos();
+    }
+
+    onPagamentoSalvo(pagamento: any) {
+        console.log('Pagamento Salvo:', pagamento);
+        this.fecharModalPagamento();
     }
 }
