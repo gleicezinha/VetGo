@@ -1,0 +1,147 @@
+/* Estilos para o Rodapé */
+.app-footer {
+    background-color: #476784;
+    color: #ecf0f1;
+    padding: 40px 20px;
+    border-top: 4px solid #3498db;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 30px;
+}
+
+.footer-section {
+    flex: 1;
+    min-width: 200px;
+    text-align: left;
+}
+
+.footer-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-align: left;
+}
+
+.footer-logo {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.footer-logo img {
+    height: 40px;
+    margin-right: 10px;
+}
+
+.footer-legal-and-copyright {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+}
+
+.footer-copyright {
+    font-size: 0.9rem;
+    color: #b1c4c5;
+}
+
+.footer-links-legals {
+    margin-top: 5px;
+}
+
+.footer-links-legals a {
+    color: #ecf0f1;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.footer-links-legals a:hover {
+    color: #3498db;
+}
+
+.footer-section h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+    color: #fff;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 10px;
+}
+
+.footer-section ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-section a {
+    color: #ecf0f1;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.footer-section a:hover {
+    color: #3498db;
+}
+
+.contact-item,
+.social-links {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.contact-icon,
+.social-icon {
+    width: 24px;
+    height: 24px;
+    filter: invert(100%);
+    transition: transform 0.3s;
+}
+
+.social-icon:hover {
+    transform: scale(1.1);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .footer-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+    }
+
+    .footer-section {
+        text-align: center;
+        /* Centraliza o conteúdo de cada seção */
+    }
+
+    .footer-info {
+        align-items: center;
+        /* Centraliza a seção de logo */
+        justify-content: center;
+    }
+
+    .footer-logo {
+        justify-content: center;
+        /* Centraliza o logo e o texto */
+    }
+
+    .footer-section h3 {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+    .contact-item,
+    .social-links {
+        justify-content: center;
+        /* Centraliza os ícones */
+    }
+}
