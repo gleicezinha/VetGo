@@ -1,68 +1,36 @@
-<div class="page-container">
-  <header class="page-header">
-    <h1 class="page-title">Todos os Clientes</h1>
-  </header>
-
-  <div class="content-card">
-    <div class="toolbar">
-      <div class="search-container">
-        <img src="assets/imagens/search.svg" alt="Pesquisar" class="search-icon" />
-        <input 
-          type="text" 
-          class="search-input" 
-          placeholder="Pesquisar"
-          [(ngModel)]="termoBusca"
-          (input)="buscarComTermo(termoBusca)"
-        />
-      </div>
-      <button class="add-button" (click)="cadastrar()">
-        Cadastrar Cliente
-      </button>
-    </div>
-
-    <table class="clients-table">
-      <thead>
-        <tr>
-          <th>Nome</th>
-          <th>Telefone</th>
-          <th>Pets</th>
-          <th>Endereço</th>
-          <th>Ações</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let cliente of registrosFiltrados">
-          <td>{{ cliente.usuario?.nomeUsuario }}</td>
-          <td>
-            <img src="assets/imagens/whatsapp.svg" alt="WhatsApp" class="whatsapp-icon">
-            <a [href]="getWhatsappLink(cliente.usuario?.telefone)" target="_blank">
-              {{ cliente.usuario?.telefone }}
-               
-            </a>
-          </td>
-          <td>{{ getPetNames(cliente.id) }}</td>
-          <td>{{ formatAddress(cliente.usuario?.endereco) }}</td>
-          <td class="actions-cell">
-             <button class="action-button" [matMenuTriggerFor]="menu">
-              <img src="assets/imagens/list_alt.svg" alt="Ações">
-            </button>
-            <mat-menu #menu="matMenu">
-              <button mat-menu-item (click)="editar(cliente)">
-                <img src="assets/imagens/edit.svg" alt="Editar" class="menu-icon">
-                <span>Editar</span>
-              </button>
-              <button mat-menu-item (click)="delete(cliente.id)">
-                <img src="assets/imagens/delete.svg" alt="Excluir" class="menu-excluir">
-                <span>Excluir</span>
-              </button>
-              <button mat-menu-item [routerLink]="['/animais-cliente', cliente.id]">
-                <img src="assets/imagens/pet.svg" alt="Ver Animais" class="menu-icon">
-                <span>Ver Animais</span>
-              </button>
-            </mat-menu>
-          </td>
-        </tr>
-      </tbody>
+<div class="list-container">
+    <h2>Lista de Clientes</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Telefone</th>
+                <th>Status Pagamento</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let cliente of clientes">
+                <td>{{ cliente.id }}</td>
+                <td>{{ cliente.nome }}</td>
+                <td>{{ cliente.telefone }}</td>
+                <td>
+                    <span [ngClass]="{'status-pago': cliente.statusPagamento === 'PAGO', 'status-pendente': cliente.statusPagamento === 'PENDENTE'}">
+                        {{ cliente.statusPagamento }}
+                    </span>
+                </td>
+                <td>
+                    <button mat-icon-button [matMenuTriggerFor]="menu">
+                        <img src="assets/imagens/assignment.svg" alt="Ações" class="menu-icon">
+                    </button>
+                    <mat-menu #menu="matMenu">
+                        <button mat-menu-item (click)="editarCliente(cliente.id)">Editar</button>
+                        <button mat-menu-item (click)="visualizarAnimais(cliente.id)">Ver Animais</button>
+                        <button mat-menu-item (click)="excluirCliente(cliente.id)">Excluir</button>
+                    </mat-menu>
+                </td>
+            </tr>
+        </tbody>
     </table>
-  </div>
 </div>

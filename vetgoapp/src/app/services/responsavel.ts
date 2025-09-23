@@ -1,29 +1,29 @@
 import { Injectable } from '@angular/core';
-import { ICrudService } from './i-crud-service';
-import { Responsavel } from '../models/responsavel';
-import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Responsavel } from '../models/responsavel';
+import { ICrudService } from './i-crud-service';
+import { environment } from '../../environments/environment';
+import { ResponsavelResponseDTO } from '../models/responsavel-response.dto';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ResponsavelService implements ICrudService<Responsavel> {
-  public apiUrl: string = environment.API_URL + '/api/responsaveis';
+  public apiUrl = `${environment.API_URL}/responsaveis`;
 
   constructor(private http: HttpClient) { }
 
-  get(termoBusca?: string): Observable<Responsavel[]> {
+  get(): Observable<Responsavel[]> {
     return this.http.get<Responsavel[]>(this.apiUrl);
+  }
+
+  getComStatusPagamento(): Observable<ResponsavelResponseDTO[]> {
+    return this.http.get<ResponsavelResponseDTO[]>(`${this.apiUrl}/com-status-pagamento`);
   }
 
   getById(id: number): Observable<Responsavel> {
     return this.http.get<Responsavel>(`${this.apiUrl}/${id}`);
-  }
-
-  // NOVO MÉTODO: Obtém o Responsavel a partir do ID do Usuario
-  getByUsuarioId(usuarioId: number): Observable<Responsavel> {
-    return this.http.get<Responsavel>(`${this.apiUrl}/por-usuario/${usuarioId}`);
   }
 
   save(objeto: Responsavel): Observable<Responsavel> {
@@ -34,7 +34,11 @@ export class ResponsavelService implements ICrudService<Responsavel> {
     }
   }
 
-  delete(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  delete(id: number): Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}/${id}`);
+  }
+
+  getByUsuarioId(usuarioId: number): Observable<Responsavel> {
+    return this.http.get<Responsavel>(`${this.apiUrl}/por-usuario/${usuarioId}`);
   }
 }

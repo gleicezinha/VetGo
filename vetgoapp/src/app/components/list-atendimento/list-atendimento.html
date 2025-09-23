@@ -48,6 +48,13 @@
                                 <img src="assets/imagens/delete.svg" alt="Excluir" class="menu-excluir">
                                 <span>Excluir</span>
                             </button>
+                            <div *ngIf="modalAberto" class="modal-backdrop">
+                                <app-pagamento-modal
+                                    [atendimentoAtual]="atendimentoSelecionado"
+                                    (close)="fecharModalPagamento()"
+                                    (pagamentoSalvo)="onPagamentoSalvo($event)">
+                                </app-pagamento-modal>
+                            </div>
                         </mat-menu>
                     </td>
                 </tr>
