@@ -18,10 +18,10 @@ export class LoginComponent implements OnDestroy {
   telefone: string = '';
   message: string = '';
   showAlert: boolean = false;
-  countdown: number = 10;
+  countdown: number = 5;
   private unsubscribe$ = new Subject<void>();
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router) { }
 
   logar(form: NgForm) {
     if (!form.valid) return;

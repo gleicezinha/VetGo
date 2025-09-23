@@ -34,7 +34,6 @@ public class AtendimentoService {
         this.profissionalRepository = profRepo;
     }
 
-    // NOVO MÉTODO PARA BUSCAR HORÁRIOS OCUPADOS
     public List<String> getHorariosOcupados(Long profissionalId, LocalDate data) {
         LocalDateTime inicioDoDia = data.atStartOfDay();
         LocalDateTime fimDoDia = data.atTime(LocalTime.MAX);
@@ -55,6 +54,7 @@ public class AtendimentoService {
         Profissional profissional = profissionalRepository.findById(dto.getProfissionalId())
                 .orElseThrow(() -> new ResourceNotFoundException("Profissional não encontrado com o ID: " + dto.getProfissionalId()));
 
+        // A validação de data foi restaurada, conforme solicitado.
         if (dto.getDataHoraAtendimento().isBefore(LocalDateTime.now())) {
             throw new BusinessRuleException("Não é possível agendar uma consulta em uma data passada.");
         }
@@ -108,7 +108,7 @@ public class AtendimentoService {
                 .collect(Collectors.toList());
     }
     
-    // APROVAÇÃO: O método agora chama a nova consulta do repositório
+    // O método agora chama a nova consulta do repositório
     public Atendimento getAtendimentoCompleto(Long id) {
         return atendimentoRepository.findByIdWithDetails(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Atendimento não encontrado com o ID: " + id));

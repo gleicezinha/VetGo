@@ -44,7 +44,8 @@ public class Procedimento implements Serializable {
     @Column(name = "data_atendimento", nullable = false)
     private LocalDate dataAtendimento;
 
-    @Column(name = "data_proxdose") // Pode ser nulo, então não tem nullable = false
+    // CORREÇÃO: Campo agora é obrigatório no banco de dados
+    @Column(name = "data_proxdose", nullable = false)
     private LocalDate dataProximaDose;
 
     private String dose;
