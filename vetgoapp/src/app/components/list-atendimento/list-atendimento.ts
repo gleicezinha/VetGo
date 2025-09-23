@@ -11,11 +11,12 @@ import { forkJoin, of, switchMap } from 'rxjs';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { Atendimento } from '../atendimento/atendimento';
+import { PagamentoModalComponent } from '../pagamento-modal/pagamento-modal';
 
 @Component({
     selector: 'app-list-atendimento',
     standalone: true,
-    imports: [CommonModule, DatePipe, RouterModule, MatMenuModule, MatButtonModule],
+    imports: [CommonModule, DatePipe, RouterModule, MatMenuModule,PagamentoModalComponent, MatButtonModule],
     templateUrl: './list-atendimento.html',
     styleUrls: ['./list-atendimento.scss']
 })
