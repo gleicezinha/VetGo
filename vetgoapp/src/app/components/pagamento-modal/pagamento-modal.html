@@ -1,7 +1,7 @@
-<div class="modal-content">
+<div class="modal-content" *ngIf="atendimentoAtual">
   <div class="modal-header">
-    <h3>Registrar Pagamento para o Atendimento #{{ atendimentoAtual?.id }}</h3>
-    <button (click)="onClose()">X</button>
+    <h3>Registrar Pagamento para o Atendimento #{{ atendimentoAtual.id }}</h3>
+    <button [routerLink]="['/list-atendimento']">X</button>
   </div>
   <div class="modal-body">
     <form (ngSubmit)="salvarPagamento()">
@@ -33,12 +33,12 @@
       <div class="resumo-pagamento">
         <p><strong>Valor Total dos Procedimentos:</strong> {{ valorTotal | currency:'BRL' }}</p>
       </div>
-      
+
       <div class="form-group">
         <label for="valorPago">Valor Pago</label>
         <input type="number" id="valorPago" [(ngModel)]="valorPago" name="valorPago" (input)="calcularSaldo()" required>
       </div>
-      
+
       <div class="resumo-final">
         <p [ngClass]="{'pendente': saldoRestante > 0, 'pago': saldoRestante <= 0}">
           <strong>Saldo Restante:</strong> {{ saldoRestante | currency:'BRL' }}</p>

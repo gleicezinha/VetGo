@@ -30,7 +30,10 @@ public class PagamentoService {
     }
 
     public Pagamento getByAtendimentoId(Long atendimentoId) {
-        return pagamentoRepository.findByAtendimentoId(atendimentoId)
-            .orElseThrow(() -> new ResourceNotFoundException("Pagamento não encontrado para o Atendimento com ID: " + atendimentoId));
+        return pagamentoRepository.findByAtendimento_Id(atendimentoId)
+            .orElseThrow(() -> new ResourceNotFoundException(
+                "Pagamento não encontrado para o Atendimento com ID: " + atendimentoId
+            ));
     }
+
 }

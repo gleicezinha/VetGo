@@ -4,18 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "pagamento")
@@ -33,7 +22,7 @@ public class Pagamento implements Serializable {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_consulta")
     private Atendimento atendimento;
-    
+
     @Column(columnDefinition = "TEXT")
     private String descricao;
 
@@ -53,67 +42,27 @@ public class Pagamento implements Serializable {
     public Pagamento() {}
 
     // Getters e Setters
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public Responsavel getResponsavel() { return responsavel; }
+    public void setResponsavel(Responsavel responsavel) { this.responsavel = responsavel; }
 
-    public Responsavel getResponsavel() {
-        return responsavel;
-    }
+    public Atendimento getAtendimento() { return atendimento; }
+    public void setAtendimento(Atendimento atendimento) { this.atendimento = atendimento; }
 
-    public void setResponsavel(Responsavel responsavel) {
-        this.responsavel = responsavel;
-    }
+    public String getDescricao() { return descricao; }
+    public void setDescricao(String descricao) { this.descricao = descricao; }
 
-    public Atendimento getAtendimento() {
-        return atendimento;
-    }
+    public BigDecimal getValorTotal() { return valorTotal; }
+    public void setValorTotal(BigDecimal valorTotal) { this.valorTotal = valorTotal; }
 
-    public void setAtendimento(Atendimento atendimento) {
-        this.atendimento = atendimento;
-    }
+    public BigDecimal getValorPago() { return valorPago; }
+    public void setValorPago(BigDecimal valorPago) { this.valorPago = valorPago; }
 
-    public String getDescricao() {
-        return descricao;
-    }
+    public LocalDate getDataPagamento() { return dataPagamento; }
+    public void setDataPagamento(LocalDate dataPagamento) { this.dataPagamento = dataPagamento; }
 
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
-
-    public BigDecimal getValorTotal() {
-        return valorTotal;
-    }
-
-    public void setValorTotal(BigDecimal valorTotal) {
-        this.valorTotal = valorTotal;
-    }
-
-    public BigDecimal getValorPago() {
-        return valorPago;
-    }
-
-    public void setValorPago(BigDecimal valorPago) {
-        this.valorPago = valorPago;
-    }
-    
-    public LocalDate getDataPagamento() {
-        return dataPagamento;
-    }
-
-    public void setDataPagamento(LocalDate dataPagamento) {
-        this.dataPagamento = dataPagamento;
-    }
-
-    public EStatusPagamento getStatus() {
-        return status;
-    }
-
-    public void setStatus(EStatusPagamento status) {
-        this.status = status;
-    }
+    public EStatusPagamento getStatus() { return status; }
+    public void setStatus(EStatusPagamento status) { this.status = status; }
 }

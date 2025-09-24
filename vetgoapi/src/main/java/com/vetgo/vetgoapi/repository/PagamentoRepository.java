@@ -16,6 +16,6 @@ public interface PagamentoRepository extends JpaRepository<Pagamento, Long> {
 
     List<Pagamento> findByStatus(EStatusPagamento status);
 
-    // Adicionado: Encontra um pagamento pelo ID do atendimento
-    Optional<Pagamento> findByAtendimentoId(Long id);
+    // Correto: buscar pelo id do atendimento
+    Optional<Pagamento> findByAtendimento_Id(Long id);
 }

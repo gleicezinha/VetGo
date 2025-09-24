@@ -10,21 +10,17 @@ import { PacienteService } from '../../services/paciente';
 import { forkJoin, of, switchMap } from 'rxjs';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
-import { Atendimento } from '../atendimento/atendimento';
-import { PagamentoModalComponent } from '../pagamento-modal/pagamento-modal';
 
 @Component({
     selector: 'app-list-atendimento',
     standalone: true,
-    imports: [CommonModule, DatePipe, RouterModule, MatMenuModule,PagamentoModalComponent, MatButtonModule],
+    imports: [CommonModule, DatePipe, RouterModule, MatMenuModule, MatButtonModule],
     templateUrl: './list-atendimento.html',
     styleUrls: ['./list-atendimento.scss']
 })
 export class ListAtendimentoComponent implements OnInit {
 
     atendimentos: AtendimentoResponseDTO[] = [];
-    atendimentoSelecionado!: AtendimentoResponseDTO | undefined;
-    modalAberto = false;
     userRole: string | null = null;
 
     constructor(
@@ -73,6 +69,8 @@ export class ListAtendimentoComponent implements OnInit {
                             nomePaciente: atendimento.paciente?.nome || 'N/A',
                             nomeResponsavel: atendimento.paciente?.responsavel?.usuario?.nomeUsuario || 'N/A',
                             nomeProfissional: atendimento.profissional?.usuario?.nomeUsuario || 'N/A',
+                            // CORREÇÃO: Mapeia o ID do responsável
+                            responsavelId: atendimento.paciente?.responsavel?.id || 0,
                         } as AtendimentoResponseDTO;
                     });
                     this.atendimentos = todosAtendimentos;
@@ -116,21 +114,5 @@ export class ListAtendimentoComponent implements OnInit {
                 }
             });
         }
-    }
-    // Métodos para controle da modal de pagamento
-        abrirModalPagamento(atendimento: AtendimentoResponseDTO) {
-        this.atendimentoSelecionado = atendimento;
-        this.modalAberto = true;
-        }
-
-        fecharModalPagamento() {
-        this.modalAberto = false;
-        this.atendimentoSelecionado = undefined;
-        this.carregarAtendimentos();
-        }
-
-    onPagamentoSalvo(pagamento: any) {
-        console.log('Pagamento Salvo:', pagamento);
-        this.fecharModalPagamento();
     }
 }

@@ -75,15 +75,13 @@ INSERT INTO historico_clinico (id_historico, id_pet, data, descricao, observacoe
 (5, 6, '2025-09-05', 'Vacina antirrábica aplicada.', 'Aplicação sem intercorrências.');
 
 -- Inserts para a tabela 'pagamento'
-INSERT INTO pagamento (
-    id_pagamento, id_tutor, id_consulta, descricao, valor, data_pagamento, status,
-    valor_total, tipo_de_atendimento_descricao, status_pagamento
-) VALUES
-(1, 1, 2, 'Pagamento da consulta de vacinação de Mimi.', 150.00, '2025-08-15', 'PAGO', 150.00, 'Vacinação Felina', 'PAGO'),
-(2, 1, 1, 'Pagamento da consulta agendada de Rex.', 200.00, NULL, 'PENDENTE', 200.00, 'Consulta Veterinária', 'PENDENTE'),
-(3, 4, 4, 'Pagamento da consulta de Fred.', 180.00, '2025-09-01', 'PAGO', 180.00, 'Consulta Veterinária', 'PAGO'),
-(4, 5, 5, 'Pagamento da vacinação de Luna.', 150.00, '2025-09-05', 'PAGO', 150.00, 'Vacinação Antirrábica', 'PAGO'),
-(5, 6, 6, 'Pagamento da consulta de Thor.', 200.00, NULL, 'PENDENTE', 200.00, 'Consulta Veterinária', 'PENDENTE');
+INSERT INTO pagamento (id_tutor, id_consulta, descricao, valor_total, valor_pago, data_pagamento, status) VALUES
+(1, 1, 'Pagamento da consulta', 100.00, 100.00, '2025-09-24', 'PAGO'),
+(1, 1, 'Pagamento da consulta', 100.00, 100.00, '2025-09-24', 'PAGO'),
+(2, 2, 'Pagamento da consulta', 150.00, 150.00, '2025-09-23', 'PAGO'),
+(3, 3, 'Pagamento da consulta', 80.00, 80.00, '2025-09-22', 'PAGO'),
+(4, 4, 'Pagamento da consulta', 200.00, 150.00, '2025-09-21', 'PENDENTE'),
+(5, 5, 'Pagamento da consulta', 120.00, 120.00, '2025-09-20', 'PAGO');
 
 -- Inserts para a tabela 'procedimento'
 INSERT INTO procedimento (id_procedimento, id_pet, id_consulta, tipo, nome, data_atendimento, data_proxdose, dose, fabricante, lote, via_aplicacao, posologia, observacoes) VALUES

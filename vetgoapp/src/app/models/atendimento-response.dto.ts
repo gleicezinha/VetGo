@@ -8,9 +8,7 @@ export interface AtendimentoResponseDTO {
     nomePaciente: string;
     nomeResponsavel: string;
     nomeProfissional: string;
-    // APROVAÇÃO: Adicione as novas propriedades para sincronizar com o backend
-    pacienteId?: number;
+    // CORREÇÃO: Adicione a propriedade para o ID do responsável
     responsavelId?: number;
-    profissionalId?: number;
-    observacao?: string; // Adicione também esta propriedade, pois o formulário a utiliza
+    observacao?: string;
 }

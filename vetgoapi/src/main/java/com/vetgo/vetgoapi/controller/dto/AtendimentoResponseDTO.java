@@ -15,6 +15,8 @@ public class AtendimentoResponseDTO {
     private String nomePaciente;
     private String nomeResponsavel;
     private String nomeProfissional;
+    // ADICIONADO: Campo para o ID do responsável
+    private Long responsavelId;
 
     public AtendimentoResponseDTO(Atendimento atendimento) {
         this.id = atendimento.getId();
@@ -22,11 +24,19 @@ public class AtendimentoResponseDTO {
         this.status = atendimento.getStatus().toString();
         this.tipoDeAtendimento = atendimento.getTipoDeAtendimento().toString();
         this.nomePaciente = atendimento.getPaciente().getNome();
-        this.nomeResponsavel = atendimento.getPaciente().getResponsavel().getUsuario().getNomeUsuario();
+        // Acesso seguro ao ID do responsável
+        if (atendimento.getPaciente() != null && atendimento.getPaciente().getResponsavel() != null) {
+            this.nomeResponsavel = atendimento.getPaciente().getResponsavel().getUsuario().getNomeUsuario();
+            this.responsavelId = atendimento.getPaciente().getResponsavel().getId();
+        } else {
+            this.nomeResponsavel = "N/A";
+            this.responsavelId = null;
+        }
+
         this.nomeProfissional = atendimento.getProfissional().getUsuario().getNomeUsuario();
     }
 
-    // Getters e Setters
+    // Getters e Setters (Certifique-se de adicionar o getter e setter para responsavelId)
     public Long getId() {
         return id;
     }
@@ -81,5 +91,14 @@ public class AtendimentoResponseDTO {
 
     public void setNomeProfissional(String nomeProfissional) {
         this.nomeProfissional = nomeProfissional;
+    }
+
+    // NOVO GETTER E SETTER
+    public Long getResponsavelId() {
+        return responsavelId;
+    }
+
+    public void setResponsavelId(Long responsavelId) {
+        this.responsavelId = responsavelId;
     }
 }

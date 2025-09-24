@@ -1,40 +1,52 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+// src/app/components/pagamento-modal/pagamento-modal.ts
+import { Component, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AtendimentoResponseDTO } from '../../models/atendimento-response.dto';
 import { Pagamento } from '../../models/pagamento';
 import { EStatusPagamento } from '../../models/estatuspagamento';
 import { PagamentoRequestDTO } from '../../models/pagamento-request-dto';
-import { finalize } from 'rxjs/operators';
+import { finalize, switchMap } from 'rxjs/operators';
 import { PagamentoService } from '../../services/Pagamento';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router'; // Importe ActivatedRoute
+import { AtendimentoService } from '../../services/atendimento'; // Importe o AtendimentoService
 
 @Component({
   selector: 'app-pagamento-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule, CurrencyPipe],
+  imports: [CommonModule, FormsModule, CurrencyPipe, RouterLink],
   templateUrl: './pagamento-modal.html',
   styleUrls: ['./pagamento-modal.scss']
 })
 export class PagamentoModalComponent implements OnInit {
-  @Input() atendimentoAtual!: AtendimentoResponseDTO;
-  @Output() close = new EventEmitter<void>();
-  @Output() pagamentoSalvo = new EventEmitter<Pagamento>();
+  atendimentoAtual!: AtendimentoResponseDTO;
 
   procedimentos: { descricao: string; valor: number }[] = [{ descricao: '', valor: 0 }];
   valorTotal = 0;
   valorPago = 0;
   saldoRestante = 0;
 
-  constructor(private pagamentoService: PagamentoService, private router: Router  ) { }
+  constructor(
+    private pagamentoService: PagamentoService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private atendimentoService: AtendimentoService
+  ) { }
 
   ngOnInit() {
-    if (!this.atendimentoAtual || !this.atendimentoAtual.id) {
-        console.error('atendimentoAtual é undefined ou não tem ID. Abortando inicialização do modal.');
+    const atendimentoId = this.route.snapshot.paramMap.get('id');
+
+    if (!atendimentoId) {
+        console.error('ID do atendimento não fornecido na URL. Abortando.');
         return;
     }
 
-    this.pagamentoService.getByAtendimentoId(this.atendimentoAtual.id).subscribe({
+    this.atendimentoService.getAtendimentoById(+atendimentoId).pipe(
+        switchMap(atendimento => {
+            this.atendimentoAtual = atendimento;
+            return this.pagamentoService.getByAtendimentoId(this.atendimentoAtual.id);
+        })
+    ).subscribe({
       next: (pagamentoExistente) => {
         // Se a descrição salva for uma string única, crie um item para a lista.
         this.procedimentos = [{ descricao: pagamentoExistente.descricao, valor: pagamentoExistente.valorTotal }];
@@ -43,7 +55,10 @@ export class PagamentoModalComponent implements OnInit {
         this.calcularSaldo();
       },
       error: (err) => {
+        // CORREÇÃO: Caso o pagamento não exista, continue a inicialização do formulário.
         console.error('Nenhum pagamento existente encontrado para este atendimento. Iniciando com um item vazio.', err);
+        // Garante que os valores iniciais estejam corretos, já que não há um pagamento pré-existente
+        this.recalcularValores();
       }
     });
   }
@@ -74,7 +89,7 @@ export class PagamentoModalComponent implements OnInit {
     } else {
       statusFinal = EStatusPagamento.PENDENTE;
     }
-    
+
     const descricaoFinal = this.procedimentos.map(p => p.descricao).join('; ');
 
     const pagamentoRequest: PagamentoRequestDTO = {
@@ -85,20 +100,14 @@ export class PagamentoModalComponent implements OnInit {
       valorPago: this.valorPago,
       status: statusFinal
     };
-    
+
     this.pagamentoService.save(pagamentoRequest).subscribe({
       next: (pagamentoSalvo) => {
-        this.pagamentoSalvo.emit(pagamentoSalvo);
-        this.onClose();
+        this.router.navigate(['/list-atendimento']);
       },
       error: (err) => {
         console.error('Erro ao salvar o pagamento:', err);
       }
     });
-  }
-
-  onClose() {
-    this.close.emit();
-    this.router.navigate(['/list-atendimento']);
   }
 }

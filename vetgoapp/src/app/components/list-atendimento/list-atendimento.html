@@ -66,12 +66,3 @@
     </table>
   </div>
 </div>
-
-<!-- 🔽 Modal única, fora do *ngFor e do menu -->
-<div *ngIf="modalAberto && atendimentoSelecionado" class="modal-backdrop">
-  <app-pagamento-modal
-    [atendimentoAtual]="atendimentoSelecionado"
-    (close)="fecharModalPagamento()"
-    (pagamentoSalvo)="onPagamentoSalvo($event)">
-  </app-pagamento-modal>
-</div>

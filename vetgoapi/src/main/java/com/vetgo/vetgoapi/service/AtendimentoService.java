@@ -1,3 +1,4 @@
+// src/main/java/com/vetgo/vetgoapi/service/AtendimentoService.java
 package com.vetgo.vetgoapi.service;
 
 import java.time.LocalDate;
@@ -54,7 +55,6 @@ public class AtendimentoService {
         Profissional profissional = profissionalRepository.findById(dto.getProfissionalId())
                 .orElseThrow(() -> new ResourceNotFoundException("Profissional não encontrado com o ID: " + dto.getProfissionalId()));
 
-        // A validação de data foi restaurada, conforme solicitado.
         if (dto.getDataHoraAtendimento().isBefore(LocalDateTime.now())) {
             throw new BusinessRuleException("Não é possível agendar uma consulta em uma data passada.");
         }
@@ -90,25 +90,23 @@ public class AtendimentoService {
         return atendimentoRepository.save(atendimento);
     }
 
-    // Método para salvar e atualizar um atendimento
     @Transactional
     public Atendimento save(Atendimento objeto) {
         return atendimentoRepository.save(objeto);
     }
 
-    // Método para excluir um atendimento por ID
     @Transactional
     public void delete(Long id) {
         atendimentoRepository.deleteById(id);
     }
 
+    // trecho de código em AtendimentoService.java
     public List<AtendimentoResponseDTO> getAllAtendimentos() {
         return atendimentoRepository.findAll().stream()
                 .map(AtendimentoResponseDTO::new)
                 .collect(Collectors.toList());
     }
     
-    // O método agora chama a nova consulta do repositório
     public Atendimento getAtendimentoCompleto(Long id) {
         return atendimentoRepository.findByIdWithDetails(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Atendimento não encontrado com o ID: " + id));
