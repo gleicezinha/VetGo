@@ -4,20 +4,24 @@ import { Observable } from 'rxjs';
 import { Responsavel } from '../models/responsavel';
 import { ICrudService } from './i-crud-service';
 import { environment } from '../../environments/environment';
-import { ResponsavelResponseDTO } from '../models/responsavel-response.dto';
+import { Pagamento } from '../models/pagamento';
+import { ResponsavelResponseDTO } from '../models/responsavel-response.dto.ts';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ResponsavelService implements ICrudService<Responsavel> {
-  public apiUrl = `${environment.API_URL}/responsaveis`;
+  public apiUrl = `${environment.API_URL}/api/responsaveis`;
+  private pagamentoApiUrl = `${environment.API_URL}/api/pagamentos`;
 
   constructor(private http: HttpClient) { }
 
   get(): Observable<Responsavel[]> {
     return this.http.get<Responsavel[]>(this.apiUrl);
   }
-
+  getByNome(nome: string): Observable<Responsavel[]> {
+    return this.http.get<Responsavel[]>(`${this.apiUrl}?nome=${nome}`);
+  }
   getComStatusPagamento(): Observable<ResponsavelResponseDTO[]> {
     return this.http.get<ResponsavelResponseDTO[]>(`${this.apiUrl}/com-status-pagamento`);
   }
@@ -40,5 +44,10 @@ export class ResponsavelService implements ICrudService<Responsavel> {
 
   getByUsuarioId(usuarioId: number): Observable<Responsavel> {
     return this.http.get<Responsavel>(`${this.apiUrl}/por-usuario/${usuarioId}`);
+  }
+
+  // NOVO MÉTODO: Para obter o pagamento do responsável.
+  getPagamentoDoResponsavel(atendimentoId: number): Observable<Pagamento> {
+    return this.http.get<Pagamento>(`${this.pagamentoApiUrl}/atendimento/${atendimentoId}`);
   }
 }

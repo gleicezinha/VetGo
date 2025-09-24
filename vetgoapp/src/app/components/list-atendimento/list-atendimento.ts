@@ -22,8 +22,8 @@ import { PagamentoModalComponent } from '../pagamento-modal/pagamento-modal';
 })
 export class ListAtendimentoComponent implements OnInit {
 
-    atendimentos: Atendimento[] = [];
-    atendimentoSelecionado!: Atendimento;
+    atendimentos: AtendimentoResponseDTO[] = [];
+    atendimentoSelecionado!: AtendimentoResponseDTO | undefined;
     modalAberto = false;
     userRole: string | null = null;
 
@@ -118,16 +118,16 @@ export class ListAtendimentoComponent implements OnInit {
         }
     }
     // Métodos para controle da modal de pagamento
-    abrirModalPagamento(atendimento: Atendimento) {
+        abrirModalPagamento(atendimento: AtendimentoResponseDTO) {
         this.atendimentoSelecionado = atendimento;
         this.modalAberto = true;
-    }
+        }
 
-    fecharModalPagamento() {
+        fecharModalPagamento() {
         this.modalAberto = false;
-        this.atendimentoSelecionado = undefined as unknown as Atendimento;
+        this.atendimentoSelecionado = undefined;
         this.carregarAtendimentos();
-    }
+        }
 
     onPagamentoSalvo(pagamento: any) {
         console.log('Pagamento Salvo:', pagamento);

@@ -29,7 +29,7 @@ export const routes: Routes = [
     { path: 'calendario', component: CalendarioComponent, canActivate: [authGuard] },
     // Rotas de autenticação (acessíveis sem login)
     { path: 'login', component: LoginComponent },
-    { path: 'modal-pagamento', component: PagamentoModalComponent, canActivate: [authGuard] },
+    { path: 'pagamento/:id', component: PagamentoModalComponent, canActivate: [authGuard] },
     // Rota para a tela de verificação, que recebe o telefone como parâmetro
     { path: 'verify/:phone', component: VerifyComponent },
 ];

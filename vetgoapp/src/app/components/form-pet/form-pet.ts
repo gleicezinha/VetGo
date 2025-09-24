@@ -77,7 +77,7 @@ export class FormPetComponent implements OnInit {
   }
   buscarResponsavel(): void {
     if (this.termoBuscaResponsavel.length > 2) {
-      this.responsavelService.get(this.termoBuscaResponsavel).subscribe(
+      this.responsavelService.getByNome(this.termoBuscaResponsavel).subscribe(
         (responsaveis: Responsavel[]) => {
           this.responsaveisEncontrados = responsaveis;
         }

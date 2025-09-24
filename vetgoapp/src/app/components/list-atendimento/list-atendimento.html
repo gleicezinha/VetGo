@@ -1,68 +1,77 @@
 <div class="page-container">
-    <header class="page-header">
-        <h1 class="page-title">Histórico de Atendimentos</h1>
-    </header>
+  <header class="page-header">
+    <h1 class="page-title">Histórico de Atendimentos</h1>
+  </header>
 
-    <div class="content-card">
-        <div class="toolbar">
-            <button class="back-button" (click)="voltar()">
-                Voltar
-            </button>
-        </div>
-
-        <table class="appointments-table">
-            <thead>
-                <tr>
-                    <th>Data e Hora</th>
-                    <th>Status</th>
-                    <th>Tipo</th>
-                    <th>Paciente</th>
-                    <th>Responsável</th>
-                    <th>Profissional</th>
-                    <th *ngIf="userRole === 'ROLE_PROFISSIONAL' || userRole === 'ROLE_ADMIN'" class="actions-cell">Ações
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let atendimento of atendimentos">
-                    <td>{{ atendimento.dataHoraAtendimento | date:'dd/MM/yyyy HH:mm' }}</td>
-                    <td>
-                        <span class="status" [ngClass]="'status-' + atendimento.status.toLowerCase()">
-                            {{ atendimento.status }}
-                        </span>
-                    </td>
-                    <td>{{ atendimento.tipoDeAtendimento }}</td>
-                    <td>{{ atendimento.nomePaciente }}</td>
-                    <td>{{ atendimento.nomeResponsavel }}</td>
-                    <td>{{ atendimento.nomeProfissional }}</td>
-                    <td *ngIf="userRole === 'ROLE_PROFISSIONAL' || userRole === 'ROLE_ADMIN'" class="actions-cell">
-                        <button class="action-button" [matMenuTriggerFor]="menu">
-                            <img src="assets/imagens/list_alt.svg" alt="Ações">
-                        </button>
-                        <mat-menu #menu="matMenu">
-                            <button mat-menu-item (click)="editar(atendimento.id)">
-                                <img src="assets/imagens/edit.svg" alt="Editar" class="menu-icon">
-                                <span>Editar</span>
-                            </button>
-                            <button mat-menu-item (click)="excluir(atendimento.id)">
-                                <img src="assets/imagens/delete.svg" alt="Excluir" class="menu-excluir">
-                                <span>Excluir</span>
-                            </button>
-                            <div *ngIf="modalAberto" class="modal-backdrop">
-                                <app-pagamento-modal
-                                    [atendimentoAtual]="atendimentoSelecionado"
-                                    (close)="fecharModalPagamento()"
-                                    (pagamentoSalvo)="onPagamentoSalvo($event)">
-                                </app-pagamento-modal>
-                            </div>
-                        </mat-menu>
-                    </td>
-                </tr>
-                <tr *ngIf="atendimentos.length === 0">
-                    <td [attr.colspan]="userRole === 'ROLE_PROFISSIONAL' || userRole === 'ROLE_ADMIN' ? 7 : 6"
-                        class="no-results">Nenhum atendimento encontrado.</td>
-                </tr>
-            </tbody>
-        </table>
+  <div class="content-card">
+    <div class="toolbar">
+      <button class="back-button" (click)="voltar()">
+        Voltar
+      </button>
     </div>
+
+    <table class="appointments-table">
+      <thead>
+        <tr>
+          <th>Data e Hora</th>
+          <th>Status</th>
+          <th>Tipo</th>
+          <th>Paciente</th>
+          <th>Responsável</th>
+          <th>Profissional</th>
+          <th *ngIf="userRole === 'ROLE_PROFISSIONAL' || userRole === 'ROLE_ADMIN'" class="actions-cell">
+            Ações
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let atendimento of atendimentos">
+          <td>{{ atendimento.dataHoraAtendimento | date:'dd/MM/yyyy HH:mm' }}</td>
+          <td>
+            <span class="status" [ngClass]="'status-' + atendimento.status.toLowerCase()">
+              {{ atendimento.status }}
+            </span>
+          </td>
+          <td>{{ atendimento.tipoDeAtendimento }}</td>
+          <td>{{ atendimento.nomePaciente }}</td>
+          <td>{{ atendimento.nomeResponsavel }}</td>
+          <td>{{ atendimento.nomeProfissional }}</td>
+          <td *ngIf="userRole === 'ROLE_PROFISSIONAL' || userRole === 'ROLE_ADMIN'" class="actions-cell">
+            <button class="action-button" [matMenuTriggerFor]="menu">
+              <img src="assets/imagens/list_alt.svg" alt="Ações">
+            </button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="editar(atendimento.id)">
+                <img src="assets/imagens/edit.svg" alt="Editar" class="menu-icon">
+                <span>Editar</span>
+              </button>
+              <button mat-menu-item (click)="excluir(atendimento.id)">
+                <img src="assets/imagens/delete.svg" alt="Excluir" class="menu-excluir">
+                <span>Excluir</span>
+              </button>
+                <button mat-menu-item [routerLink]="['/pagamento', atendimento.id]">
+                <img src="assets/imagens/star.svg" alt="Pagamento" class="menu-icon">
+                <span>Pagamento</span>
+                </button>
+            </mat-menu>
+          </td>
+        </tr>
+        <tr *ngIf="atendimentos.length === 0">
+          <td [attr.colspan]="userRole === 'ROLE_PROFISSIONAL' || userRole === 'ROLE_ADMIN' ? 7 : 6"
+              class="no-results">
+            Nenhum atendimento encontrado.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- 🔽 Modal única, fora do *ngFor e do menu -->
+<div *ngIf="modalAberto && atendimentoSelecionado" class="modal-backdrop">
+  <app-pagamento-modal
+    [atendimentoAtual]="atendimentoSelecionado"
+    (close)="fecharModalPagamento()"
+    (pagamentoSalvo)="onPagamentoSalvo($event)">
+  </app-pagamento-modal>
 </div>
