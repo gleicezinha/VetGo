@@ -8,11 +8,13 @@ import org.springframework.stereotype.Repository;
 
 import com.vetgo.vetgoapi.model.EStatusPagamento;
 import com.vetgo.vetgoapi.model.Pagamento;
+import com.vetgo.vetgoapi.model.Responsavel;
 
 @Repository
-public interface PagamentoRepository extends JpaRepository<Pagamento, Long> {
 
-    List<Pagamento> findByResponsavelId(Long responsavelId);
+
+public interface PagamentoRepository extends JpaRepository<Pagamento, Long> {
+    List<Pagamento> findByResponsavel(Responsavel responsavel);
 
     List<Pagamento> findByStatus(EStatusPagamento status);
 

@@ -1,60 +1,34 @@
 package com.vetgo.vetgoapi.controller.dto;
-import com.vetgo.vetgoapi.model.Responsavel;
+
+import java.util.List;
+import com.vetgo.vetgoapi.model.Endereco;
 
 public class ResponsavelDTO {
 
     private Long id;
-    private String nome;
+    private String nomeUsuario;
     private String email;
     private String telefone;
-    private String statusPagamento; // Ex: PAGO ou PENDENTE
+    private Endereco endereco; // <-- adiciona o endereço
 
-  public ResponsavelDTO(Responsavel responsavel, String statusPagamento) {
-        this.id = responsavel.getId();
-        this.nome = responsavel.getUsuario().getNomeUsuario();
-        this.email = responsavel.getUsuario().getEmail();
-        this.telefone = responsavel.getUsuario().getTelefone();
-        this.statusPagamento = statusPagamento;
-    }
+    // Lista de status de pagamento resumido por atendimento
+    private List<String> statusPagamentos;
 
-public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public String getNome() {
-        return nome;
-    }
+    public String getNomeUsuario() { return nomeUsuario; }
+    public void setNomeUsuario(String nomeUsuario) { this.nomeUsuario = nomeUsuario; }
 
-    public String getEmail() {
-        return email;
-    }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
-    public String getTelefone() {
-        return telefone;
-    }
+    public String getTelefone() { return telefone; }
+    public void setTelefone(String telefone) { this.telefone = telefone; }
 
-    public String getStatusPagamento() {
-        return statusPagamento;
-    }
+    public Endereco getEndereco() { return endereco; }
+    public void setEndereco(Endereco endereco) { this.endereco = endereco; }
 
-    // Setters
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setTelefone(String telefone) {
-        this.telefone = telefone;
-    }
-
-    public void setStatusPagamento(String statusPagamento) {
-        this.statusPagamento = statusPagamento;
-    }
+    public List<String> getStatusPagamentos() { return statusPagamentos; }
+    public void setStatusPagamentos(List<String> statusPagamentos) { this.statusPagamentos = statusPagamentos; }
 }

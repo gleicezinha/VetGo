@@ -2,10 +2,12 @@ package com.vetgo.vetgoapi.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.vetgo.vetgoapi.model.Pagamento;
 import com.vetgo.vetgoapi.model.Responsavel;
 import com.vetgo.vetgoapi.model.Usuario;
 import com.vetgo.vetgoapi.repository.ResponsavelRepository;
@@ -17,10 +19,13 @@ public class ResponsavelService implements ICrudService<Responsavel> {
 
     private final ResponsavelRepository responsavelRepository;
     private final UsuarioRepository usuarioRepository;
+    private final PagamentoService pagamentoService; // injetar PagamentoService
 
-    public ResponsavelService(ResponsavelRepository responsavelRepository, UsuarioRepository usuarioRepository) {
+    public ResponsavelService(ResponsavelRepository responsavelRepository, UsuarioRepository usuarioRepository,
+                              PagamentoService pagamentoService) {
         this.responsavelRepository = responsavelRepository;
         this.usuarioRepository = usuarioRepository;
+        this.pagamentoService = pagamentoService;
     }
 
     @Override
@@ -83,5 +88,11 @@ public class ResponsavelService implements ICrudService<Responsavel> {
     
     public Optional<Responsavel> getByTelefone(String telefone) {
         return responsavelRepository.findByUsuario_Telefone(telefone);
+    }
+     public List<String> getStatusPagamentosByResponsavel(Responsavel responsavel) {
+        return pagamentoService.getPagamentosByResponsavel(responsavel).stream()
+                .map(Pagamento::getStatus)       // pega enum EStatusPagamento
+                .map(Enum::name)                 // converte para String
+                .collect(Collectors.toList());
     }
 }

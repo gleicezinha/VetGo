@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -17,10 +19,12 @@ public class Pagamento implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_tutor", nullable = false)
+
     private Responsavel responsavel;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(name = "id_consulta")
+    @JsonIgnoreProperties("pagamento")
     private Atendimento atendimento;
 
     @Column(columnDefinition = "TEXT")
@@ -41,7 +45,7 @@ public class Pagamento implements Serializable {
 
     public Pagamento() {}
 
-    // Getters e Setters
+    // --- Getters e Setters ---
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

@@ -27,23 +27,38 @@
           <th>Telefone</th>
           <th>Pets</th>
           <th>Endereço</th>
+          <th>Status Pagamento</th>
           <th>Ações</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let cliente of registrosFiltrados">
-          <td>{{ cliente.usuario?.nomeUsuario }}</td>
+          <!-- Nome -->
+          <td>{{ cliente.nomeUsuario }}</td>
+
+          <!-- Telefone com link WhatsApp -->
           <td>
             <img src="assets/imagens/whatsapp.svg" alt="WhatsApp" class="whatsapp-icon">
-            <a [href]="getWhatsappLink(cliente.usuario?.telefone)" target="_blank">
-              {{ cliente.usuario?.telefone }}
-               
+            <a [href]="getWhatsappLink(cliente.telefone)" target="_blank">
+              {{ cliente.telefone }}
             </a>
           </td>
+
+          <!-- Pets -->
           <td>{{ getPetNames(cliente.id) }}</td>
-          <td>{{ formatAddress(cliente.usuario?.endereco) }}</td>
+
+          <!-- Endereço -->
+            <td>
+            {{ cliente.endereco ? formatAddress(cliente.endereco) : 'Endereço não disponível' }}
+            </td>
+
+
+          <!-- Status Pagamento -->
+          <td>{{ getStatusPagamentos(cliente.id) }}</td>
+
+          <!-- Ações -->
           <td class="actions-cell">
-             <button class="action-button" [matMenuTriggerFor]="menu">
+            <button class="action-button" [matMenuTriggerFor]="menu">
               <img src="assets/imagens/list_alt.svg" alt="Ações">
             </button>
             <mat-menu #menu="matMenu">

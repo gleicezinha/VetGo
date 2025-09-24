@@ -18,8 +18,13 @@ export class PagamentoService {
     return this.http.post<Pagamento>(this.apiUrl, pagamento);
   }
 
-  // Método para buscar um pagamento pelo ID do atendimento
+  // Buscar pagamento pelo ID do atendimento
   getByAtendimentoId(atendimentoId: number): Observable<Pagamento> {
     return this.http.get<Pagamento>(`${this.apiUrl}/atendimento/${atendimentoId}`);
+  }
+
+  // --- NOVO MÉTODO: buscar todos os pagamentos de um responsável ---
+  getByResponsavelId(responsavelId: number): Observable<Pagamento[]> {
+    return this.http.get<Pagamento[]>(`${this.apiUrl}/responsavel/${responsavelId}`);
   }
 }

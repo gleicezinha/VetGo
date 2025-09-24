@@ -14,10 +14,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.vetgo.vetgoapi.controller.dto.ResponsavelDTO;
 import com.vetgo.vetgoapi.model.Responsavel;
 import com.vetgo.vetgoapi.repository.ResponsavelRepository;
 import com.vetgo.vetgoapi.repository.UsuarioRepository;
 import com.vetgo.vetgoapi.service.CadastroService;
+import com.vetgo.vetgoapi.service.PagamentoService;
 import com.vetgo.vetgoapi.service.ResponsavelService;
 import com.vetgo.vetgoapi.service.exception.ResourceNotFoundException;
 
@@ -30,13 +32,19 @@ public class ResponsavelController {
     private final ResponsavelRepository responsavelRepository;
     private final UsuarioRepository usuarioRepository;
     private final ResponsavelService responsavelService;
+    private final PagamentoService pagamentoService;
 
-    public ResponsavelController(CadastroService cadastroService, ResponsavelRepository responsavelRepository, UsuarioRepository usuarioRepository, ResponsavelService responsavelService) {
-        this.cadastroService = cadastroService;
-        this.responsavelRepository = responsavelRepository;
-        this.usuarioRepository = usuarioRepository;
-        this.responsavelService = responsavelService;
-    }
+        public ResponsavelController(CadastroService cadastroService,
+                                    ResponsavelRepository responsavelRepository,
+                                    UsuarioRepository usuarioRepository,
+                                    ResponsavelService responsavelService,
+                                    PagamentoService pagamentoService) {
+            this.cadastroService = cadastroService;
+            this.responsavelRepository = responsavelRepository;
+            this.usuarioRepository = usuarioRepository;
+            this.responsavelService = responsavelService;
+            this.pagamentoService = pagamentoService;
+        }
 
     @PostMapping
     public ResponseEntity<Responsavel> cadastrarTutor(@RequestBody Responsavel responsavel) {
@@ -100,4 +108,23 @@ public class ResponsavelController {
         responsavelRepository.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+    @GetMapping("/clientes")
+    public ResponseEntity<List<ResponsavelDTO>> listarClientes() {
+        List<Responsavel> responsaveis = responsavelService.get("");
+
+        List<ResponsavelDTO> dtos = responsaveis.stream().map(r -> {
+            ResponsavelDTO dto = new ResponsavelDTO();
+            dto.setId(r.getId());
+            dto.setNomeUsuario(r.getUsuario().getNomeUsuario());
+            dto.setEmail(r.getUsuario().getEmail());
+            dto.setTelefone(r.getUsuario().getTelefone());
+            dto.setEndereco(r.getUsuario().getEndereco()); // <-- popula endereço
+            dto.setStatusPagamentos(pagamentoService.getStatusPagamentosByResponsavel(r));
+            return dto;
+        }).toList();
+
+        return ResponseEntity.ok(dtos);
+    }
+
+  
 }

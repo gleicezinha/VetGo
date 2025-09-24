@@ -6,6 +6,7 @@ import { ICrudService } from './i-crud-service';
 import { environment } from '../../environments/environment';
 import { Pagamento } from '../models/pagamento';
 import { ResponsavelResponseDTO } from '../models/responsavel-response.dto.ts';
+import { ResponsavelDTO } from '../models/responsaveldto';
 
 @Injectable({
   providedIn: 'root'
@@ -22,8 +23,8 @@ export class ResponsavelService implements ICrudService<Responsavel> {
   getByNome(nome: string): Observable<Responsavel[]> {
     return this.http.get<Responsavel[]>(`${this.apiUrl}?nome=${nome}`);
   }
-  getComStatusPagamento(): Observable<ResponsavelResponseDTO[]> {
-    return this.http.get<ResponsavelResponseDTO[]>(`${this.apiUrl}/com-status-pagamento`);
+  getComStatusPagamento(): Observable<ResponsavelDTO[]> {
+    return this.http.get<ResponsavelDTO[]>(`${this.apiUrl}/clientes`);
   }
 
   getById(id: number): Observable<Responsavel> {
