@@ -1,15 +1,44 @@
-/* Estilos Gerais do Modal */
+/* --- NOVO: Overlay para o Modal --- */
+/* Esta é a camada que cobre a tela inteira e centraliza o conteúdo */
+.modal-overlay {
+  position: fixed;
+  /* Fica fixo na tela mesmo com rolagem */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  /* Fundo semi-transparente */
+
+  /* A MÁGICA DA CENTRALIZAÇÃO ACONTECE AQUI */
+  display: flex;
+  justify-content: center;
+  /* Centraliza na horizontal */
+  align-items: center;
+  /* Centraliza na vertical */
+
+  z-index: 1000;
+  /* Garante que o modal fique na frente de tudo */
+}
+
+/* --- AJUSTES: Conteúdo do Modal --- */
 .modal-content {
   background-color: #fff;
   border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px S10px rgba(0, 0, 0, 0.1);
   width: 90%;
   max-width: 600px;
   padding: 20px;
-  position: relative;
   font-family: 'Inter', sans-serif;
+
+  /* Adicionado para garantir que o modal não seja maior que a tela e tenha rolagem interna */
+  max-height: 90vh;
+  /* vh = viewport height */
+  overflow-y: auto;
+  /* Adiciona barra de rolagem se o conteúdo for muito grande */
 }
 
+/* --- SEU CÓDIGO ORIGINAL (sem alterações necessárias aqui) --- */
 .modal-header {
   display: flex;
   justify-content: space-between;
@@ -33,33 +62,36 @@
   color: #888;
 }
 
-.modal-body {
-  h4 {
-    margin-top: 20px;
-    margin-bottom: 10px;
-    font-size: 1.2rem;
-    color: #555;
-  }
+.modal-body h4 {
+  margin-top: 20px;
+  margin-bottom: 10px;
+  font-size: 1.2rem;
+  color: #555;
 }
 
 /* Container flex para a linha de procedimentos */
 .procedimento-item-flex-container {
-    display: flex;
-    align-items: flex-end;
-    gap: 10px;
-    margin-bottom: 15px;
-    padding: 10px;
-    background-color: #f7f7f7;
-    border-radius: 6px;
-    border: 1px solid #e0e0e0;
+  display: flex;
+  flex-wrap: wrap;
+  /* Permite que os itens quebrem para a linha de baixo */
+  align-items: flex-end;
+  gap: 10px;
+  margin-bottom: 15px;
+  padding: 10px;
+  background-color: #f7f7f7;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
 }
 
 .procedimento-inputs {
   flex-grow: 1;
+  /* Faz com que o container dos inputs ocupe o espaço disponível */
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: 10px;
   align-items: flex-end;
+  min-width: 250px;
+  /* Evita que os inputs fiquem muito espremidos antes de quebrar a linha */
 }
 
 .procedimento-botoes {
@@ -79,7 +111,8 @@
   color: #666;
 }
 
-.form-group input, .form-group textarea {
+.form-group input,
+.form-group textarea {
   width: 100%;
   padding: 8px 12px;
   border: 1px solid #ccc;
@@ -88,61 +121,65 @@
   transition: border-color 0.3s;
 }
 
-.form-group input:focus, .form-group textarea:focus {
+.form-group input:focus,
+.form-group textarea:focus {
   outline: none;
   border-color: #4CAF50;
 }
 
-.adicionar-btn-pequeno {
-    width: 30px;
-    height: 30px;
-    padding: 0;
-    border: none;
-    border-radius: 50%;
-    background-color: #4CAF50;
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-
-    img {
-        width: 16px;
-        height: 16px;
-        filter: invert(1);
-    }
-
-    &:hover {
-        transform: scale(1.1);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-}
-
+.adicionar-btn-pequeno,
 .remover-btn {
   width: 30px;
   height: 30px;
   padding: 0;
   border: none;
-  color: white;
-  background-color: #f44336;
+  border-radius: 50%;
   cursor: pointer;
-  transition: transform 0.2s ease;
-
-  img {
-      width: 16px;
-      height: 16px;
-  }
-
-  &:hover {
-      transform: scale(1.1);
-  }
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  /* Usado para centralizar o ícone dentro do botão */
+  justify-content: center;
+  align-items: center;
 }
 
-.resumo-pagamento, .resumo-final {
+.adicionar-btn-pequeno {
+  background-color: #4CAF50;
+}
+
+.adicionar-btn-pequeno img {
+  width: 16px;
+  height: 16px;
+  filter: invert(1);
+}
+
+.adicionar-btn-pequeno:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.remover-btn {
+  background-color: #f44336;
+}
+
+.remover-btn img {
+  width: 16px;
+  height: 16px;
+}
+
+.remover-btn:hover {
+  transform: scale(1.1);
+}
+
+.resumo-pagamento,
+.resumo-final {
   border-top: 1px solid #e0e0e0;
   padding-top: 10px;
   margin-top: 10px;
   font-size: 1.1rem;
 }
 
-.resumo-pagamento p, .resumo-final p {
+.resumo-pagamento p,
+.resumo-final p {
   margin: 5px 0;
 }
 
@@ -173,4 +210,37 @@
 
 .salvar-btn:hover {
   background-color: #45a049;
+}
+
+/* --- NOVO: Media Query para Responsividade --- */
+/* Estilos aplicados em telas com largura máxima de 600px (celulares) */
+@media (max-width: 600px) {
+  .modal-content {
+    padding: 15px;
+    /* Diminui o espaçamento interno em telas pequenas */
+  }
+
+  .modal-header h3 {
+    font-size: 1.25rem;
+    /* Diminui um pouco o título */
+  }
+
+  /* Empilha os inputs de "Procedimento" e "Valor" um sobre o outro */
+  .procedimento-inputs {
+    grid-template-columns: 1fr;
+    /* Muda de 2 colunas para 1 coluna */
+  }
+
+  .procedimento-item-flex-container {
+    flex-direction: column;
+    /* Itens (inputs e botões) ficam em coluna */
+    align-items: stretch;
+    /* Ocupam a largura total */
+  }
+
+  .procedimento-botoes {
+    justify-content: flex-end;
+    /* Alinha os botões à direita */
+    margin-top: 10px;
+  }
 }
