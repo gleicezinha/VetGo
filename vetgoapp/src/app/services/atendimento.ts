@@ -65,4 +65,9 @@ export class AtendimentoService {
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
+
+  // NOVO MÉTODO: Retorna todos os atendimentos para um responsável
+  getAtendimentosByResponsavelId(responsavelId: number): Observable<AtendimentoResponseDTO[]> {
+    return this.http.get<AtendimentoResponseDTO[]>(`${this.apiUrl}/por-responsavel/${responsavelId}`);
+  }
 }

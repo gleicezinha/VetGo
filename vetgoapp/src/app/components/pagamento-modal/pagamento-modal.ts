@@ -8,8 +8,8 @@ import { EStatusPagamento } from '../../models/estatuspagamento';
 import { PagamentoRequestDTO } from '../../models/pagamento-request-dto';
 import { finalize, switchMap } from 'rxjs/operators';
 import { PagamentoService } from '../../services/Pagamento';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router'; // Importe ActivatedRoute
-import { AtendimentoService } from '../../services/atendimento'; // Importe o AtendimentoService
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { AtendimentoService } from '../../services/atendimento';
 
 @Component({
   selector: 'app-pagamento-modal',
@@ -25,6 +25,7 @@ export class PagamentoModalComponent implements OnInit {
   valorTotal = 0;
   valorPago = 0;
   saldoRestante = 0;
+  pagamentoId: number | null = null; // Variável para armazenar o ID do pagamento
 
   constructor(
     private pagamentoService: PagamentoService,
@@ -48,16 +49,23 @@ export class PagamentoModalComponent implements OnInit {
         })
     ).subscribe({
       next: (pagamentoExistente) => {
-        // Se a descrição salva for uma string única, crie um item para a lista.
-        this.procedimentos = [{ descricao: pagamentoExistente.descricao, valor: pagamentoExistente.valorTotal }];
-        this.valorTotal = pagamentoExistente.valorTotal;
-        this.valorPago = pagamentoExistente.valorPago;
-        this.calcularSaldo();
+        // VERIFICAÇÃO ADICIONADA AQUI
+        if (pagamentoExistente && pagamentoExistente.id) {
+          this.pagamentoId = pagamentoExistente.id;
+          // Se a descrição salva for uma string única, crie um item para a lista.
+          this.procedimentos = [{ descricao: pagamentoExistente.descricao, valor: pagamentoExistente.valorTotal }];
+          this.valorTotal = pagamentoExistente.valorTotal;
+          this.valorPago = pagamentoExistente.valorPago;
+          this.calcularSaldo();
+        } else {
+            // Se o pagamentoExistente for nulo ou não tiver ID, inicie o formulário vazio
+            console.warn('Resposta da API inesperada. Iniciando com um item vazio.');
+            this.recalcularValores();
+        }
       },
       error: (err) => {
-        // CORREÇÃO: Caso o pagamento não exista, continue a inicialização do formulário.
+        // Caso o pagamento não exista, continue a inicialização do formulário.
         console.error('Nenhum pagamento existente encontrado para este atendimento. Iniciando com um item vazio.', err);
-        // Garante que os valores iniciais estejam corretos, já que não há um pagamento pré-existente
         this.recalcularValores();
       }
     });
@@ -101,13 +109,18 @@ export class PagamentoModalComponent implements OnInit {
       status: statusFinal
     };
 
-    this.pagamentoService.save(pagamentoRequest).subscribe({
-      next: (pagamentoSalvo) => {
-        this.router.navigate(['/list-atendimento']);
-      },
-      error: (err) => {
-        console.error('Erro ao salvar o pagamento:', err);
-      }
-    });
+    if (this.pagamentoId) {
+      // Se já existe um ID, chamamos o método de atualização
+      this.pagamentoService.update(this.pagamentoId, pagamentoRequest).subscribe({
+        next: () => this.router.navigate(['/list-atendimento']),
+        error: (err) => console.error('Erro ao atualizar o pagamento:', err)
+      });
+    } else {
+      // Caso contrário, criamos um novo pagamento
+      this.pagamentoService.save(pagamentoRequest).subscribe({
+        next: () => this.router.navigate(['/list-atendimento']),
+        error: (err) => console.error('Erro ao salvar o pagamento:', err)
+      });
+    }
   }
 }

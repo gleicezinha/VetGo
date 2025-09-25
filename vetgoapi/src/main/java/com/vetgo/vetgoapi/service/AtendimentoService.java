@@ -106,9 +106,17 @@ public class AtendimentoService {
                 .map(AtendimentoResponseDTO::new)
                 .collect(Collectors.toList());
     }
-    
+  
+    // Método para buscar um atendimento com todas as dependências
+    @Transactional(readOnly = true)
     public Atendimento getAtendimentoCompleto(Long id) {
-        return atendimentoRepository.findByIdWithDetails(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Atendimento não encontrado com o ID: " + id));
+        return atendimentoRepository.findByIdWithDependencies(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Atendimento não encontrado."));
     }
+
+    // NOVO MÉTODO: Buscar atendimentos por responsável
+    @Transactional(readOnly = true)
+    public List<Atendimento> getAtendimentosByResponsavelId(Long responsavelId) {
+        return atendimentoRepository.findByResponsavelId(responsavelId);
+    }  
 }

@@ -77,9 +77,8 @@ INSERT INTO historico_clinico (id_historico, id_pet, data, descricao, observacoe
 -- Inserts para a tabela 'pagamento'
 INSERT INTO pagamento (id_tutor, id_consulta, descricao, valor_total, valor_pago, data_pagamento, status) VALUES
 (1, 1, 'Pagamento da consulta', 100.00, 100.00, '2025-09-24', 'PAGO'),
-(1, 1, 'Pagamento da consulta', 100.00, 100.00, '2025-09-24', 'PAGO'),
 (2, 2, 'Pagamento da consulta', 150.00, 150.00, '2025-09-23', 'PAGO'),
-(3, 3, 'Pagamento da consulta', 80.00, 80.00, '2025-09-22', 'PAGO'),
+(3, 10, 'Pagamento da consulta', 80.00, 80.00, '2025-09-22', 'PAGO'),
 (4, 4, 'Pagamento da consulta', 200.00, 150.00, '2025-09-21', 'PENDENTE'),
 (5, 5, 'Pagamento da consulta', 120.00, 120.00, '2025-09-20', 'PAGO');
 

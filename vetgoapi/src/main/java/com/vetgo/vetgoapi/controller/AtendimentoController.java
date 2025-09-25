@@ -4,6 +4,7 @@ package com.vetgo.vetgoapi.controller;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -44,7 +45,7 @@ public class AtendimentoController {
         return ResponseEntity.ok(atendimentoService.getHorariosOcupados(profissionalId, data));
     }
 
-    // APROVAÇÃO: Endpoint que retorna a lista de atendimentos completos
+    // Endpoint que retorna a lista de atendimentos completos
     @GetMapping("/por-paciente/{pacienteId}")
     public ResponseEntity<List<Atendimento>> listarPorPaciente(@PathVariable Long pacienteId) {
         List<Atendimento> atendimentos = atendimentoRepository.findByPacienteIdWithDetails(pacienteId);
@@ -68,10 +69,24 @@ public class AtendimentoController {
         return ResponseEntity.ok(atendimentoService.getAllAtendimentos());
     }
 
+    // Endpoint para buscar atendimento por ID para que retorne o DTO com todos os campos necessários.
     @GetMapping("/{id}")
-    public ResponseEntity<Atendimento> getAtendimentoById(@PathVariable Long id) {
-        return ResponseEntity.ok(atendimentoService.getAtendimentoCompleto(id));
+    public ResponseEntity<AtendimentoResponseDTO> getAtendimentoById(@PathVariable Long id) {
+        Atendimento atendimento = atendimentoService.getAtendimentoCompleto(id);
+        AtendimentoResponseDTO responseDTO = new AtendimentoResponseDTO(atendimento);
+        return ResponseEntity.ok(responseDTO);
     }
+    
+    // NOVO ENDPOINT: Buscar todos os atendimentos de um responsável
+    @GetMapping("/por-responsavel/{responsavelId}")
+    public ResponseEntity<List<AtendimentoResponseDTO>> getAtendimentoByResponsavelId(@PathVariable Long responsavelId) {
+        List<Atendimento> atendimentos = atendimentoService.getAtendimentosByResponsavelId(responsavelId);
+        List<AtendimentoResponseDTO> responseDTOs = atendimentos.stream()
+            .map(AtendimentoResponseDTO::new)
+            .collect(Collectors.toList());
+        return ResponseEntity.ok(responseDTOs);
+    }
+    
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteAtendimento(@PathVariable Long id) {
         atendimentoService.delete(id);

@@ -1,5 +1,4 @@
 package com.vetgo.vetgoapi.controller;
-
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -15,8 +14,7 @@ public class AtendimentoResponseDTO {
     private String nomePaciente;
     private String nomeResponsavel;
     private String nomeProfissional;
-    // ADICIONADO: Campo para o ID do responsável
-    private Long responsavelId;
+    private Long responsavelId; // ADICIONADO: Campo para o ID do responsável
 
     public AtendimentoResponseDTO(Atendimento atendimento) {
         this.id = atendimento.getId();
@@ -35,7 +33,7 @@ public class AtendimentoResponseDTO {
         this.nomeProfissional = atendimento.getProfissional().getUsuario().getNomeUsuario();
     }
 
-    // Getters e Setters (Certifique-se de adicionar o getter e setter para responsavelId)
+    // Getters e Setters
     public Long getId() {
         return id;
     }

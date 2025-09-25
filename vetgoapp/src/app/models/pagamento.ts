@@ -5,6 +5,7 @@ import { Responsavel } from "./responsavel";
 
 
 export interface Pagamento {
+  id: number;
   valorTotal: number;
   atendimento: AtendimentoResponseDTO; // em vez de Atendimento
   descricao: string;

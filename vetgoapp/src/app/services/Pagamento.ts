@@ -18,6 +18,11 @@ export class PagamentoService {
     return this.http.post<Pagamento>(this.apiUrl, pagamento);
   }
 
+  // Método para atualizar um pagamento existente
+  update(id: number, pagamento: PagamentoRequestDTO): Observable<Pagamento> {
+    return this.http.put<Pagamento>(`${this.apiUrl}/${id}`, pagamento);
+  }
+
   // Buscar pagamento pelo ID do atendimento
   getByAtendimentoId(atendimentoId: number): Observable<Pagamento> {
     return this.http.get<Pagamento>(`${this.apiUrl}/atendimento/${atendimentoId}`);

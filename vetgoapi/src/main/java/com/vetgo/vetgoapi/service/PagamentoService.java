@@ -1,14 +1,10 @@
 package com.vetgo.vetgoapi.service;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import com.vetgo.vetgoapi.model.Atendimento;
-import com.vetgo.vetgoapi.model.EStatusPagamento;
 import com.vetgo.vetgoapi.model.Pagamento;
 import com.vetgo.vetgoapi.model.Responsavel;
 import com.vetgo.vetgoapi.repository.PagamentoRepository;
@@ -23,6 +19,7 @@ public class PagamentoService {
         this.pagamentoRepository = pagamentoRepository;
     }
 
+    // Método para salvar ou atualizar um pagamento
     public Pagamento save(Pagamento pagamento) {
         // Lógica de validação pode ser adicionada aqui, se necessário
         if (pagamento.getValorTotal().compareTo(BigDecimal.ZERO) < 0 || pagamento.getValorPago().compareTo(BigDecimal.ZERO) < 0) {
@@ -42,12 +39,11 @@ public class PagamentoService {
     public List<Pagamento> getPagamentosByResponsavel(Responsavel responsavel) {
             return pagamentoRepository.findByResponsavel(responsavel);
         }
-        public List<String> getStatusPagamentosByResponsavel(Responsavel responsavel) {
-    return pagamentoRepository.findByResponsavel(responsavel)
-        .stream()
-        .map(p -> p.getStatus().name()) // ou p.getStatus() se for enum mesmo
-        .toList();
-}
-
-
+    
+    public List<String> getStatusPagamentosByResponsavel(Responsavel responsavel) {
+        return pagamentoRepository.findByResponsavel(responsavel)
+            .stream()
+            .map(p -> p.getStatus().name()) // ou p.getStatus() se for enum mesmo
+            .toList();
+    }
 }

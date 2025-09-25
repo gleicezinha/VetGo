@@ -55,4 +55,12 @@ public interface AtendimentoRepository extends JpaRepository<Atendimento, Long> 
            "JOIN FETCH a.profissional " +
            "WHERE a.id = :id")
     Optional<Atendimento> findByIdWithDetails(@Param("id") Long id);
+      @Query("SELECT a FROM Atendimento a LEFT JOIN FETCH a.paciente p LEFT JOIN FETCH p.responsavel r LEFT JOIN FETCH a.profissional WHERE a.id = :id")
+    Optional<Atendimento> findByIdWithDependencies(@Param("id") Long id);
+
+    // NOVO MÉTODO: Buscar atendimentos por ID do responsável
+    @Query("SELECT a FROM Atendimento a JOIN a.paciente p JOIN p.responsavel r WHERE r.id = :responsavelId")
+    List<Atendimento> findByResponsavelId(@Param("responsavelId") Long responsavelId);
+
+    List<Atendimento> findByPacienteId(Long pacienteId);
 }
