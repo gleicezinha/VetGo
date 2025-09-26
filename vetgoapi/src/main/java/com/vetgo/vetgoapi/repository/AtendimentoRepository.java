@@ -63,4 +63,19 @@ public interface AtendimentoRepository extends JpaRepository<Atendimento, Long> 
     List<Atendimento> findByResponsavelId(@Param("responsavelId") Long responsavelId);
 
     List<Atendimento> findByPacienteId(Long pacienteId);
+      // [NOVO MÉTODO] Para buscar todos os atendimentos com detalhes e filtro de busca opcional.
+    @Query("SELECT a FROM Atendimento a " +
+           "JOIN FETCH a.paciente p " +
+           "JOIN FETCH p.responsavel r " +
+           "JOIN FETCH r.usuario rU " + // Adicionado para buscar por nome do responsável
+           "JOIN FETCH a.profissional prof " +
+           "JOIN FETCH prof.usuario profU " + // Adicionado para buscar por nome do profissional
+           "WHERE (:termoBusca IS NULL OR :termoBusca = '') OR " +
+           "LOWER(p.nome) LIKE %:termoBusca% OR " +
+           "LOWER(rU.nomeUsuario) LIKE %:termoBusca% OR " +
+           "LOWER(profU.nomeUsuario) LIKE %:termoBusca% OR " +
+           "LOWER(a.status) LIKE %:termoBusca% OR " +
+           "LOWER(a.tipoDeAtendimento) LIKE %:termoBusca%")
+    List<Atendimento> searchAllWithDetails(@Param("termoBusca") String termoBusca); //
+    
 }

@@ -100,13 +100,36 @@ public class AtendimentoService {
         atendimentoRepository.deleteById(id);
     }
 
+ @Transactional(readOnly = true)
+    public List<AtendimentoResponseDTO> get(String termoBusca) {
+        String termo = (termoBusca != null && !termoBusca.trim().isEmpty()) 
+                        ? termoBusca.trim().toLowerCase() // [change] Trata o termo de busca
+                        : null;
+        
+        List<Atendimento> atendimentos;
+        
+        // [change] Usa o novo método do repositório
+        if (termo != null) {
+            atendimentos = atendimentoRepository.searchAllWithDetails(termo); 
+        } else {
+            atendimentos = atendimentoRepository.searchAllWithDetails(null); 
+        }
+        
+        // Mapeia resultados para DTO
+        return atendimentos.stream()
+                .map(AtendimentoResponseDTO::new)
+                .collect(Collectors.toList());
+    }
+
+    // [MÉTODO OBSOLETO] Comente ou remova o método antigo:
+    /*
     // trecho de código em AtendimentoService.java
     public List<AtendimentoResponseDTO> getAllAtendimentos() {
         return atendimentoRepository.findAll().stream()
                 .map(AtendimentoResponseDTO::new)
                 .collect(Collectors.toList());
     }
-  
+    */
     // Método para buscar um atendimento com todas as dependências
     @Transactional(readOnly = true)
     public Atendimento getAtendimentoCompleto(Long id) {

@@ -1,3 +1,4 @@
+// src/app/components/list-cliente/list-cliente.ts
 import { Component, OnInit } from '@angular/core';
 import { Router, RouterLink, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -56,6 +57,7 @@ export class ListClienteComponent implements OnInit {
           if (resp.id) {
             this.pacienteService.getByResponsavelId(resp.id).subscribe(pets => {
               this.pacientesPorResponsavel[resp.id!] = pets || [];
+              this.buscarComTermo(this.termoBusca); // Re-aplica o filtro após carregar os pets
             });
           }
         });
@@ -82,13 +84,24 @@ export class ListClienteComponent implements OnInit {
     return [logradouro, numero, bairro, cidade, estado].filter(p => !!p).join(', ');
   }
 
+  // LÓGICA ATUALIZADA: Inclui busca pelo nome dos pets
   buscarComTermo(termoBusca: string): void {
     const termo = termoBusca.trim().toLowerCase();
+    
     this.registrosFiltrados = this.registros.filter((responsavel) => {
+      const id = responsavel.id;
       const nome = responsavel.nomeUsuario?.toLowerCase() || '';
       const telefone = responsavel.telefone?.toLowerCase() || '';
       const email = responsavel.email?.toLowerCase() || '';
-      return nome.includes(termo) || telefone.includes(termo) || email.includes(termo);
+      
+      // Busca pelo nome dos pets
+      const pets = this.pacientesPorResponsavel[id!];
+      const nomeDosPets = pets?.map(p => p.nome.toLowerCase()).join(' ') || '';
+
+      return nome.includes(termo) || 
+             telefone.includes(termo) || 
+             email.includes(termo) ||
+             nomeDosPets.includes(termo); // Inclui busca pelo nome dos pets
     });
   }
 

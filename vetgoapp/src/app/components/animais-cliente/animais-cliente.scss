@@ -100,6 +100,39 @@ $box-shadow: rgba(0, 0, 0, 0.1);
   }
 }
 
+/* --- NOVO: Estilos para a Barra de Busca de Pets --- */
+.search-container-pet {
+    display: flex;
+    align-items: center;
+    border: 1px solid $border-light;
+    border-radius: 8px;
+    padding: 0.5rem 0.75rem;
+    background-color: #fff;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+
+    /* Faz com que o ícone fique na direita */
+    flex-direction: row-reverse;
+}
+
+.search-input-pet {
+    flex-grow: 1;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    padding: 0;
+    margin-left: 0.5rem; /* Ajusta o espaçamento do input em relação ao ícone */
+    color: $dark-text; 
+}
+
+.search-icon-pet {
+    width: 20px;
+    height: 20px;
+    opacity: 0.5;
+}
+/* --- FIM: Estilos para a Barra de Busca de Pets --- */
+
+
 // Estilo dos cards dos pacientes
 .paciente-card-container {
   display: flex;

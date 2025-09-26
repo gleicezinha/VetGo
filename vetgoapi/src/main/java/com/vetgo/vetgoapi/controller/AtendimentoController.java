@@ -64,9 +64,10 @@ public class AtendimentoController {
         return ResponseEntity.ok(atendimentoCancelado);
     }
 
+  // Endpoint que retorna a lista de atendimentos completos - [change] ATUALIZADO para incluir busca
     @GetMapping("/todos")
-    public ResponseEntity<List<AtendimentoResponseDTO>> listarTodos() {
-        return ResponseEntity.ok(atendimentoService.getAllAtendimentos());
+    public ResponseEntity<List<AtendimentoResponseDTO>> listarTodos(@RequestParam(required = false) String termoBusca) {
+        return ResponseEntity.ok(atendimentoService.get(termoBusca)); // [change] Usa o novo método get do service
     }
 
     // Endpoint para buscar atendimento por ID para que retorne o DTO com todos os campos necessários.

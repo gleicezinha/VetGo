@@ -7,8 +7,18 @@
             </div>
         </div>
 
-        <div *ngIf="pacientesComAtendimentos.length > 0; else noPets">
-            <div *ngFor="let paciente of pacientesComAtendimentos" class="paciente-card-container">
+        <div class="search-container-pet">
+            <input 
+              type="text" 
+              class="search-input-pet" 
+              placeholder="Buscar Pet por Nome, Raça ou Espécie"
+              [(ngModel)]="termoBuscaPet"
+              (input)="buscarPet(termoBuscaPet)"
+            />
+            <img src="assets/imagens/search.svg" alt="Pesquisar" class="search-icon-pet" />
+        </div>
+        <div *ngIf="pacientesFiltrados.length > 0; else noPets">
+            <div *ngFor="let paciente of pacientesFiltrados" class="paciente-card-container">
                 <div class="paciente-card">
                     <div class="paciente-header">
                         <h3>{{ paciente.nome }}</h3>
@@ -46,8 +56,8 @@
 
     <div class="right-panel">
         <h3>Próximos Atendimentos</h3>
-        <div *ngIf="pacientesComAtendimentos.length > 0; else noAtendimentos">
-            <div *ngFor="let paciente of pacientesComAtendimentos">
+        <div *ngIf="pacientesFiltrados.length > 0; else noAtendimentos">
+            <div *ngFor="let paciente of pacientesFiltrados">
                 <div *ngIf="paciente.atendimentos.length > 0">
                     <h4>{{ paciente.nome }}</h4>
                     <ul>

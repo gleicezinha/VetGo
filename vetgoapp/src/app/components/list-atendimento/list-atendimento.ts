@@ -10,11 +10,12 @@ import { PacienteService } from '../../services/paciente';
 import { forkJoin, of, switchMap } from 'rxjs';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
+import { FormsModule } from '@angular/forms'; // [NOVO IMPORT]
 
 @Component({
     selector: 'app-list-atendimento',
     standalone: true,
-    imports: [CommonModule, DatePipe, RouterModule, MatMenuModule, MatButtonModule],
+    imports: [CommonModule, DatePipe, RouterModule, MatMenuModule, MatButtonModule, FormsModule], // [ADICIONADO]
     templateUrl: './list-atendimento.html',
     styleUrls: ['./list-atendimento.scss']
 })
@@ -22,6 +23,8 @@ export class ListAtendimentoComponent implements OnInit {
 
     atendimentos: AtendimentoResponseDTO[] = [];
     userRole: string | null = null;
+    termoBusca: string = ''; // [NOVO CAMPO]
+    atendimentosFiltrados: AtendimentoResponseDTO[] = []; // [NOVO CAMPO]
 
     constructor(
         private atendimentoService: AtendimentoService,
@@ -39,9 +42,11 @@ export class ListAtendimentoComponent implements OnInit {
         });
     }
 
-    carregarAtendimentos(): void {
+    // [MÉTODO ATUALIZADO] Aceita termo de busca
+    carregarAtendimentos(termo?: string): void { 
         const user = this.authService.currentUserValue;
         if (user && user.papel === 'ROLE_RESPONSAVEL') {
+            // Se for responsável, carrega TUDO e aplica filtro localmente
             this.responsavelService.getByUsuarioId(user.id).pipe(
                 switchMap(responsavel => {
                     if (!responsavel || !responsavel.id) {
@@ -54,42 +59,73 @@ export class ListAtendimentoComponent implements OnInit {
                         return of([]);
                     }
                     const atendimentoCalls = pacientes.map(paciente =>
-                        this.atendimentoService.getByPacienteId(paciente.id)
+                        this.atendimentoService.getAtendimentosByResponsavelId(paciente.id) // Usando o método que retorna DTO[] para simplificar
                     );
                     return forkJoin(atendimentoCalls);
                 })
             ).subscribe({
                 next: (atendimentosPorPaciente) => {
+                    // Mapeia atendimentos para o formato DTO necessário (ajuste conforme a API)
                     const todosAtendimentos = atendimentosPorPaciente.flat().map(atendimento => {
                         return {
                             id: atendimento.id,
                             dataHoraAtendimento: atendimento.dataHoraAtendimento,
                             status: atendimento.status,
                             tipoDeAtendimento: atendimento.tipoDeAtendimento,
-                            nomePaciente: atendimento.paciente?.nome || 'N/A',
-                            nomeResponsavel: atendimento.paciente?.responsavel?.usuario?.nomeUsuario || 'N/A',
-                            nomeProfissional: atendimento.profissional?.usuario?.nomeUsuario || 'N/A',
-                            // CORREÇÃO: Mapeia o ID do responsável
-                            responsavelId: atendimento.paciente?.responsavel?.id || 0,
+                            nomePaciente: atendimento.nomePaciente || 'N/A',
+                            nomeResponsavel: atendimento.nomeResponsavel || 'N/A',
+                            nomeProfissional: atendimento.nomeProfissional || 'N/A',
+                            responsavelId: atendimento.responsavelId || 0,
                         } as AtendimentoResponseDTO;
                     });
                     this.atendimentos = todosAtendimentos;
-                    this.cdr.detectChanges();
+                    this.aplicarFiltroLocal(termo); // [APLICA FILTRO LOCAL]
                 },
                 error: (err) => {
                     console.error('Erro ao carregar atendimentos do responsável:', err);
                 }
             });
         } else {
-            this.atendimentoService.getAll().subscribe({
+            // Para Admin/Profissional, usa o endpoint geral com busca
+            this.atendimentoService.getAll(termo).subscribe({ // [PASSA TERMO PARA API]
                 next: (dados) => {
                     this.atendimentos = dados;
+                    this.atendimentosFiltrados = dados; // A lista filtrada é a lista retornada pelo backend
                     this.cdr.detectChanges();
                 },
                 error: (err) => {
                     console.error('Erro ao carregar todos os atendimentos:', err);
                 }
             });
+        }
+    }
+
+    // [NOVO MÉTODO] Lógica de filtro local (usado pelo ROLE_RESPONSAVEL)
+    aplicarFiltroLocal(termo?: string): void { 
+        if (!termo || termo.trim() === '') {
+            this.atendimentosFiltrados = [...this.atendimentos];
+            this.cdr.detectChanges();
+            return;
+        }
+
+        const termoLowerCase = termo.trim().toLowerCase();
+        this.atendimentosFiltrados = this.atendimentos.filter(atd => {
+            // Filtra por Paciente, Tipo, Profissional, Responsável e Status
+            const fields = [atd.nomePaciente, atd.tipoDeAtendimento, atd.nomeProfissional, atd.nomeResponsavel, atd.status]
+                .map(f => f?.toLowerCase() || '');
+            
+            return fields.some(field => field.includes(termoLowerCase));
+        });
+        this.cdr.detectChanges();
+    }
+    
+    // [NOVO MÉTODO] Aciona a busca
+    buscarComTermo(termoBusca: string): void { 
+        const termo = termoBusca.trim();
+        if (this.userRole === 'ROLE_RESPONSAVEL') {
+            this.aplicarFiltroLocal(termo);
+        } else {
+            this.carregarAtendimentos(termo);
         }
     }
 

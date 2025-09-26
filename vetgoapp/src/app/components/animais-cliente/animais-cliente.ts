@@ -1,7 +1,9 @@
+// src/app/components/animais-cliente/animais-cliente.ts
+
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms'; // [ADICIONADO]
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { switchMap } from 'rxjs/operators';
@@ -24,14 +26,18 @@ interface PacienteComAtendimentos extends Paciente {
 @Component({
   standalone: true,
   selector: 'app-animais-cliente',
-  imports: [CommonModule, FormsModule, MatCardModule, MatButtonModule, DatePipe],
+  imports: [CommonModule, FormsModule, MatCardModule, MatButtonModule, DatePipe], // [ATUALIZADO]
   templateUrl: './animais-cliente.html',
   styleUrls: ['./animais-cliente.scss']
 })
 export class AnimaisCliente implements OnInit {
   responsavel: Responsavel = {} as Responsavel;
-  pacientesComAtendimentos: PacienteComAtendimentos[] = [];
+  
+  pacientes: PacienteComAtendimentos[] = []; // [NOVO] Lista completa de pets
+  pacientesFiltrados: PacienteComAtendimentos[] = []; // [NOVO] Lista para o template
+
   usuarioLogado: Usuario | null = null;
+  termoBuscaPet: string = ''; // [NOVO CAMPO] Termo de busca
 
   constructor(
     private router: Router,
@@ -45,7 +51,11 @@ export class AnimaisCliente implements OnInit {
   ngOnInit(): void {
     this.authService.currentUser.subscribe(user => {
       this.usuarioLogado = user;
-
+      this.carregarDados();
+    });
+  }
+  
+  carregarDados(): void { // [NOVO MÉTODO] Extraído a lógica de carregamento
       const idParam = this.route.snapshot.paramMap.get('id');
       const id = this.usuarioLogado?.papel === 'ROLE_RESPONSAVEL' ? this.usuarioLogado.id : (idParam ? +idParam : null);
       
@@ -73,7 +83,7 @@ export class AnimaisCliente implements OnInit {
           const todosOsObservables = pacientes.map(paciente =>
             this.atendimentoService.getByPacienteId(paciente.id).pipe(
               switchMap(atendimentos => {
-                return of({ ...paciente, atendimentos: atendimentos });
+                return of({ ...paciente, atendimentos: atendimentos } as PacienteComAtendimentos);
               })
             )
           );
@@ -81,11 +91,26 @@ export class AnimaisCliente implements OnInit {
         })
       ).subscribe({
         next: (pacientesComAtendimentos) => {
-          this.pacientesComAtendimentos = pacientesComAtendimentos;
+          this.pacientes = pacientesComAtendimentos;
+          this.pacientesFiltrados = [...this.pacientes]; // Inicializa a lista filtrada
         },
         error: (erro) => console.error('Erro ao carregar dados da página de animais:', erro)
       });
-    });
+  }
+
+  // [NOVO MÉTODO] Implementa a busca
+  buscarPet(termo: string): void {
+      const termoLowerCase = termo.trim().toLowerCase();
+      if (!termoLowerCase) {
+          this.pacientesFiltrados = [...this.pacientes];
+          return;
+      }
+
+      this.pacientesFiltrados = this.pacientes.filter(paciente => 
+          paciente.nome.toLowerCase().includes(termoLowerCase) ||
+          paciente.raca.toLowerCase().includes(termoLowerCase) ||
+          paciente.especie.toLowerCase().includes(termoLowerCase)
+      );
   }
 
   cadastrarAtendimento(paciente: Paciente): void {
@@ -126,14 +151,14 @@ export class AnimaisCliente implements OnInit {
   }
 
   excluirPaciente(pacienteId: number): void {
-    const paciente = this.pacientesComAtendimentos.find(p => p.id === pacienteId);
+    const paciente = this.pacientes.find(p => p.id === pacienteId);
     if (!paciente) return;
 
     if (this.podeExcluir(paciente)) {
       if (confirm(`Tem certeza que deseja excluir o paciente ${paciente.nome}?`)) {
         this.pacienteService.delete(paciente.id).subscribe({
           next: () => {
-            this.pacientesComAtendimentos = this.pacientesComAtendimentos.filter(p => p.id !== paciente.id);
+            this.carregarDados(); // Recarrega os dados após exclusão
           },
           error: (erro) => console.error('Erro ao excluir o paciente:', erro)
         });

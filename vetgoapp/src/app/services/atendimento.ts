@@ -31,8 +31,13 @@ export class AtendimentoService {
     return this.http.get<AtendimentoResponseDTO>(`${this.apiUrl}/${id}`);
   }
 
-  getAll(): Observable<AtendimentoResponseDTO[]> {
-    return this.http.get<AtendimentoResponseDTO[]>(`${this.apiUrl}/todos`);
+ // [MÉTODO ATUALIZADO] Adiciona parâmetro de busca opcional
+  getAll(termoBusca?: string): Observable<AtendimentoResponseDTO[]> { 
+    let params = new HttpParams();
+    if (termoBusca) {
+      params = params.set('termoBusca', termoBusca); // [change] Adiciona o termo como query parameter
+    }
+    return this.http.get<AtendimentoResponseDTO[]>(`${this.apiUrl}/todos`, { params }); // [change] Passa os parâmetros
   }
 
   getByPacienteId(id: number): Observable<Atendimento[]> {
@@ -70,4 +75,5 @@ export class AtendimentoService {
   getAtendimentosByResponsavelId(responsavelId: number): Observable<AtendimentoResponseDTO[]> {
     return this.http.get<AtendimentoResponseDTO[]>(`${this.apiUrl}/por-responsavel/${responsavelId}`);
   }
+   // [MÉTODO ATUALIZADO] Adiciona parâmetro de busca opcional
 }
