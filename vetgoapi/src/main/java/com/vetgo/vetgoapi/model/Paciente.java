@@ -3,8 +3,6 @@ package com.vetgo.vetgoapi.model;
 import java.io.Serializable;
 import java.time.LocalDate;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -26,9 +24,8 @@ public class Paciente implements Serializable {
     @Column(name = "id_pet")
     private Long id;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_tutor", referencedColumnName = "id_tutor", nullable = false)
-    @JsonIgnore // Adicione esta anotação para evitar erros de serialização
     private Responsavel responsavel;
 
     @Column(nullable = false)
