@@ -9,12 +9,13 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class UsuarioService implements ICrudService<Usuario> {
-  public apiUrl: string = environment.API_URL + '/usuarios';
+  // CORREÇÃO: A URL foi ajustada para o endpoint correto
+  public apiUrl: string = environment.API_URL + '/config/usuario';
 
   constructor(private http: HttpClient) { }
 
   get(termoBusca?: string): Observable<Usuario[]> {
-    let url = this.apiUrl + '/consultar-todos';
+    let url = this.apiUrl + '/consultar/todos'; // Endpoint de consulta
     if (termoBusca) {
       url += '?termoBusca=' + termoBusca;
     }
@@ -28,16 +29,18 @@ export class UsuarioService implements ICrudService<Usuario> {
   save(objeto: Usuario): Observable<Usuario> {
     let url = this.apiUrl;
     if (objeto.id) {
+      // CORREÇÃO: Endpoint de atualização
       url += '/atualizar';
       return this.http.put<Usuario>(url, objeto);
     } else {
+      // CORREÇÃO: Endpoint de inserção
       url += '/inserir';
       return this.http.post<Usuario>(url, objeto);
     }
   }
 
   delete(id: number): Observable<void> {
+    // CORREÇÃO: Endpoint de remoção
     return this.http.delete<void>(`${this.apiUrl}/remover/${id}`);
   }
-  
 }

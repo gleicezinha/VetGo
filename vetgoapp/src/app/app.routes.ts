@@ -8,9 +8,10 @@ import { FormAtendimentoComponent } from './components/form-atendimento/form-ate
 import { AnimaisCliente } from './components/animais-cliente/animais-cliente';
 import { ListAtendimentoComponent } from './components/list-atendimento/list-atendimento';
 import { CalendarioComponent } from './components/calendario/calendario';
-import { VerifyComponent } from './components/verify/verify.component'; // Importe o git componente de verificação
+import { VerifyComponent } from './components/verify/verify.component';
 import { authGuard } from './guards/auth.guard';
 import { PagamentoModalComponent } from './components/pagamento-modal/pagamento-modal';
+import { UsuarioComponent } from './components/usuario/usuario'; // Importe o novo componente
 
 export const routes: Routes = [
     // Rota padrão, redireciona para a tela de agendamento
@@ -22,7 +23,7 @@ export const routes: Routes = [
     { path: 'verify/:phone', component: VerifyComponent },
     { path: 'list-cliente', component: ListClienteComponent, canActivate: [authGuard] },
     { path: 'list-atendimento', component: ListAtendimentoComponent, canActivate: [authGuard] },
-    { path: 'form-cliente', component: FormClienteComponent},
+    { path: 'form-cliente', component: FormClienteComponent },
     { path: 'form-pet', component: FormPetComponent, canActivate: [authGuard] },
     { path: 'form-atendimento', component: FormAtendimentoComponent, canActivate: [authGuard] },
     { path: 'animais-cliente/:id', component: AnimaisCliente, canActivate: [authGuard] },
@@ -32,4 +33,6 @@ export const routes: Routes = [
     { path: 'pagamento/:id', component: PagamentoModalComponent, canActivate: [authGuard] },
     // Rota para a tela de verificação, que recebe o telefone como parâmetro
     { path: 'verify/:phone', component: VerifyComponent },
+    // Nova rota para o perfil do usuário
+    { path: 'usuario', component: UsuarioComponent, canActivate: [authGuard] },
 ];
