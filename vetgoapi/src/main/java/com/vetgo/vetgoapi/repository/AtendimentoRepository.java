@@ -3,6 +3,7 @@
 package com.vetgo.vetgoapi.repository;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,6 +13,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.vetgo.vetgoapi.model.Atendimento;
+import com.vetgo.vetgoapi.model.EStatus;
 
 @Repository
 public interface AtendimentoRepository extends JpaRepository<Atendimento, Long> {
@@ -63,4 +65,9 @@ public interface AtendimentoRepository extends JpaRepository<Atendimento, Long> 
     List<Atendimento> findByResponsavelId(@Param("responsavelId") Long responsavelId);
 
     List<Atendimento> findByPacienteId(Long pacienteId);
+        List<Atendimento> findAllByDataHoraAtendimentoBetweenAndStatusIn(
+        LocalDateTime start, 
+        LocalDateTime end, 
+        Collection<EStatus> statuses
+    );
 }
