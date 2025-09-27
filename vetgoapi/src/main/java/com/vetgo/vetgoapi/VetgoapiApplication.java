@@ -2,9 +2,10 @@ package com.vetgo.vetgoapi;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling; // 1. IMPORTE AQUI
 
-// A anotação abaixo desliga completamente a configuração de segurança do Spring
-@SpringBootApplication //(exclude = {SecurityAutoConfiguration.class})
+@SpringBootApplication
+@EnableScheduling // 2. ADICIONE ESTA ANOTAÇÃO
 public class VetgoapiApplication {
 
 	public static void main(String[] args) {
