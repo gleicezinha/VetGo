@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -63,8 +65,9 @@ public interface AtendimentoRepository extends JpaRepository<Atendimento, Long> 
     List<Atendimento> findByResponsavelId(@Param("responsavelId") Long responsavelId);
 
     List<Atendimento> findByPacienteId(Long pacienteId);
-      // [NOVO MÉTODO] Para buscar todos os atendimentos com detalhes e filtro de busca opcional.
-    @Query("SELECT a FROM Atendimento a " +
+      
+      // [MODIFICADO] Para buscar todos os atendimentos com detalhes e filtro de busca opcional com PAGINAÇÃO.
+    @Query(value = "SELECT a FROM Atendimento a " +
            "JOIN FETCH a.paciente p " +
            "JOIN FETCH p.responsavel r " +
            "JOIN FETCH r.usuario rU " + // Adicionado para buscar por nome do responsável
@@ -75,7 +78,19 @@ public interface AtendimentoRepository extends JpaRepository<Atendimento, Long> 
            "LOWER(rU.nomeUsuario) LIKE %:termoBusca% OR " +
            "LOWER(profU.nomeUsuario) LIKE %:termoBusca% OR " +
            "LOWER(a.status) LIKE %:termoBusca% OR " +
-           "LOWER(a.tipoDeAtendimento) LIKE %:termoBusca%")
-    List<Atendimento> searchAllWithDetails(@Param("termoBusca") String termoBusca); //
+           "LOWER(a.tipoDeAtendimento) LIKE %:termoBusca%",
+           countQuery = "SELECT count(a) FROM Atendimento a " + 
+                        "LEFT JOIN a.paciente p " +
+                        "LEFT JOIN p.responsavel r " +
+                        "LEFT JOIN r.usuario rU " +
+                        "LEFT JOIN a.profissional prof " +
+                        "LEFT JOIN prof.usuario profU " +
+                        "WHERE (:termoBusca IS NULL OR :termoBusca = '') OR " +
+                        "LOWER(p.nome) LIKE %:termoBusca% OR " +
+                        "LOWER(rU.nomeUsuario) LIKE %:termoBusca% OR " +
+                        "LOWER(profU.nomeUsuario) LIKE %:termoBusca% OR " +
+                        "LOWER(a.status) LIKE %:termoBusca% OR " +
+                        "LOWER(a.tipoDeAtendimento) LIKE %:termoBusca%")
+    Page<Atendimento> searchAllWithDetails(@Param("termoBusca") String termoBusca, Pageable pageable); // [MOD]
     
 }

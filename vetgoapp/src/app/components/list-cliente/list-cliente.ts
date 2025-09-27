@@ -6,12 +6,14 @@ import { FormsModule } from '@angular/forms';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { of, forkJoin, switchMap, Observable } from 'rxjs'; // [MOD] Adicionado forkJoin, switchMap, Observable
 
 import { PacienteService } from '../../services/paciente';
 import { ResponsavelService } from '../../services/responsavel';
 import { Paciente } from '../../models/paciente';
 import { Endereco } from '../../models/endereco.model';
 import { ResponsavelDTO } from '../../models/responsaveldto';
+import { Page } from '../../models/page.model'; // [NOVO IMPORT]
 
 @Component({
   standalone: true,
@@ -28,6 +30,13 @@ export class ListClienteComponent implements OnInit {
   pacientesPorResponsavel: { [key: number]: Paciente[] } = {};
   statusPorResponsavel: { [key: number]: string[] } = {};
 
+  // [NOVO] Estado de paginação
+  page: number = 0;
+  size: number = 6;
+  totalPages: number = 0;
+  totalElements: number = 0;
+
+
   constructor(
     private servico: ResponsavelService,
     private pacienteService: PacienteService,
@@ -38,13 +47,20 @@ export class ListClienteComponent implements OnInit {
     this.get();
   }
 
-  get(): void {
-    this.servico.getComStatusPagamento().subscribe({
-      next: (responsaveis: ResponsavelDTO[]) => {
-        // Preencher registros e filtro
-        this.registros = responsaveis;
-        this.registrosFiltrados = [...this.registros];
+  // [MOD] Implementa paginação
+  get(page: number = this.page): void {
+    this.page = page;
 
+    this.servico.getComStatusPagamento(this.termoBusca, this.page, this.size).subscribe({
+      next: (pageResponse: Page<ResponsavelDTO>) => {
+        
+        this.totalPages = pageResponse.totalPages;
+        this.totalElements = pageResponse.totalElements;
+        this.registros = pageResponse.content;
+        
+        // Resetar o filtro para mostrar a página atual
+        this.registrosFiltrados = [...this.registros];
+        
         // Popular status de pagamentos
         this.registros.forEach(resp => {
           if (resp.id) {
@@ -52,15 +68,29 @@ export class ListClienteComponent implements OnInit {
           }
         });
 
-        // Buscar pets de cada responsável
-        this.registros.forEach(resp => {
-          if (resp.id) {
-            this.pacienteService.getByResponsavelId(resp.id).subscribe(pets => {
-              this.pacientesPorResponsavel[resp.id!] = pets || [];
-              this.buscarComTermo(this.termoBusca); // Re-aplica o filtro após carregar os pets
-            });
-          }
+        // Buscar pets de cada responsável (mantendo a busca de pets por página)
+        this.pacientesPorResponsavel = {}; 
+        const petCalls: Observable<any>[] = this.registros.map(resp => {
+            if (resp.id) {
+                return this.pacienteService.getByResponsavelId(resp.id).pipe(
+                    switchMap(pets => {
+                        this.pacientesPorResponsavel[resp.id!] = pets || [];
+                        return of(true);
+                    })
+                );
+            }
+            return of(false);
         });
+
+        if (petCalls.length > 0) {
+            forkJoin(petCalls).subscribe({
+                complete: () => {
+                    this.buscarComTermo(this.termoBusca, true); // Re-aplica o filtro após carregar os pets (apenas localmente)
+                }
+            });
+        } else {
+             this.buscarComTermo(this.termoBusca, true);
+        }
       },
       error: (erro) => {
         console.error('Erro ao buscar responsáveis:', erro);
@@ -84,25 +114,38 @@ export class ListClienteComponent implements OnInit {
     return [logradouro, numero, bairro, cidade, estado].filter(p => !!p).join(', ');
   }
 
-  // LÓGICA ATUALIZADA: Inclui busca pelo nome dos pets
-  buscarComTermo(termoBusca: string): void {
-    const termo = termoBusca.trim().toLowerCase();
+  // [MOD] Adiciona o parâmetro skipApiCall para forçar o filtro local
+  buscarComTermo(termoBusca: string, skipApiCall: boolean = false): void {
+    if (skipApiCall) {
+         const termo = termoBusca.trim().toLowerCase();
     
-    this.registrosFiltrados = this.registros.filter((responsavel) => {
-      const id = responsavel.id;
-      const nome = responsavel.nomeUsuario?.toLowerCase() || '';
-      const telefone = responsavel.telefone?.toLowerCase() || '';
-      const email = responsavel.email?.toLowerCase() || '';
-      
-      // Busca pelo nome dos pets
-      const pets = this.pacientesPorResponsavel[id!];
-      const nomeDosPets = pets?.map(p => p.nome.toLowerCase()).join(' ') || '';
+        this.registrosFiltrados = this.registros.filter((responsavel) => {
+          const id = responsavel.id;
+          const nome = responsavel.nomeUsuario?.toLowerCase() || '';
+          const telefone = responsavel.telefone?.toLowerCase() || '';
+          const email = responsavel.email?.toLowerCase() || '';
+          
+          // Busca pelo nome dos pets
+          const pets = this.pacientesPorResponsavel[id!];
+          const nomeDosPets = pets?.map(p => p.nome.toLowerCase()).join(' ') || '';
 
-      return nome.includes(termo) || 
-             telefone.includes(termo) || 
-             email.includes(termo) ||
-             nomeDosPets.includes(termo); // Inclui busca pelo nome dos pets
-    });
+          return nome.includes(termo) || 
+                 telefone.includes(termo) || 
+                 email.includes(termo) ||
+                 nomeDosPets.includes(termo); 
+        });
+    } else {
+        // Reinicia a paginação para a primeira página ao buscar um novo termo
+        this.page = 0;
+        this.get(this.page);
+    }
+  }
+  
+  // [NOVO MÉTODO] Lógica de paginação
+  irParaPagina(pagina: number): void {
+    if (pagina >= 0 && pagina < this.totalPages) {
+      this.get(pagina);
+    }
   }
 
   cadastrar(): void {
@@ -116,7 +159,7 @@ export class ListClienteComponent implements OnInit {
   delete(id: number): void {
     if (window.confirm('Deseja realmente EXCLUIR o responsável?')) {
       this.servico.delete(id).subscribe({
-        next: () => this.get(),
+        next: () => this.get(this.page), // [MOD] Recarrega a página atual
         error: (erro) => {
           console.error('Erro ao excluir responsável:', erro);
           alert('Erro ao excluir responsável: ' + (erro.message || 'Erro desconhecido'));

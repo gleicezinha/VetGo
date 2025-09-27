@@ -11,11 +11,12 @@ import { AtendimentoService } from '../../services/atendimento';
 import { AuthService } from '../../services/AuthService';
 import { PacienteService } from '../../services/paciente';
 import { ResponsavelService } from '../../services/responsavel';
-import { forkJoin, of, switchMap } from 'rxjs';
+import { forkJoin, of, switchMap, Observable } from 'rxjs';
 import { AtendimentoResponseDTO } from '../../models/atendimento-response.dto';
 import { CommonModule, DatePipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { Router } from '@angular/router';
+import { Page } from '../../models/page.model'; // [ADICIONADO]
 
 @Component({
   selector: 'app-calendario',
@@ -103,7 +104,7 @@ export class CalendarioComponent implements OnInit {
           if (!pacientes || pacientes.length === 0) {
             return of([]);
           }
-          const atendimentoCalls = pacientes.map(paciente =>
+          const atendimentoCalls: Observable<any>[] = pacientes.map(paciente =>
             this.atendimentoService.getByPacienteId(paciente.id)
           );
           return forkJoin(atendimentoCalls);
@@ -133,8 +134,9 @@ export class CalendarioComponent implements OnInit {
         }
       });
     } else {
-      this.atendimentoService.getAll().subscribe(atendimentos => {
-        this.eventos = atendimentos.map(mapAtendimentoToEvent);
+      // [CORREÇÃO] A chamada retorna Page<T>, precisamos acessar a propriedade content
+      this.atendimentoService.getAll().subscribe((pageResponse: Page<AtendimentoResponseDTO>) => {
+        this.eventos = pageResponse.content.map(mapAtendimentoToEvent);
         this.calendarOptions.events = this.eventos;
         this.recalcularAtendimentosPorDia();
       });

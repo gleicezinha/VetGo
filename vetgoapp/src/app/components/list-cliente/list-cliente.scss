@@ -176,3 +176,39 @@
   margin-left: 8px; /* Adiciona um pequeno espaço à esquerda do ícone */
   vertical-align: middle; /* Alinha o ícone verticalmente com o texto do telefone */
 }
+.pagination-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+
+    button {
+        padding: 0.5rem 1rem;
+        border: 1px solid var(--primary-color);
+        border-radius: 6px;
+        background-color: white;
+        color: var(--primary-color);
+        cursor: pointer;
+        transition: all 0.2s;
+
+        &:hover:not(:disabled) {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        &:disabled {
+            border-color: #ccc;
+            color: #ccc;
+            cursor: not-allowed;
+            background-color: #f7f7f7;
+        }
+    }
+
+    span {
+        font-weight: 500;
+        color: var(--text-color-dark);
+    }
+}

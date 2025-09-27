@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http'; // [MOD]
 import { Observable } from 'rxjs';
 import { Responsavel } from '../models/responsavel';
 import { ICrudService } from './i-crud-service';
@@ -7,6 +7,7 @@ import { environment } from '../../environments/environment';
 import { Pagamento } from '../models/pagamento';
 import { ResponsavelResponseDTO } from '../models/responsavel-response.dto.ts';
 import { ResponsavelDTO } from '../models/responsaveldto';
+import { Page } from '../models/page.model'; // [NOVO IMPORT]
 
 @Injectable({
   providedIn: 'root'
@@ -23,8 +24,18 @@ export class ResponsavelService implements ICrudService<Responsavel> {
   getByNome(nome: string): Observable<Responsavel[]> {
     return this.http.get<Responsavel[]>(`${this.apiUrl}?nome=${nome}`);
   }
-  getComStatusPagamento(): Observable<ResponsavelDTO[]> {
-    return this.http.get<ResponsavelDTO[]>(`${this.apiUrl}/clientes`);
+  
+  // [MOD] Adiciona paginação e termo de busca (opcionalmente)
+  getComStatusPagamento(termoBusca?: string, page: number = 0, size: number = 10): Observable<Page<ResponsavelDTO>> { // [MOD]
+    let params = new HttpParams()
+        .set('page', page.toString())
+        .set('size', size.toString());
+        
+    if (termoBusca) {
+        params = params.set('termoBusca', termoBusca); // O backend teria que implementar esta busca paginada
+    }
+
+    return this.http.get<Page<ResponsavelDTO>>(`${this.apiUrl}/clientes`, { params }); // [MOD]
   }
 
   getById(id: number): Observable<Responsavel> {

@@ -1,4 +1,3 @@
-// src/main/java/com/vetgo/vetgoapi/service/AtendimentoService.java
 package com.vetgo.vetgoapi.service;
 
 import java.time.LocalDate;
@@ -7,6 +6,8 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -99,37 +100,20 @@ public class AtendimentoService {
     public void delete(Long id) {
         atendimentoRepository.deleteById(id);
     }
-
- @Transactional(readOnly = true)
-    public List<AtendimentoResponseDTO> get(String termoBusca) {
+    
+    // [MODIFICADO] Implementação da busca paginada (substitui o antigo método get(String termoBusca))
+    @Transactional(readOnly = true)
+    public Page<AtendimentoResponseDTO> searchAllWithDetails(String termoBusca, Pageable pageable) {
         String termo = (termoBusca != null && !termoBusca.trim().isEmpty()) 
-                        ? termoBusca.trim().toLowerCase() // [change] Trata o termo de busca
+                        ? termoBusca.trim().toLowerCase()
                         : null;
         
-        List<Atendimento> atendimentos;
+        Page<Atendimento> atendimentosPage = atendimentoRepository.searchAllWithDetails(termo, pageable);
         
-        // [change] Usa o novo método do repositório
-        if (termo != null) {
-            atendimentos = atendimentoRepository.searchAllWithDetails(termo); 
-        } else {
-            atendimentos = atendimentoRepository.searchAllWithDetails(null); 
-        }
-        
-        // Mapeia resultados para DTO
-        return atendimentos.stream()
-                .map(AtendimentoResponseDTO::new)
-                .collect(Collectors.toList());
+        // Mapeia Page<Atendimento> para Page<AtendimentoResponseDTO>
+        return atendimentosPage.map(AtendimentoResponseDTO::new);
     }
 
-    // [MÉTODO OBSOLETO] Comente ou remova o método antigo:
-    /*
-    // trecho de código em AtendimentoService.java
-    public List<AtendimentoResponseDTO> getAllAtendimentos() {
-        return atendimentoRepository.findAll().stream()
-                .map(AtendimentoResponseDTO::new)
-                .collect(Collectors.toList());
-    }
-    */
     // Método para buscar um atendimento com todas as dependências
     @Transactional(readOnly = true)
     public Atendimento getAtendimentoCompleto(Long id) {

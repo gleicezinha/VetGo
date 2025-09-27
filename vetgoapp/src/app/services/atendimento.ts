@@ -6,6 +6,7 @@ import { environment } from '../../environments/environment';
 import { Atendimento } from '../models/atendimento';
 import { Observable } from 'rxjs';
 import { AtendimentoResponseDTO } from '../models/atendimento-response.dto';
+import { Page } from '../models/page.model';
 
 @Injectable({
   providedIn: 'root'
@@ -31,13 +32,16 @@ export class AtendimentoService {
     return this.http.get<AtendimentoResponseDTO>(`${this.apiUrl}/${id}`);
   }
 
- // [MÉTODO ATUALIZADO] Adiciona parâmetro de busca opcional
-  getAll(termoBusca?: string): Observable<AtendimentoResponseDTO[]> { 
-    let params = new HttpParams();
+ // [MÉTODO ATUALIZADO] Adiciona parâmetro de busca opcional e paginação
+  getAll(termoBusca?: string, page: number = 0, size: number = 10): Observable<Page<AtendimentoResponseDTO>> { // [MOD]
+    let params = new HttpParams()
+        .set('page', page.toString())
+        .set('size', size.toString());
+
     if (termoBusca) {
       params = params.set('termoBusca', termoBusca); // [change] Adiciona o termo como query parameter
     }
-    return this.http.get<AtendimentoResponseDTO[]>(`${this.apiUrl}/todos`, { params }); // [change] Passa os parâmetros
+    return this.http.get<Page<AtendimentoResponseDTO>>(`${this.apiUrl}/todos`, { params }); // [MOD]
   }
 
   getByPacienteId(id: number): Observable<Atendimento[]> {

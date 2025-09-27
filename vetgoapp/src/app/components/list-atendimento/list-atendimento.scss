@@ -231,3 +231,39 @@
   width: 100%;
   background: transparent;
 }
+.pagination-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+
+    button {
+        padding: 0.5rem 1rem;
+        border: 1px solid var(--agendado-color); 
+        border-radius: 6px;
+        background-color: white;
+        color: var(--agendado-color);
+        cursor: pointer;
+        transition: all 0.2s;
+
+        &:hover:not(:disabled) {
+            background-color: var(--agendado-color);
+            color: white;
+        }
+
+        &:disabled {
+            border-color: #ccc;
+            color: #ccc;
+            cursor: not-allowed;
+            background-color: #f7f7f7;
+        }
+    }
+
+    span {
+        font-weight: 500;
+        color: var(--text-color-dark);
+    }
+}

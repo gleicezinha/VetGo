@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page; // [MOD]
+import org.springframework.data.domain.Pageable; // [MOD]
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +33,12 @@ public class ResponsavelService implements ICrudService<Responsavel> {
     @Override
     public List<Responsavel> get(String termoBusca) {
         return responsavelRepository.findAll();
+    }
+    
+    // [NOVO MÉTODO] Adicionado para buscar todos os responsáveis com paginação
+    @Transactional(readOnly = true)
+    public Page<Responsavel> getAllResponsaveis(Pageable pageable) {
+        return responsavelRepository.findAll(pageable);
     }
 
     @Override

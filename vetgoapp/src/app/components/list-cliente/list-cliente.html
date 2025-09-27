@@ -79,5 +79,10 @@
         </tr>
       </tbody>
     </table>
+    <div class="pagination-controls" *ngIf="totalPages > 1">
+        <button (click)="irParaPagina(page - 1)" [disabled]="page === 0">Anterior</button>
+        <span>Página {{ page + 1 }} de {{ totalPages }}</span>
+        <button (click)="irParaPagina(page + 1)" [disabled]="page === totalPages - 1">Próxima</button>
+    </div>
   </div>
 </div>

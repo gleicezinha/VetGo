@@ -1,9 +1,11 @@
-// main/java/com/vetgo/vetgoapi/controller/AtendimentoController.java
 package com.vetgo.vetgoapi.controller;
 
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -60,10 +62,15 @@ public class AtendimentoController {
         return ResponseEntity.ok(atendimentoCancelado);
     }
 
-  // Endpoint que retorna a lista de atendimentos completos - [change] ATUALIZADO para incluir busca
+  // Endpoint que retorna a lista de atendimentos completos - [MODIFICADO] Adiciona paginação e busca
     @GetMapping("/todos")
-    public ResponseEntity<List<AtendimentoResponseDTO>> listarTodos(@RequestParam(required = false) String termoBusca) {
-        return ResponseEntity.ok(atendimentoService.get(termoBusca)); // [change] Usa o novo método get do service
+    public ResponseEntity<Page<AtendimentoResponseDTO>> listarTodos(
+            @RequestParam(required = false) String termoBusca,
+            @PageableDefault(size = 10, sort = "dataHoraAtendimento") Pageable pageable) {
+        
+        Page<AtendimentoResponseDTO> atendimentosPage = atendimentoService.searchAllWithDetails(termoBusca, pageable);
+        
+        return ResponseEntity.ok(atendimentosPage);
     }
 
     // MÉTODO MODIFICADO

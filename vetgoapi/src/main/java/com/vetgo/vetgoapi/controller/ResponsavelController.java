@@ -2,6 +2,9 @@ package com.vetgo.vetgoapi.controller;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page; // [MOD]
+import org.springframework.data.domain.Pageable; // [MOD]
+import org.springframework.data.web.PageableDefault; // [MOD]
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -12,12 +15,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vetgo.vetgoapi.controller.dto.ResponsavelDTO;
 import com.vetgo.vetgoapi.model.Responsavel;
 import com.vetgo.vetgoapi.repository.ResponsavelRepository;
 import com.vetgo.vetgoapi.repository.UsuarioRepository;
+// ... (outros imports)
 import com.vetgo.vetgoapi.service.CadastroService;
 import com.vetgo.vetgoapi.service.PagamentoService;
 import com.vetgo.vetgoapi.service.ResponsavelService;
@@ -108,23 +113,26 @@ public class ResponsavelController {
         responsavelRepository.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+    
+    // [MOD] Endpoint para listar clientes com paginação
     @GetMapping("/clientes")
-    public ResponseEntity<List<ResponsavelDTO>> listarClientes() {
-        List<Responsavel> responsaveis = responsavelService.get("");
+    public ResponseEntity<Page<ResponsavelDTO>> listarClientes(@PageableDefault(size = 10) Pageable pageable) { // [MOD]
+        
+        Page<Responsavel> responsaveisPage = responsavelService.getAllResponsaveis(pageable); // [MOD]
 
-        List<ResponsavelDTO> dtos = responsaveis.stream().map(r -> {
+        Page<ResponsavelDTO> dtosPage = responsaveisPage.map(r -> { // [MOD] Usa .map() do Page
             ResponsavelDTO dto = new ResponsavelDTO();
             dto.setId(r.getId());
             dto.setNomeUsuario(r.getUsuario().getNomeUsuario());
             dto.setEmail(r.getUsuario().getEmail());
             dto.setTelefone(r.getUsuario().getTelefone());
-            dto.setEndereco(r.getUsuario().getEndereco()); // <-- popula endereço
+            dto.setEndereco(r.getUsuario().getEndereco());
+            // Chama o método que já existia no service, passando a entidade
             dto.setStatusPagamentos(pagamentoService.getStatusPagamentosByResponsavel(r));
             return dto;
-        }).toList();
+        });
 
-        return ResponseEntity.ok(dtos);
+        return ResponseEntity.ok(dtosPage); // [MOD]
     }
-
   
 }
