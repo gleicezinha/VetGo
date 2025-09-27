@@ -8,7 +8,10 @@ export interface AtendimentoResponseDTO {
     nomePaciente: string;
     nomeResponsavel: string;
     nomeProfissional: string;
-    // CORREÇÃO: Adicione a propriedade para o ID do responsável
     responsavelId?: number;
     observacao?: string;
+
+    // CAMPOS ADICIONADOS PARA CORRESPONDER AO BACKEND
+    pacienteId?: number;
+    profissionalId?: number;
 }

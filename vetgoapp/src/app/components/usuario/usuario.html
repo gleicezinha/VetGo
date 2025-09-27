@@ -1,0 +1,69 @@
+<div class="profile-container">
+    <div class="profile-card">
+        <h2>Meu Perfil</h2>
+        <p>Gerencie suas informações pessoais e de contato.</p>
+
+        <form #formUsuario="ngForm" (ngSubmit)="salvar()">
+            <div class="form-group">
+                <label for="nomeUsuario">Nome Completo</label>
+                <input type="text" id="nomeUsuario" name="nomeUsuario" [(ngModel)]="usuario.nomeUsuario">
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" [(ngModel)]="usuario.email">
+            </div>
+            <div class="form-group">
+                <label for="telefone">Telefone</label>
+                <input type="text" id="telefone" name="telefone" [(ngModel)]="usuario.telefone" required>
+            </div>
+
+            <hr>
+            <h3>Endereço</h3>
+
+            <div *ngIf="usuario.endereco">
+                <div class="form-group">
+                    <label for="logradouro">Rua</label>
+                    <input type="text" id="logradouro" name="logradouro" [(ngModel)]="usuario.endereco.logradouro">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="numero">Número</label>
+                        <input type="text" id="numero" name="numero" [(ngModel)]="usuario.endereco.numero">
+                    </div>
+                    <div class="form-group">
+                        <label for="complemento">Complemento</label>
+                        <input type="text" id="complemento" name="complemento"
+                            [(ngModel)]="usuario.endereco.complemento">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="bairro">Bairro</label>
+                        <input type="text" id="bairro" name="bairro" [(ngModel)]="usuario.endereco.bairro">
+                    </div>
+                    <div class="form-group">
+                        <label for="cidade">Cidade</label>
+                        <input type="text" id="cidade" name="cidade" [(ngModel)]="usuario.endereco.cidade">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="estado">Estado</label>
+                        <input type="text" id="estado" name="estado" [(ngModel)]="usuario.endereco.estado">
+                    </div>
+                    <div class="form-group">
+                        <label for="cep">CEP</label>
+                        <input type="text" id="cep" name="cep" [(ngModel)]="usuario.endereco.cep">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-buttons">
+                <button type="submit" [disabled]="formUsuario.invalid" class="btn-salvar">Salvar Alterações</button>
+            </div>
+        </form>
+    </div>
+</div>

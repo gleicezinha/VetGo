@@ -1,3 +1,4 @@
+// main/java/com/vetgo/vetgoapi/controller/dto/AtendimentoResponseDTO.java
 package com.vetgo.vetgoapi.controller.dto;
 
 import java.time.LocalDateTime;
@@ -15,28 +16,37 @@ public class AtendimentoResponseDTO {
     private String nomePaciente;
     private String nomeResponsavel;
     private String nomeProfissional;
-    // ADICIONADO: Campo para o ID do responsável
     private Long responsavelId;
+    
+    // CAMPOS ADICIONADOS
+    private Long pacienteId;
+    private Long profissionalId;
+    private String observacao;
+
 
     public AtendimentoResponseDTO(Atendimento atendimento) {
         this.id = atendimento.getId();
         this.dataHoraAtendimento = atendimento.getDataHoraAtendimento();
         this.status = atendimento.getStatus().toString();
         this.tipoDeAtendimento = atendimento.getTipoDeAtendimento().toString();
-        this.nomePaciente = atendimento.getPaciente().getNome();
-        // Acesso seguro ao ID do responsável
-        if (atendimento.getPaciente() != null && atendimento.getPaciente().getResponsavel() != null) {
-            this.nomeResponsavel = atendimento.getPaciente().getResponsavel().getUsuario().getNomeUsuario();
-            this.responsavelId = atendimento.getPaciente().getResponsavel().getId();
-        } else {
-            this.nomeResponsavel = "N/A";
-            this.responsavelId = null;
+        this.observacao = atendimento.getObservacao(); // Adicionado para carregar observações
+
+        if (atendimento.getPaciente() != null) {
+            this.nomePaciente = atendimento.getPaciente().getNome();
+            this.pacienteId = atendimento.getPaciente().getId(); // LINHA MODIFICADA
+            if (atendimento.getPaciente().getResponsavel() != null) {
+                this.nomeResponsavel = atendimento.getPaciente().getResponsavel().getUsuario().getNomeUsuario();
+                this.responsavelId = atendimento.getPaciente().getResponsavel().getId();
+            }
         }
 
-        this.nomeProfissional = atendimento.getProfissional().getUsuario().getNomeUsuario();
+        if (atendimento.getProfissional() != null) {
+            this.nomeProfissional = atendimento.getProfissional().getUsuario().getNomeUsuario();
+            this.profissionalId = atendimento.getProfissional().getId(); // LINHA MODIFICADA
+        }
     }
 
-    // Getters e Setters (Certifique-se de adicionar o getter e setter para responsavelId)
+    // Getters e Setters
     public Long getId() {
         return id;
     }
@@ -93,12 +103,36 @@ public class AtendimentoResponseDTO {
         this.nomeProfissional = nomeProfissional;
     }
 
-    // NOVO GETTER E SETTER
     public Long getResponsavelId() {
         return responsavelId;
     }
 
     public void setResponsavelId(Long responsavelId) {
         this.responsavelId = responsavelId;
+    }
+
+    // GETTERS E SETTERS ADICIONADOS
+    public Long getPacienteId() {
+        return pacienteId;
+    }
+
+    public void setPacienteId(Long pacienteId) {
+        this.pacienteId = pacienteId;
+    }
+
+    public Long getProfissionalId() {
+        return profissionalId;
+    }
+
+    public void setProfissionalId(Long profissionalId) {
+        this.profissionalId = profissionalId;
+    }
+    
+    public String getObservacao() {
+        return observacao;
+    }
+
+    public void setObservacao(String observacao) {
+        this.observacao = observacao;
     }
 }

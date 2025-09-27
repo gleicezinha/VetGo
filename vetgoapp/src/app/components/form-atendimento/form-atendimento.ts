@@ -11,7 +11,7 @@ import { Paciente } from '../../models/paciente';
 import { Responsavel } from '../../models/responsavel';
 import { Profissional } from '../../models/profissional';
 import { EAtendimento } from '../../models/eatendimento.model';
-import { forkJoin, of, Observable } from 'rxjs';
+import { forkJoin, of } from 'rxjs';
 import { AuthService } from '../../services/AuthService';
 import { switchMap } from 'rxjs/operators';
 import { Procedimento } from '../../models/procedimento';
@@ -75,17 +75,18 @@ export class FormAtendimentoComponent implements OnInit {
       this.profissionais = data.profissionais;
 
       if (this.isEditMode && atendimentoIdParam) {
-        this.servico.getById(+atendimentoIdParam).subscribe(atendimento => {
-          if (atendimento) {
-            this.registro.id = atendimento.id;
-            this.registro.dataHoraAtendimento = atendimento.dataHoraAtendimento;
-            this.registro.tipoDeAtendimento = atendimento.tipoDeAtendimento as EAtendimento;
-            this.registro.observacao = atendimento.observacao ?? '';
-            this.registro.status = atendimento.status;
-            this.registro.profissionalId = atendimento.profissional?.id;
+        this.servico.getAtendimentoById(+atendimentoIdParam).subscribe(atendimentoDTO => {
+          if (atendimentoDTO) {
+            this.registro.id = atendimentoDTO.id;
+            this.registro.dataHoraAtendimento = atendimentoDTO.dataHoraAtendimento;
+            this.registro.tipoDeAtendimento = atendimentoDTO.tipoDeAtendimento as EAtendimento;
+            // A linha abaixo garante que a observação seja carregada no formulário
+            this.registro.observacao = atendimentoDTO.observacao ?? '';
+            this.registro.status = atendimentoDTO.status;
+            this.registro.profissionalId = atendimentoDTO.profissionalId;
 
-            const responsavelId = atendimento.paciente?.responsavel?.id;
-            const pacienteId = atendimento.paciente?.id;
+            const responsavelId = atendimentoDTO.responsavelId;
+            const pacienteId = atendimentoDTO.pacienteId;
 
             if (responsavelId && pacienteId) {
               this.onResponsavelChange(responsavelId, pacienteId);
@@ -159,13 +160,12 @@ export class FormAtendimentoComponent implements OnInit {
       observacao: this.registro.observacao,
       paciente: pacienteSelecionado,
       responsavel: responsavelSelecionado,
-      profissional: profissionalSelecionado
+      profissional: profissionalSelecionado,
+      status: this.registro.status
     };
 
     if (!this.registro.id) {
       atendimentoFinal.status = 'AGENDADO';
-    } else if (this.registro.status) {
-      atendimentoFinal.status = this.registro.status;
     }
 
     this.servico.save(atendimentoFinal).subscribe({
@@ -175,7 +175,6 @@ export class FormAtendimentoComponent implements OnInit {
           this.procedimento.paciente = pacienteSelecionado;
           this.procedimento.tipo = EAtendimento.VACINACAO;
 
-          // **ESTA É A LINHA QUE FOI ADICIONADA**
           this.procedimento.dataAtendimento = atendimentoSalvo.dataHoraAtendimento.split('T')[0];
 
           this.procedimentoService.save(this.procedimento).subscribe({
@@ -197,18 +196,6 @@ export class FormAtendimentoComponent implements OnInit {
         console.error('Erro ao salvar o atendimento:', err);
         alert('Erro ao salvar o atendimento. Verifique o console para mais detalhes.');
       }
-    });
-  }
-
-  carregarResponsaveis(): void {
-    this.responsavelService.get().subscribe(data => {
-      this.responsaveis = data;
-    });
-  }
-
-  carregarProfissionais(): void {
-    this.profissionalService.get().subscribe(data => {
-      this.profissionais = data;
     });
   }
 }

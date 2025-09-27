@@ -1,7 +1,8 @@
+// main/java/com/vetgo/vetgoapi/model/Atendimento.java
 package com.vetgo.vetgoapi.model;
 
 import java.io.Serializable;
-import java.time.LocalDateTime; // IMPORT ATUALIZADO
+import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -19,7 +20,6 @@ import jakarta.persistence.UniqueConstraint;
 
 @Entity
 @Table(name = "atendimento", uniqueConstraints = {
-    // CONSTRAINTS ATUALIZADAS PARA USAR O NOVO CAMPO
     @UniqueConstraint(columnNames = { "data_hora_atendimento", "profissional_id"}),
     @UniqueConstraint(columnNames = { "data_hora_atendimento", "paciente_id"})
 })
@@ -29,7 +29,6 @@ public class Atendimento implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // NOVO CAMPO UNIFICADO
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     @Column(name = "data_hora_atendimento", nullable = false)
     private LocalDateTime dataHoraAtendimento;
@@ -48,6 +47,10 @@ public class Atendimento implements Serializable {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private EAtendimento tipoDeAtendimento;
+    
+    // CAMPO NOVO ADICIONADO AQUI
+    @Column(columnDefinition = "TEXT")
+    private String observacao;
 
     private Long idPai;
 
@@ -61,7 +64,6 @@ public class Atendimento implements Serializable {
         this.id = id;
     }
 
-    // GETTER E SETTER ATUALIZADO
     public LocalDateTime getDataHoraAtendimento() {
         return dataHoraAtendimento;
     }
@@ -100,6 +102,15 @@ public class Atendimento implements Serializable {
 
     public void setTipoDeAtendimento(EAtendimento tipoDeAtendimento) {
         this.tipoDeAtendimento = tipoDeAtendimento;
+    }
+    
+    // GETTER E SETTER PARA O CAMPO NOVO
+    public String getObservacao() {
+        return observacao;
+    }
+
+    public void setObservacao(String observacao) {
+        this.observacao = observacao;
     }
 
     public Long getIdPai() {

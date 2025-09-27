@@ -1,10 +1,8 @@
-// src/main/java/com/vetgo/vetgoapi/controller/AtendimentoController.java
-
+// main/java/com/vetgo/vetgoapi/controller/AtendimentoController.java
 package com.vetgo.vetgoapi.controller;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -37,7 +35,6 @@ public class AtendimentoController {
         this.atendimentoRepository = atendimentoRepository;
     }
 
-    // NOVO ENDPOINT PARA CONSULTAR HORÁRIOS
     @GetMapping("/horarios-ocupados")
     public ResponseEntity<List<String>> getHorariosOcupados(
             @RequestParam Long profissionalId,
@@ -45,7 +42,6 @@ public class AtendimentoController {
         return ResponseEntity.ok(atendimentoService.getHorariosOcupados(profissionalId, data));
     }
 
-    // Endpoint que retorna a lista de atendimentos completos
     @GetMapping("/por-paciente/{pacienteId}")
     public ResponseEntity<List<Atendimento>> listarPorPaciente(@PathVariable Long pacienteId) {
         List<Atendimento> atendimentos = atendimentoRepository.findByPacienteIdWithDetails(pacienteId);
@@ -70,27 +66,24 @@ public class AtendimentoController {
         return ResponseEntity.ok(atendimentoService.get(termoBusca)); // [change] Usa o novo método get do service
     }
 
-    // Endpoint para buscar atendimento por ID para que retorne o DTO com todos os campos necessários.
+    // MÉTODO MODIFICADO
     @GetMapping("/{id}")
     public ResponseEntity<AtendimentoResponseDTO> getAtendimentoById(@PathVariable Long id) {
         Atendimento atendimento = atendimentoService.getAtendimentoCompleto(id);
-        AtendimentoResponseDTO responseDTO = new AtendimentoResponseDTO(atendimento);
-        return ResponseEntity.ok(responseDTO);
+        return ResponseEntity.ok(new AtendimentoResponseDTO(atendimento));
     }
-    
-    // NOVO ENDPOINT: Buscar todos os atendimentos de um responsável
-    @GetMapping("/por-responsavel/{responsavelId}")
-    public ResponseEntity<List<AtendimentoResponseDTO>> getAtendimentoByResponsavelId(@PathVariable Long responsavelId) {
-        List<Atendimento> atendimentos = atendimentoService.getAtendimentosByResponsavelId(responsavelId);
-        List<AtendimentoResponseDTO> responseDTOs = atendimentos.stream()
-            .map(AtendimentoResponseDTO::new)
-            .collect(Collectors.toList());
-        return ResponseEntity.ok(responseDTOs);
-    }
-    
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteAtendimento(@PathVariable Long id) {
         atendimentoService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+    
+    // MÉTODO NOVO PARA SALVAR A EDIÇÃO
+    @PutMapping("/{id}")
+    public ResponseEntity<Atendimento> updateAtendimento(@PathVariable Long id, @RequestBody Atendimento atendimento) {
+        atendimento.setId(id);
+        Atendimento atendimentoAtualizado = atendimentoService.save(atendimento);
+        return ResponseEntity.ok(atendimentoAtualizado);
     }
 }

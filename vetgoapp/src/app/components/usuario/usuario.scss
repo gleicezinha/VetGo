@@ -1,0 +1,98 @@
+:host {
+    display: flex;
+    justify-content: center;
+    padding: 2rem;
+    background-color: #f4f7f6;
+}
+
+.profile-container {
+    width: 100%;
+    max-width: 700px;
+}
+
+.profile-card {
+    background: #ffffff;
+    padding: 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+    h2 {
+        text-align: center;
+        font-size: 2rem;
+        color: #333;
+        margin-bottom: 0.5rem;
+    }
+
+    p {
+        text-align: center;
+        color: #666;
+        margin-bottom: 2rem;
+    }
+
+    .form-row {
+        display: flex;
+        gap: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .form-group {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 1rem;
+
+        label {
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #555;
+        }
+
+        input[type="text"],
+        input[type="email"] {
+            padding: 0.75rem;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+
+            &:focus {
+                outline: none;
+                border-color: #007bff;
+                box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
+            }
+        }
+    }
+
+    hr {
+        border: none;
+        border-top: 1px solid #eee;
+        margin: 2rem 0;
+    }
+
+    .form-buttons {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 1.5rem;
+    }
+
+    .btn-salvar {
+        padding: 0.8rem 2rem;
+        font-size: 1rem;
+        font-weight: 600;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        background-color: #28a745;
+        color: white;
+        transition: background-color 0.2s;
+
+        &:hover:not(:disabled) {
+            background-color: #218838;
+        }
+
+        &:disabled {
+            background-color: #a3a3a3;
+            cursor: not-allowed;
+        }
+    }
+}
