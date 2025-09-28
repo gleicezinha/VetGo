@@ -1,4 +1,4 @@
-// app/models/atendimento-response.dto.ts
+// src/app/models/atendimento-response.dto.ts
 
 export interface AtendimentoResponseDTO {
     id: number;
@@ -14,4 +14,5 @@ export interface AtendimentoResponseDTO {
     // CAMPOS ADICIONADOS PARA CORRESPONDER AO BACKEND
     pacienteId?: number;
     profissionalId?: number;
+    pagamentoId?: number; // NOVO CAMPO
 }

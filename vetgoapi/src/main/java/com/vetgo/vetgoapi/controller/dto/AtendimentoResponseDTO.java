@@ -1,4 +1,3 @@
-// main/java/com/vetgo/vetgoapi/controller/dto/AtendimentoResponseDTO.java
 package com.vetgo.vetgoapi.controller.dto;
 
 import java.time.LocalDateTime;
@@ -22,18 +21,20 @@ public class AtendimentoResponseDTO {
     private Long pacienteId;
     private Long profissionalId;
     private String observacao;
+    private Long pagamentoId; // NOVO CAMPO
 
-
-    public AtendimentoResponseDTO(Atendimento atendimento) {
+    // NOVO CONSTRUTOR: Recebe o atendimento e o ID do Pagamento (pode ser null)
+    public AtendimentoResponseDTO(Atendimento atendimento, Long pagamentoId) {
         this.id = atendimento.getId();
         this.dataHoraAtendimento = atendimento.getDataHoraAtendimento();
         this.status = atendimento.getStatus().toString();
         this.tipoDeAtendimento = atendimento.getTipoDeAtendimento().toString();
-        this.observacao = atendimento.getObservacao(); // Adicionado para carregar observações
+        this.observacao = atendimento.getObservacao();
+        this.pagamentoId = pagamentoId; // SETANDO O NOVO CAMPO
 
         if (atendimento.getPaciente() != null) {
             this.nomePaciente = atendimento.getPaciente().getNome();
-            this.pacienteId = atendimento.getPaciente().getId(); // LINHA MODIFICADA
+            this.pacienteId = atendimento.getPaciente().getId();
             if (atendimento.getPaciente().getResponsavel() != null) {
                 this.nomeResponsavel = atendimento.getPaciente().getResponsavel().getUsuario().getNomeUsuario();
                 this.responsavelId = atendimento.getPaciente().getResponsavel().getId();
@@ -42,9 +43,15 @@ public class AtendimentoResponseDTO {
 
         if (atendimento.getProfissional() != null) {
             this.nomeProfissional = atendimento.getProfissional().getUsuario().getNomeUsuario();
-            this.profissionalId = atendimento.getProfissional().getId(); // LINHA MODIFICADA
+            this.profissionalId = atendimento.getProfissional().getId();
         }
     }
+    
+    // CONSTRUTOR MANTIDO POR RETROCOMPATIBILIDADE
+    public AtendimentoResponseDTO(Atendimento atendimento) {
+        this(atendimento, null); // Chama o novo construtor com pagamentoId nulo por padrão
+    }
+
 
     // Getters e Setters
     public Long getId() {
@@ -111,7 +118,6 @@ public class AtendimentoResponseDTO {
         this.responsavelId = responsavelId;
     }
 
-    // GETTERS E SETTERS ADICIONADOS
     public Long getPacienteId() {
         return pacienteId;
     }
@@ -134,5 +140,13 @@ public class AtendimentoResponseDTO {
 
     public void setObservacao(String observacao) {
         this.observacao = observacao;
+    }
+
+    public Long getPagamentoId() {
+        return pagamentoId;
+    }
+
+    public void setPagamentoId(Long pagamentoId) {
+        this.pagamentoId = pagamentoId;
     }
 }

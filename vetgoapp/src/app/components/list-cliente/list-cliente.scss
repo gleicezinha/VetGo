@@ -118,16 +118,36 @@
   border-radius: 9999px;
   font-weight: 600;
   font-size: 0.8rem;
+  text-decoration: none; /* Garante que os badges não tenham sublinhado por padrão */
+  display: inline-block; /* Permite o uso de margin e padding */
 }
 
-.status-ativo {
+.status-pago {
   color: var(--success-color);
   background-color: var(--success-bg-color);
 }
 
-.status-inativo {
-  color: var(--danger-color);
-  background-color: var(--danger-bg-color);
+.status-pendente {
+  color: #d97706; /* Amarelo Escuro */
+  background-color: #fef3c7; /* Amarelo Claro */
+}
+
+/* NOVO ESTILO PARA O LINK DE ATENDIMENTO SEM PAGAMENTO (Status N/A) */
+.status-nao-pago {
+  // Torna visualmente mais parecido com uma ação a ser tomada
+  background-color: #ffe0b2; /* Laranja Claro */
+  color: #ff9800; /* Laranja */
+  border: 1px solid #ff9800;
+  border-radius: 4px; /* Menos arredondado para parecer mais com botão de ação */
+  font-weight: 600;
+  text-decoration: none;
+  margin-bottom: 5px;
+
+  &:hover {
+    background-color: #ffcc80;
+    color: #e65100;
+    text-decoration: none;
+  }
 }
 
 /* Célula de Ações */
@@ -211,4 +231,16 @@
         font-weight: 500;
         color: var(--text-color-dark);
     }
+}
+
+/* Estilo para o fallback "Nenhum pagamento" (Quando a lista é totalmente vazia) */
+.no-payment-link {
+  color: var(--text-color-dark);
+  text-decoration: underline; 
+  cursor: pointer;              
+  font-weight: 500;
+  
+  &:hover {
+    color: var(--primary-color);
+  }
 }

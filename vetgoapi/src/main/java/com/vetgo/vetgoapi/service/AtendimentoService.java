@@ -19,6 +19,7 @@ import com.vetgo.vetgoapi.model.Paciente;
 import com.vetgo.vetgoapi.model.Profissional;
 import com.vetgo.vetgoapi.repository.AtendimentoRepository;
 import com.vetgo.vetgoapi.repository.PacienteRepository;
+import com.vetgo.vetgoapi.repository.PagamentoRepository;
 import com.vetgo.vetgoapi.repository.ProfissionalRepository;
 import com.vetgo.vetgoapi.service.exception.BusinessRuleException;
 import com.vetgo.vetgoapi.service.exception.ResourceNotFoundException;
@@ -29,11 +30,13 @@ public class AtendimentoService {
     private final AtendimentoRepository atendimentoRepository;
     private final PacienteRepository pacienteRepository;
     private final ProfissionalRepository profissionalRepository;
+    private final PagamentoRepository pagamentoRepository; // Corretamente declarada
 
-    public AtendimentoService(AtendimentoRepository aRepo, PacienteRepository pRepo, ProfissionalRepository profRepo) {
+    public AtendimentoService(AtendimentoRepository aRepo, PacienteRepository pRepo, ProfissionalRepository profRepo, PagamentoRepository pagamentoRepository) {
         this.atendimentoRepository = aRepo;
         this.pacienteRepository = pRepo;
         this.profissionalRepository = profRepo;
+        this.pagamentoRepository = pagamentoRepository; // CORREÇÃO: Inicialização do repositório
     }
 
     public List<String> getHorariosOcupados(Long profissionalId, LocalDate data) {
@@ -101,7 +104,7 @@ public class AtendimentoService {
         atendimentoRepository.deleteById(id);
     }
     
-    // [MODIFICADO] Implementação da busca paginada (substitui o antigo método get(String termoBusca))
+    // [MODIFICADO] Implementação da busca paginada com busca de pagamento
     @Transactional(readOnly = true)
     public Page<AtendimentoResponseDTO> searchAllWithDetails(String termoBusca, Pageable pageable) {
         String termo = (termoBusca != null && !termoBusca.trim().isEmpty()) 
@@ -111,7 +114,15 @@ public class AtendimentoService {
         Page<Atendimento> atendimentosPage = atendimentoRepository.searchAllWithDetails(termo, pageable);
         
         // Mapeia Page<Atendimento> para Page<AtendimentoResponseDTO>
-        return atendimentosPage.map(AtendimentoResponseDTO::new);
+        return atendimentosPage.map(atendimento -> {
+            // BUSCA O ID DO PAGAMENTO ASSOCIADO (pode ser null)
+            Long pagamentoId = pagamentoRepository.findByAtendimento_Id(atendimento.getId())
+                                                 .map(p -> p.getId())
+                                                 .orElse(null);
+            
+            // CORREÇÃO: Chama o novo construtor que aceita o pagamentoId
+            return new AtendimentoResponseDTO(atendimento, pagamentoId);
+        });
     }
 
     // Método para buscar um atendimento com todas as dependências

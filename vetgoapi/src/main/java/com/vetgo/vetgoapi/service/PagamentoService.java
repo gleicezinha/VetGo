@@ -2,6 +2,7 @@ package com.vetgo.vetgoapi.service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional; // Importado para Optional
 
 import org.springframework.stereotype.Service;
 
@@ -28,22 +29,29 @@ public class PagamentoService {
         
         return pagamentoRepository.save(pagamento);
     }
-
+    
+    // NOVO MÉTODO ADICIONADO: Retorna Optional para ser usado na lógica de agregação.
+    public Optional<Pagamento> getByAtendimentoIdOptional(Long atendimentoId) {
+        return pagamentoRepository.findByAtendimento_Id(atendimentoId);
+    }
+    
+    // Método para buscar pagamento (lança exceção se não encontrar)
     public Pagamento getByAtendimentoId(Long atendimentoId) {
-        return pagamentoRepository.findByAtendimento_Id(atendimentoId)
+        return getByAtendimentoIdOptional(atendimentoId)
             .orElseThrow(() -> new ResourceNotFoundException(
                 "Pagamento não encontrado para o Atendimento com ID: " + atendimentoId
             ));
     }
+    
     // Método para pegar status de pagamentos de todos os atendimentos de um responsável
     public List<Pagamento> getPagamentosByResponsavel(Responsavel responsavel) {
             return pagamentoRepository.findByResponsavel(responsavel);
         }
     
     public List<String> getStatusPagamentosByResponsavel(Responsavel responsavel) {
-        return pagamentoRepository.findByResponsavel(responsavel)
+        return getPagamentosByResponsavel(responsavel)
             .stream()
-            .map(p -> p.getStatus().name()) // ou p.getStatus() se for enum mesmo
+            .map(p -> p.getStatus().name() + "|" + (p.getAtendimento() != null ? p.getAtendimento().getId() : "N/A"))
             .toList();
     }
 }

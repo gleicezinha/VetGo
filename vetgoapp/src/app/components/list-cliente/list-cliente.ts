@@ -15,6 +15,12 @@ import { Endereco } from '../../models/endereco.model';
 import { ResponsavelDTO } from '../../models/responsaveldto';
 import { Page } from '../../models/page.model'; // [NOVO IMPORT]
 
+// NEW INTERFACE: Estrutura para os detalhes do pagamento e o link.
+interface PagamentoStatus {
+  status: string;
+  atendimentoId: number | null;
+}
+
 @Component({
   standalone: true,
   selector: 'app-list-cliente',
@@ -29,6 +35,9 @@ export class ListClienteComponent implements OnInit {
   registrosFiltrados: ResponsavelDTO[] = [];
   pacientesPorResponsavel: { [key: number]: Paciente[] } = {};
   statusPorResponsavel: { [key: number]: string[] } = {};
+  
+  // NOVO: Usaremos esta propriedade para armazenar os detalhes de pagamento
+  pagamentosDetalhes: { [key: number]: PagamentoStatus[] } = {};
 
   // [NOVO] Estado de paginação
   page: number = 0;
@@ -47,7 +56,7 @@ export class ListClienteComponent implements OnInit {
     this.get();
   }
 
-  // [MOD] Implementa paginação
+  // [MOD] Implementa paginação e processa a nova string de status
   get(page: number = this.page): void {
     this.page = page;
 
@@ -61,10 +70,19 @@ export class ListClienteComponent implements OnInit {
         // Resetar o filtro para mostrar a página atual
         this.registrosFiltrados = [...this.registros];
         
-        // Popular status de pagamentos
+        // NOVO BLOCO: Popular DADOS de pagamentos detalhados (Parsing da string STATUS|ID)
+        this.pagamentosDetalhes = {}; 
         this.registros.forEach(resp => {
-          if (resp.id) {
-            this.statusPorResponsavel[resp.id] = resp.statusPagamentos || [];
+          if (resp.id && resp.statusPagamentos) {
+            this.pagamentosDetalhes[resp.id] = resp.statusPagamentos.map(encoded => {
+              const parts = encoded.split('|');
+              // A string é no formato "STATUS|ATENDIMENTO_ID"
+              const status = parts[0];
+              const idStr = parts[1];
+              // Se a ID for "N/A", é nulo.
+              const atendimentoId = idStr === 'N/A' || !idStr ? null : parseInt(idStr, 10); 
+              return { status, atendimentoId };
+            });
           }
         });
 
@@ -103,9 +121,15 @@ export class ListClienteComponent implements OnInit {
     return pets && pets.length > 0 ? pets.map(p => p.nome).join(', ') : 'Nenhum pet';
   }
 
+  // MÉTODO ORIGINAL, MANTIDO POR COMPATIBILIDADE, MAS AGORA TEMOS getPagamentoDetalhes
   getStatusPagamentos(responsavelId: number): string {
     const status = this.statusPorResponsavel[responsavelId];
     return status && status.length > 0 ? status.join(', ') : 'Nenhum pagamento';
+  }
+  
+  // NOVO MÉTODO: Retorna a lista de detalhes do pagamento para o template.
+  getPagamentoDetalhes(responsavelId: number): PagamentoStatus[] {
+    return this.pagamentosDetalhes[responsavelId] || [];
   }
 
   formatAddress(endereco: Endereco | undefined): string {

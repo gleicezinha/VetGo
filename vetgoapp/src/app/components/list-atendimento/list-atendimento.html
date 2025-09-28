@@ -36,11 +36,17 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let atendimento of atendimentosFiltrados">
+        <tr *ngFor="let atendimento of atendimentosFiltrados" 
+            [ngClass]="{'no-payment-alert': atendimento.pagamentoId === null && atendimento.status !== 'ENCERRADO' && atendimento.status !== 'CANCELADO'}">
           <td>{{ atendimento.dataHoraAtendimento | date:'dd/MM/yyyy HH:mm' }}</td>
           <td>
             <span class="status" [ngClass]="'status-' + atendimento.status.toLowerCase()">
               {{ atendimento.status }}
+            </span>
+            <span *ngIf="atendimento.pagamentoId === null && atendimento.status !== 'ENCERRADO' && atendimento.status !== 'CANCELADO'"
+                  class="payment-warning"
+                  title="Pagamento Pendente/Não Registrado. Clique em 'Pagamento' nas Ações.">
+                ⚠️
             </span>
           </td>
           <td>{{ atendimento.tipoDeAtendimento }}</td>
