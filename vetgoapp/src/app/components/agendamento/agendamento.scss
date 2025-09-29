@@ -332,6 +332,44 @@
     line-height: 1.4;
 }
 
+/* Estilo para Horário LIVRE (Verde) */
+.time-slot.horario-livre {
+    background: #f0fdf4;
+    /* Fundo verde bem claro */
+    color: #166534;
+    /* Texto verde escuro */
+    border-color: #bbf7d0;
+    /* Borda verde clara */
+}
+
+/* Efeito ao passar o mouse sobre um horário LIVRE */
+.time-slot.horario-livre:hover {
+    border-color: #22c55e;
+    background: #dcfce7;
+    transform: translateY(-2px);
+}
+
+/* Estilo para Horário OCUPADO (Vermelho) */
+.time-slot.horario-ocupado {
+    background: #fef2f2;
+    /* Fundo vermelho bem claro */
+    color: #b91c1c;
+    /* Texto vermelho escuro */
+    border-color: #fecaca;
+    /* Borda vermelha clara */
+    cursor: not-allowed;
+    text-decoration: line-through;
+    opacity: 0.8;
+}
+
+/* Estilo para Horário SELECIONADO (Azul) */
+.time-slot.selected {
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    color: white;
+    border-color: #3b82f6;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+    transform: translateY(-2px);
+}
 
 /* --- Design Responsivo --- */
 @media (max-width: 1200px) {
@@ -400,4 +438,7 @@
     .services-grid {
         grid-template-columns: 1fr;
     }
+
+
+
 }
