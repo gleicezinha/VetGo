@@ -5,21 +5,35 @@
 
   <div class="content-card">
     <div class="toolbar">
-      <div class="search-container">
-        <img src="assets/imagens/search.svg" alt="Pesquisar" class="search-icon" />
-        <input 
-          type="text" 
-          class="search-input" 
-          placeholder="Pesquisar por Paciente, Responsável, Profissional ou Tipo"
-          [(ngModel)]="termoBusca"
-          (input)="buscarComTermo(termoBusca)"
-        />
+      <div class="filters-container">
+        <div class="search-container">
+          <img src="assets/imagens/search.svg" alt="Pesquisar" class="search-icon" />
+          <input type="text" class="search-input" placeholder="Pesquisar..." [(ngModel)]="termoBusca"
+            (input)="aplicarFiltrosEordenacao()" />
+        </div>
+
+        <div class="date-filter">
+          <label for="data-inicio">De:</label>
+          <input type="date" id="data-inicio" [(ngModel)]="dataInicioFiltro" (change)="aplicarFiltrosEordenacao()">
+        </div>
+        <div class="date-filter">
+          <label for="data-fim">Até:</label>
+          <input type="date" id="data-fim" [(ngModel)]="dataFimFiltro" (change)="aplicarFiltrosEordenacao()">
+        </div>
+
+        <div class="sort-filter">
+          <label for="ordenacao">Ordenar por:</label>
+          <select id="ordenacao" [(ngModel)]="ordenacao" (change)="aplicarFiltrosEordenacao()">
+            <option value="dataHoraAtendimento,desc">Mais Recentes</option>
+            <option value="dataHoraAtendimento,asc">Mais Antigos</option>
+          </select>
+        </div>
       </div>
+
       <button class="back-button" (click)="voltar()">
         Voltar
       </button>
     </div>
-
 
     <table class="appointments-table">
       <thead>
@@ -36,17 +50,17 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let atendimento of atendimentosFiltrados" 
-            [ngClass]="{'no-payment-alert': atendimento.pagamentoId === null && atendimento.status !== 'ENCERRADO' && atendimento.status !== 'CANCELADO'}">
+        <tr *ngFor="let atendimento of atendimentosFiltrados"
+          [ngClass]="{'no-payment-alert': atendimento.pagamentoId === null && atendimento.status !== 'ENCERRADO' && atendimento.status !== 'CANCELADO'}">
           <td>{{ atendimento.dataHoraAtendimento | date:'dd/MM/yyyy HH:mm' }}</td>
           <td>
             <span class="status" [ngClass]="'status-' + atendimento.status.toLowerCase()">
               {{ atendimento.status }}
             </span>
-            <span *ngIf="atendimento.pagamentoId === null && atendimento.status !== 'ENCERRADO' && atendimento.status !== 'CANCELADO'"
-                  class="payment-warning"
-                  title="Pagamento Pendente/Não Registrado. Clique em 'Pagamento' nas Ações.">
-                ⚠️
+            <span
+              *ngIf="atendimento.pagamentoId === null && atendimento.status !== 'ENCERRADO' && atendimento.status !== 'CANCELADO'"
+              class="payment-warning" title="Pagamento Pendente/Não Registrado. Clique em 'Pagamento' nas Ações.">
+              ⚠️
             </span>
           </td>
           <td>{{ atendimento.tipoDeAtendimento }}</td>
@@ -66,26 +80,25 @@
                 <img src="assets/imagens/delete.svg" alt="Excluir" class="menu-excluir">
                 <span>Excluir</span>
               </button>
-                <button mat-menu-item [routerLink]="['/pagamento', atendimento.id]">
+              <button mat-menu-item [routerLink]="['/pagamento', atendimento.id]">
                 <img src="assets/imagens/star.svg" alt="Pagamento" class="menu-icon">
                 <span>Pagamento</span>
-                </button>
+              </button>
             </mat-menu>
           </td>
         </tr>
         <tr *ngIf="atendimentosFiltrados.length === 0">
-          <td [attr.colspan]="userRole === 'ROLE_PROFISSIONAL' || userRole === 'ROLE_ADMIN' ? 7 : 6"
-              class="no-results">
-            Nenhum atendimento encontrado.
+          <td [attr.colspan]="userRole === 'ROLE_PROFISSIONAL' || userRole === 'ROLE_ADMIN' ? 7 : 6" class="no-results">
+            Nenhum atendimento encontrado para os filtros selecionados.
           </td>
         </tr>
       </tbody>
     </table>
-    
+
     <div class="pagination-controls" *ngIf="userRole !== 'ROLE_RESPONSAVEL' && totalPages > 1">
-        <button (click)="irParaPagina(page - 1)" [disabled]="page === 0">Anterior</button>
-        <span>Página {{ page + 1 }} de {{ totalPages }}</span>
-        <button (click)="irParaPagina(page + 1)" [disabled]="page === totalPages - 1">Próxima</button>
+      <button (click)="irParaPagina(page - 1)" [disabled]="page === 0">Anterior</button>
+      <span>Página {{ page + 1 }} de {{ totalPages }}</span>
+      <button (click)="irParaPagina(page + 1)" [disabled]="page === totalPages - 1">Próxima</button>
     </div>
   </div>
 </div>

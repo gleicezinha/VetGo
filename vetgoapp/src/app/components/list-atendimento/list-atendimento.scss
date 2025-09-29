@@ -165,6 +165,7 @@
     margin-right: 8px;
     opacity: 0.7;
 }
+
 .modal-backdrop {
     position: fixed;
     top: 0;
@@ -179,19 +180,19 @@
 }
 
 .modal-wrapper {
-  position: relative;
+    position: relative;
 }
 
 .close-modal-btn {
-  position: absolute;
-  top: -20px;
-  right: -20px;
-  background-color: transparent;
-  border: none;
-  font-size: 2rem;
-  color: white;
-  cursor: pointer;
-  z-index: 1001;
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    background-color: transparent;
+    border: none;
+    font-size: 2rem;
+    color: white;
+    cursor: pointer;
+    z-index: 1001;
 }
 
 /* Resto dos estilos da página list-atendimento.scss */
@@ -199,6 +200,7 @@
     padding: 2rem;
     background-color: var(--background-color);
 }
+
 .toolbar {
     display: flex;
     justify-content: space-between;
@@ -209,28 +211,29 @@
 }
 
 .search-container {
-  display: flex;
-  align-items: center;
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  padding: 0.5rem 0.75rem;
-  min-width: 250px;
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.5rem 0.75rem;
+    min-width: 250px;
 }
 
 .search-icon {
-  width: 20px;
-  height: 20px;
-  margin-right: 0.5rem;
-  opacity: 0.5;
+    width: 20px;
+    height: 20px;
+    margin-right: 0.5rem;
+    opacity: 0.5;
 }
 
 .search-input {
-  border: none;
-  outline: none;
-  font-size: 1rem;
-  width: 100%;
-  background: transparent;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    width: 100%;
+    background: transparent;
 }
+
 .pagination-controls {
     display: flex;
     justify-content: center;
@@ -242,7 +245,7 @@
 
     button {
         padding: 0.5rem 1rem;
-        border: 1px solid var(--agendado-color); 
+        border: 1px solid var(--agendado-color);
         border-radius: 6px;
         background-color: white;
         color: var(--agendado-color);
@@ -270,25 +273,76 @@
 
 /* ALERTA DE PAGAMENTO PENDENTE/NÃO REGISTRADO */
 .no-payment-alert {
-  /* Destaca a linha inteira */
-  background-color: #fffde7; /* Amarelo muito claro */
-  
-  &:hover {
-      background-color: #f7f7e0; /* Escurece um pouco no hover */
-  }
+    /* Destaca a linha inteira */
+    background-color: #fffde7;
+    /* Amarelo muito claro */
+
+    &:hover {
+        background-color: #f7f7e0;
+        /* Escurece um pouco no hover */
+    }
 }
 
 .payment-warning {
-  /* Estilo do ícone de alerta */
-  font-size: 1.1rem;
-  margin-left: 8px;
-  cursor: help;
-  display: inline-block;
-  animation: pulse 1.5s infinite;
+    /* Estilo do ícone de alerta */
+    font-size: 1.1rem;
+    margin-left: 8px;
+    cursor: help;
+    display: inline-block;
+    animation: pulse 1.5s infinite;
 }
 
 @keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.1); }
-  100% { transform: scale(1); }
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* ESTILOS ADICIONAIS PARA OS FILTROS */
+.toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    /* Permite que os itens quebrem a linha em telas menores */
+    gap: 1rem;
+}
+
+.filters-container {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    /* Espaçamento entre os filtros */
+    flex-wrap: wrap;
+    flex-grow: 1;
+    /* Faz o container dos filtros crescer */
+}
+
+.date-filter,
+.sort-filter {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.date-filter label,
+.sort-filter label {
+    font-weight: 500;
+    color: var(--text-color-light);
+}
+
+.date-filter input,
+.sort-filter select {
+    padding: 0.4rem 0.6rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 0.9rem;
 }

@@ -1,5 +1,4 @@
 // src/app/services/atendimento.ts
-
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../environments/environment';
@@ -23,7 +22,6 @@ export class AtendimentoService {
     return this.http.get<string[]>(`${this.apiUrl}/horarios-ocupados`, { params });
   }
 
-  // APROVAÇÃO: Este método agora busca a entidade completa
   getById(id: number): Observable<Atendimento> {
     return this.http.get<Atendimento>(`${this.apiUrl}/${id}`);
   }
@@ -32,16 +30,17 @@ export class AtendimentoService {
     return this.http.get<AtendimentoResponseDTO>(`${this.apiUrl}/${id}`);
   }
 
- // [MÉTODO ATUALIZADO] Adiciona parâmetro de busca opcional e paginação
-  getAll(termoBusca?: string, page: number = 0, size: number = 10): Observable<Page<AtendimentoResponseDTO>> { // [MOD]
+  // MÉTODO ATUALIZADO para aceitar o parâmetro de ordenação
+  getAll(termoBusca?: string, page: number = 0, size: number = 10, sort: string = 'dataHoraAtendimento,desc'): Observable<Page<AtendimentoResponseDTO>> {
     let params = new HttpParams()
-        .set('page', page.toString())
-        .set('size', size.toString());
+      .set('page', page.toString())
+      .set('size', size.toString())
+      .set('sort', sort); // Adiciona o parâmetro de ordenação
 
     if (termoBusca) {
-      params = params.set('termoBusca', termoBusca); // [change] Adiciona o termo como query parameter
+      params = params.set('termoBusca', termoBusca);
     }
-    return this.http.get<Page<AtendimentoResponseDTO>>(`${this.apiUrl}/todos`, { params }); // [MOD]
+    return this.http.get<Page<AtendimentoResponseDTO>>(`${this.apiUrl}/todos`, { params });
   }
 
   getByPacienteId(id: number): Observable<Atendimento[]> {
@@ -52,11 +51,8 @@ export class AtendimentoService {
     if (objeto.id) {
       return this.http.put<Atendimento>(`${this.apiUrl}/${objeto.id}`, objeto);
     } else {
-      if (!objeto.paciente?.id || !objeto.profissional?.id) {
-        throw new Error('IDs do paciente e do profissional são obrigatórios para agendar.');
-      }
       const agendamentoRequest = {
-        pacienteId: objeto.paciente.id,
+        pacienteId: objeto.paciente?.id,
         profissionalId: objeto.profissional.id,
         responsavelId: objeto.responsavel?.id,
         dataHoraAtendimento: objeto.dataHoraAtendimento,
@@ -75,9 +71,7 @@ export class AtendimentoService {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 
-  // NOVO MÉTODO: Retorna todos os atendimentos para um responsável
   getAtendimentosByResponsavelId(responsavelId: number): Observable<AtendimentoResponseDTO[]> {
     return this.http.get<AtendimentoResponseDTO[]>(`${this.apiUrl}/por-responsavel/${responsavelId}`);
   }
-   // [MÉTODO ATUALIZADO] Adiciona parâmetro de busca opcional
 }
