@@ -371,6 +371,85 @@
     transform: translateY(-2px);
 }
 
+/* ... (todos os seus estilos existentes) ... */
+
+
+/* ADICIONE ESTES NOVOS ESTILOS NO FINAL DO ARQUIVO */
+
+/* Camada escura que cobre a tela inteira */
+.custom-alert-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    /* Garante que fique na frente de tudo */
+}
+
+/* A caixa do pop-up */
+.custom-alert-box {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    max-width: 400px;
+    margin: 1rem;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.alert-icon {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 1rem;
+}
+
+.custom-alert-box h2 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+.custom-alert-box p {
+    margin-bottom: 1.5rem;
+    color: #666;
+    line-height: 1.5;
+}
+
+.alert-button {
+    background-color: #2852df;
+    /* Vermelho para combinar com o aviso */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.8rem 2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.alert-button:hover {
+    background-color: #c82333;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
 /* --- Design Responsivo --- */
 @media (max-width: 1200px) {
     .container {

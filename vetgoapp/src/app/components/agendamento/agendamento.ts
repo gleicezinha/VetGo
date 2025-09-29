@@ -31,6 +31,9 @@ export class AgendamentoComponent implements OnInit {
     isDiaCheio: boolean = false;
     dataMinima: string;
 
+    // NOVA PROPRIEDADE PARA CONTROLAR O POP-UP
+    mostrarAlertaOcupado = false;
+
     constructor(
         private router: Router,
         private authService: AuthService,
@@ -81,15 +84,20 @@ export class AgendamentoComponent implements OnInit {
             });
     }
 
-    // **LÓGICA DO CLIQUE ATUALIZADA**
+    // LÓGICA DO CLIQUE ATUALIZADA
     selecionarHorario(horario: string): void {
         // Verifica se o horário clicado está na lista de horários LIVRES (`this.horarios`)
         if (this.horarios.includes(horario)) {
             this.horarioSelecionado = horario; // Se estiver livre, seleciona
         } else {
-            // Se NÃO estiver na lista de livres, significa que está ocupado
-            alert('Este horário já está ocupado. Por favor, escolha um horário disponível em verde.');
+            // Se NÃO estiver na lista de livres, mostra o pop-up customizado
+            this.mostrarAlertaOcupado = true;
         }
+    }
+
+    // NOVA FUNÇÃO PARA FECHAR O POP-UP
+    fecharAlerta(): void {
+        this.mostrarAlertaOcupado = false;
     }
 
     confirmarAgendamento(): void {

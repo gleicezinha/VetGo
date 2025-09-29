@@ -79,3 +79,13 @@
 </body>
 
 </html>
+
+<!-- CÓDIGO DO POP-UP ADICIONADO AQUI -->
+<div class="custom-alert-overlay" *ngIf="mostrarAlertaOcupado">
+    <div class="custom-alert-box">
+        <img src="assets/imagens/warning.svg" alt="Aviso" class="alert-icon">
+        <h2>Horário Ocupado</h2>
+        <p>Este horário não está mais disponível. Por favor, selecione um dos horários em verde.</p>
+        <button (click)="fecharAlerta()" class="alert-button">Entendi</button>
+    </div>
+</div>
