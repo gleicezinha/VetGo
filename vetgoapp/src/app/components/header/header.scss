@@ -120,11 +120,15 @@
   background-color: transparent;
   border: none;
   cursor: pointer;
-  transition: background-color 0.2s ease-in-out;
+  /* MODIFIQUE A LINHA ABAIXO */
+  transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
 }
 
+/* SUBSTITUA O SEU TRECHO :hover POR ESTE */
 .menu-item:hover {
   background-color: rgba(255, 255, 255, 0.1);
+  transform: translateX(5px);
+  /* <-- ESTA É A MÁGICA! */
 }
 
 .menu-icon {
